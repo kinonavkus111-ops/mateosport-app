@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>PLVEGO Mini App</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      color: #0088cc;
+    }
+    .button {
+      background-color: #0088cc;
+      color: white;
+      padding: 15px 25px;
+      margin: 15px 0;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 20px;
+      cursor: pointer;
+      user-select: none;
+      display: inline-block;
+      width: 100%;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 18px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>PLVEGO</h1>
+
+  <div id="menu">
+    <div class="button" onclick="openSearch()">
+      🔍 Найти партнёра
+    </div>
+
+    <div class="button" onclick="openProfile()">
+      👤 Мой профиль
+    </div>
+  </div>
+
+  <div id="search" class="hidden"></div>
+  <div id="profile" class="hidden"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    function goBack(fromId) {
+      document.getElementById(fromId).classList.add("hidden");
+      document.getElementById("menu").classList.remove("hidden");
+    }
+
+    function openSearch() {
+      document.getElementById("menu").classList.add("hidden");
+      document.getElementById("profile").classList.add("hidden");
+      document.getElementById("search").classList.remove("hidden");
+
+      document.getElementById("search").innerHTML = `
+        <div>
+          <div class="button" onclick="goBack('search')">⬅ Назад</div>
+          <h2>Поиск партнёров по городу</h2>
+
+          <input type="text" id="searchCityInput" placeholder="Введите город">
+          <div class="button" onclick="searchByCity()">Поиск</div>
+
+          <div id="searchResults"></div>
+        </div>
+      `;
+    }
+
+    function openProfile() {
+      document.getElementById("menu").classList.add("hidden");
+      document.getElementById("search").classList.add("hidden");
+      document.getElementById("profile").classList.remove("hidden");
+
+      // Запрос данных профиля у бота
+      tg.sendData(JSON.stringify({command: 'get_profile'}));
+
+      // Пока пусто, ждем ответ
+      document.getElementById("profile").innerHTML = `
+        <div>
+          <div class="button" onclick="goBack('profile')">⬅ Назад</div>
+          <h2>Мой профиль</h2>
+          <p>Загрузка данных...</p>
+        </div>
+      `;
+    }
+
+    function searchByCity() {
+      const city = document.getElementById('searchCityInput').value.trim();
+      if (!city) {
+        alert('Пожалуйста, введите город');
+        return;
+      }
+
+      document.getElementById('searchResults').innerHTML = '<p>Идёт поиск...</p>';
+
+      tg.sendData(JSON.stringify({command: 'search_partner', city: city}));
+    }
+
+    // Получаем данные от бота
+    window.Telegram.WebApp.onEvent('web_app_data', function(data) {
+      try {
+        const resp = JSON.parse(data.data);
+
+        if (resp.type === 'search_results') {
+          let users = resp.users;
+          let html = '';
+
+          if (!users || users.length === 0) {
+            html = '<p>Партнёров с такими параметрами пока нет.</p>';
+          } else {
+            users.forEach(u => {
+              let chatLink = u.username ? `https://t.me/${u.username}` : `tg://user?id=${u.userId || ''}`;
+
+              html += `<div class="card">
+                          <b>${u.fullName}</b><br>
+                          <span>Город: ${u.city}</span><br>
+                          <span>Вид спорта: ${u.activity}</span><br>
+                          <span>Возраст: ${u.age}</span><br>
+                          <span>Уровень: ${u.level}</span><br>
+                          ${u.username ? `<a href="${chatLink}" target="_blank" class="button">Написать</a>` : '<small>Нет username для связи</small>'}
+                       </div>`;
+            });
+          }
+
+          document.getElementById('searchResults').innerHTML = html;
+
+        } else if (resp.type === 'profile') {
+          const p = resp.profile;
+          let chatLink = p.username ? `https://t.me/${p.username}` : `tg://user?id=${p.userId || ''}`;
+
+          document.getElementById("profile").innerHTML = `
+            <div>
+              <div class="button" onclick="goBack('profile')">⬅ Назад</div>
+              <h2>Мой профиль</h2>
+              <div class="card">
+                <b>${p.fullName}</b><br>
+                <span>Город: ${p.city}</span><br>
+                <span>Вид спорта: ${p.activity}</span><br>
+                <span>Возраст: ${p.age}</span><br>
+                <span>Уровень: ${p.level}</span><br>
+                ${p.username ? `<a href="${chatLink}" target="_blank" class="button">Написать себе</a>` : '<small>Нет username</small>'}
+              </div>
+            </div>
+          `;
+        }
+      } catch(e) {
+        console.error("Ошибка при разборе данных от бота", e);
+      }
+    });
+  </script>
+</body>
+</html>

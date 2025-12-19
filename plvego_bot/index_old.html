@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>PLVEGO</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    button {
+      margin: 10px;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+    }
+    input, select {
+      font-size: 16px;
+      padding: 8px;
+      margin: 10px 0;
+      width: 250px;
+      border-radius: 5px;
+      border: none;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PLVEGO</h1>
+
+  <div id="main-menu">
+    <button onclick="showSection('registration')">Регистрация</button><br/>
+    <button onclick="showSection('requests')">Заявки на поиск партнёров</button><br/>
+    <button onclick="showSection('profile')">Мой профиль</button><br/>
+    <button onclick="showSection('chat')">Чат</button><br/>
+  </div>
+
+  <div id="registration" class="hidden">
+    <h2>Форма регистрации</h2>
+    <input type="text" id="fullName" placeholder="ФИО" /><br/>
+    <input type="text" id="city" placeholder="Город" /><br/>
+    <select id="activity">
+      <option value="">Выберите вид деятельности</option>
+      <option value="настольный теннис">Настольный теннис</option>
+      <option value="бег">Бег</option>
+      <option value="йога">Йога</option>
+    </select><br/>
+    <button onclick="registerUser()">Зарегистрироваться</button><br/>
+    <button onclick="showSection('main-menu')">Назад</button>
+  </div>
+
+  <script>
+    function showSection(id) {
+      const sections = ['main-menu', 'registration', 'requests', 'profile', 'chat'];
+      sections.forEach(sectionId => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          if (sectionId === id) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function registerUser() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const activity = document.getElementById('activity').value;
+
+      if (!fullName  !city  !activity) {
+        alert('Пожалуйста, заполните все поля.');
+        return;
+      }
+
+      const user = { fullName, city, activity };
+      localStorage.setItem('plvegoUser', JSON.stringify(user));
+
+      alert('Регистрация прошла успешно!');
+
+      showSection('main-menu');
+    }
+  </script>
+
+</body>
+</html>
