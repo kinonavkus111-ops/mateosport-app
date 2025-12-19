@@ -2,180 +2,150 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>PLVEGO Mini App</title>
-
+  <title>MateoSport</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      padding: 20px;
       margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #003366;
     }
-    h1 {
+
+    header {
+      background-color: #005bbb;
+      width: 100%;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       text-align: center;
-      color: #0088cc;
-    }
-    .button {
-      background-color: #0088cc;
+      font-size: 26px;
+      font-weight: 700;
       color: white;
-      padding: 15px 25px;
-      margin: 15px 0;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 20px;
-      cursor: pointer;
       user-select: none;
-      display: inline-block;
-      width: 100%;
-      box-sizing: border-box;
-      text-decoration: none;
     }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+
+    main {
+      flex: 1;
+      width: 90%;
+      max-width: 400px;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    .hidden {
-      display: none;
+
+    button {
+      background-color: #005bbb;
+      color: white;
+      border: none;
+      padding: 18px 0;
+      font-size: 20px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,91,187,0.4);
+      transition: background-color 0.3s ease;
+      user-select: none;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
+
+    button:hover {
+      background-color: #004a99;
+    }
+
+    /* Место для вывода информации */
+    #content {
+      margin-top: 30px;
       font-size: 18px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: #003366;
+      min-height: 120px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
   </style>
 </head>
 <body>
-  <h1>PLVEGO</h1>
+  <header>MateoSport</header>
 
-  <div id="menu">
-    <div class="button" onclick="openSearch()">
-      🔍 Найти партнёра
-    </div>
+  <main>
+    <button id="searchBtn">🔍 Поиск партнёра</button>
+    <button id="profileBtn">👤 Мой профиль</button>
+    <button id="supportBtn">🛠 Поддержка</button>
 
-    <div class="button" onclick="openProfile()">
-      👤 Мой профиль
-    </div>
-  </div>
-
-  <div id="search" class="hidden"></div>
-  <div id="profile" class="hidden"></div>
+    <div id="content"></div>
+  </main>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    function goBack(fromId) {
-      document.getElementById(fromId).classList.add("hidden");
-      document.getElementById("menu").classList.remove("hidden");
-    }
+    const content = document.getElementById('content');
+    const searchBtn = document.getElementById('searchBtn');
+    const profileBtn = document.getElementById('profileBtn');
+    const supportBtn = document.getElementById('supportBtn');
 
-    function openSearch() {
-      document.getElementById("menu").classList.add("hidden");
-      document.getElementById("profile").classList.add("hidden");
-      document.getElementById("search").classList.remove("hidden");
+    // Заглушка для данных — потом заменим на реальное получение с сервера
+    let userData = null;
 
-      document.getElementById("search").innerHTML = `
-        <div>
-          <div class="button" onclick="goBack('search')">⬅ Назад</div>
-          <h2>Поиск партнёров по городу</h2>
+    // Получаем initDataUnsafe, чтобы узнать ID пользователя и имя
+    const initData = tg.initDataUnsafe || {};
+    const user = initData.user || {};
 
-          <input type="text" id="searchCityInput" placeholder="Введите город">
-          <div class="button" onclick="searchByCity()">Поиск</div>
-
-          <div id="searchResults"></div>
-        </div>
-      `;
-    }
-
-    function openProfile() {
-      document.getElementById("menu").classList.add("hidden");
-      document.getElementById("search").classList.add("hidden");
-      document.getElementById("profile").classList.remove("hidden");
-
-      // Запрос данных профиля у бота
-      tg.sendData(JSON.stringify({command: 'get_profile'}));
-
-      // Пока пусто, ждем ответ
-      document.getElementById("profile").innerHTML = `
-        <div>
-          <div class="button" onclick="goBack('profile')">⬅ Назад</div>
-          <h2>Мой профиль</h2>
-          <p>Загрузка данных...</p>
-        </div>
-      `;
-    }
-
-    function searchByCity() {
-      const city = document.getElementById('searchCityInput').value.trim();
-      if (!city) {
-        alert('Пожалуйста, введите город');
-        return;
+    // Функция имитации получения профиля с сервера (потом сделаем API)
+    function fetchUserProfile() {
+      // Временно показываем приветствие с именем из Telegram
+      if(user.first_name) {
+        userData = {
+          fullName: user.first_name + (user.last_name ? ' ' + user.last_name : ''),
+          age: "—",
+          city: "—",
+          sport: "—",
+          level: "—"
+        };
+      } else {
+        userData = {
+          fullName: "Пользователь",
+          age: "—",
+          city: "—",
+          sport: "—",
+          level: "—"
+        };
       }
-
-      document.getElementById('searchResults').innerHTML = '<p>Идёт поиск...</p>';
-
-      tg.sendData(JSON.stringify({command: 'search_partner', city: city}));
+      return Promise.resolve(userData);
     }
 
-    // Получаем данные от бота
-    window.Telegram.WebApp.onEvent('web_app_data', function(data) {
-      try {
-        const resp = JSON.parse(data.data);
+    // Обработчик кнопки "Мой профиль"
+    profileBtn.addEventListener('click', () => {
+      fetchUserProfile().then(data => {
+        content.textContent =
+          👤 Профиль:\n\n +
+          ФИО: ${data.fullName}\n +
+          Возраст: ${data.age}\n +
+          Город: ${data.city}\n +
+          Вид спорта: ${data.sport}\n +
+          Уровень: ${data.level};
+      });
+    });
 
-        if (resp.type === 'search_results') {
-          let users = resp.users;
-          let html = '';
+    // Обработчик кнопки "Поиск партнёра"
+    searchBtn.addEventListener('click', () => {
+      // Сейчас заглушка — потом сделаем запрос на сервер
+      content.textContent = "🔎 Поиск партнёров...\n\n" +
+        "Пока список пуст — будем добавлять эту функцию.";
+    });
 
-          if (!users || users.length === 0) {
-            html = '<p>Партнёров с такими параметрами пока нет.</p>';
-          } else {
-            users.forEach(u => {
-              let chatLink = u.username ? `https://t.me/${u.username}` : `tg://user?id=${u.userId || ''}`;
-
-              html += `<div class="card">
-                          <b>${u.fullName}</b><br>
-                          <span>Город: ${u.city}</span><br>
-                          <span>Вид спорта: ${u.activity}</span><br>
-                          <span>Возраст: ${u.age}</span><br>
-                          <span>Уровень: ${u.level}</span><br>
-                          ${u.username ? `<a href="${chatLink}" target="_blank" class="button">Написать</a>` : '<small>Нет username для связи</small>'}
-                       </div>`;
-            });
-          }
-
-          document.getElementById('searchResults').innerHTML = html;
-
-        } else if (resp.type === 'profile') {
-          const p = resp.profile;
-          let chatLink = p.username ? `https://t.me/${p.username}` : `tg://user?id=${p.userId || ''}`;
-
-          document.getElementById("profile").innerHTML = `
-            <div>
-              <div class="button" onclick="goBack('profile')">⬅ Назад</div>
-              <h2>Мой профиль</h2>
-              <div class="card">
-                <b>${p.fullName}</b><br>
-                <span>Город: ${p.city}</span><br>
-                <span>Вид спорта: ${p.activity}</span><br>
-                <span>Возраст: ${p.age}</span><br>
-                <span>Уровень: ${p.level}</span><br>
-                ${p.username ? `<a href="${chatLink}" target="_blank" class="button">Написать себе</a>` : '<small>Нет username</small>'}
-              </div>
-            </div>
-          `;
-        }
-      } catch(e) {
-        console.error("Ошибка при разборе данных от бота", e);
-      }
+    // Обработчик кнопки "Поддержка"
+    supportBtn.addEventListener('click', () => {
+      content.textContent = "📞 Свяжитесь с нами:\n\n" +
+        "Telegram: @MateoSupport\n" +
+        "Email: support@mateosport.app";
     });
   </script>
 </body>
