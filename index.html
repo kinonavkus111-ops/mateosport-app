@@ -1,129 +1,84 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Mateo</title>
+  <meta charset="UTF-8" />
+  <title>MateoApp</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     body {
-      margin: 0;
-      padding: 20px;
       font-family: Arial, sans-serif;
-      background: #f4f8fb;
-      color: #0a2540;
-    }
-
-    h1 {
+      background: #0088cc;
+      color: white;
+      padding: 20px;
+      margin: 0;
       text-align: center;
-      color: #007aff;
+    }
+    h1 {
       margin-bottom: 30px;
     }
-
     .button {
-      background: #007aff;
-      color: white;
-      padding: 18px;
-      margin: 12px 0;
-      border-radius: 12px;
-      text-align: center;
+      background-color: white;
+      color: #0088cc;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 8px;
       font-size: 18px;
       cursor: pointer;
+      user-select: none;
+      width: 200px;
     }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .back {
-      margin-top: 20px;
-      color: #007aff;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .card {
-      background: white;
+    #profile-info {
+      margin: 20px 0;
+      font-size: 18px;
+      line-height: 1.5;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
       padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 10px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
 
-  <!-- ГЛАВНЫЙ ЭКРАН -->
-  <div id="home" class="screen active">
-    <h1>Mateo</h1>
+  <h1>MateoApp</h1>
 
-    <div class="button" onclick="openSearch()">🔍 Поиск партнёра</div>
-    <div class="button" onclick="openProfile()">👤 Мой профиль</div>
-    <div class="button" onclick="openSupport()">💬 Поддержка</div>
+  <div id="profile-info">
+    <b>Имя:</b> <span id="tg-name">Загрузка...</span><br/>
+    <b>Ник:</b> <span id="tg-username">Загрузка...</span><br/>
+    <b>ID:</b> <span id="tg-id">Загрузка...</span>
   </div>
 
-  <!-- МОЙ ПРОФИЛЬ -->
-  <div id="profile" class="screen">
-    <h1>Мой профиль</h1>
-
-    <div class="card">
-      <p><b>Имя:</b> —</p>
-      <p><b>Возраст:</b> —</p>
-      <p><b>Город:</b> —</p>
-      <p><b>Спорт:</b> —</p>
-    </div>
-
-    <div class="back" onclick="goHome()">← Назад</div>
+  <div class="button" onclick="alert('Здесь будет поиск партнёров')">
+    🔍 Поиск партнёра
   </div>
 
-  <!-- ПОИСК ПАРТНЁРА -->
-  <div id="search" class="screen">
-    <h1>Поиск партнёра</h1>
-
-    <div class="card">Здесь будут анкеты пользователей</div>
-
-    <div class="back" onclick="goHome()">← Назад</div>
+  <div class="button" onclick="alert('Здесь будет мой профиль')">
+    👤 Мой профиль
   </div>
 
-  <!-- ПОДДЕРЖКА -->
-  <div id="support" class="screen">
-    <h1>Поддержка</h1>
-
-    <div class="card">
-      Если есть вопросы — напиши нам 👋
-    </div>
-
-    <div class="back" onclick="goHome()">← Назад</div>
+  <div class="button" onclick="alert('Здесь поддержка')">
+    💬 Поддержка
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-      });
-      document.getElementById(id).classList.add('active');
-    }
+    const user = tg.initDataUnsafe?.user;
 
-    function openProfile() {
-      showScreen('profile');
-    }
-
-    function openSearch() {
-      showScreen('search');
-    }
-
-    function openSupport() {
-      showScreen('support');
-    }
-
-    function goHome() {
-      showScreen('home');
+    if (user) {
+      document.getElementById("tg-name").innerText = user.first_name || "—";
+      document.getElementById("tg-username").innerText = user.username
+        ? "@" + user.username
+        : "—";
+      document.getElementById("tg-id").innerText = user.id;
+    } else {
+      console.log("Пользователь не передан!");
+      document.getElementById("tg-name").innerText = "Данные не получены";
+      document.getElementById("tg-username").innerText = "Данные не получены";
+      document.getElementById("tg-id").innerText = "Данные не получены";
     }
   </script>
 
