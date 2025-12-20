@@ -1,152 +1,131 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>MateoSport</title>
+  <meta charset="UTF-8">
+  <title>Mateo</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4ff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      color: #003366;
-    }
-
-    header {
-      background-color: #005bbb;
-      width: 100%;
-      padding: 15px 0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      text-align: center;
-      font-size: 26px;
-      font-weight: 700;
-      color: white;
-      user-select: none;
-    }
-
-    main {
-      flex: 1;
-      width: 90%;
-      max-width: 400px;
-      margin-top: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    button {
-      background-color: #005bbb;
-      color: white;
-      border: none;
-      padding: 18px 0;
-      font-size: 20px;
-      font-weight: 600;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,91,187,0.4);
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-
-    button:hover {
-      background-color: #004a99;
-    }
-
-    /* Место для вывода информации */
-    #content {
-      margin-top: 30px;
-      font-size: 18px;
-      background: white;
       padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f4f8fb;
+      color: #0a2540;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007aff;
+      margin-bottom: 30px;
+    }
+
+    .button {
+      background: #007aff;
+      color: white;
+      padding: 18px;
+      margin: 12px 0;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      color: #003366;
-      min-height: 120px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      text-align: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .back {
+      margin-top: 20px;
+      color: #007aff;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <header>MateoSport</header>
 
-  <main>
-    <button id="searchBtn">🔍 Поиск партнёра</button>
-    <button id="profileBtn">👤 Мой профиль</button>
-    <button id="supportBtn">🛠 Поддержка</button>
+  <!-- ГЛАВНЫЙ ЭКРАН -->
+  <div id="home" class="screen active">
+    <h1>Mateo</h1>
 
-    <div id="content"></div>
-  </main>
+    <div class="button" onclick="openSearch()">🔍 Поиск партнёра</div>
+    <div class="button" onclick="openProfile()">👤 Мой профиль</div>
+    <div class="button" onclick="openSupport()">💬 Поддержка</div>
+  </div>
+
+  <!-- МОЙ ПРОФИЛЬ -->
+  <div id="profile" class="screen">
+    <h1>Мой профиль</h1>
+
+    <div class="card">
+      <p><b>Имя:</b> —</p>
+      <p><b>Возраст:</b> —</p>
+      <p><b>Город:</b> —</p>
+      <p><b>Спорт:</b> —</p>
+    </div>
+
+    <div class="back" onclick="goHome()">← Назад</div>
+  </div>
+
+  <!-- ПОИСК ПАРТНЁРА -->
+  <div id="search" class="screen">
+    <h1>Поиск партнёра</h1>
+
+    <div class="card">Здесь будут анкеты пользователей</div>
+
+    <div class="back" onclick="goHome()">← Назад</div>
+  </div>
+
+  <!-- ПОДДЕРЖКА -->
+  <div id="support" class="screen">
+    <h1>Поддержка</h1>
+
+    <div class="card">
+      Если есть вопросы — напиши нам 👋
+    </div>
+
+    <div class="back" onclick="goHome()">← Назад</div>
+  </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    const content = document.getElementById('content');
-    const searchBtn = document.getElementById('searchBtn');
-    const profileBtn = document.getElementById('profileBtn');
-    const supportBtn = document.getElementById('supportBtn');
-
-    // Заглушка для данных — потом заменим на реальное получение с сервера
-    let userData = null;
-
-    // Получаем initDataUnsafe, чтобы узнать ID пользователя и имя
-    const initData = tg.initDataUnsafe || {};
-    const user = initData.user || {};
-
-    // Функция имитации получения профиля с сервера (потом сделаем API)
-    function fetchUserProfile() {
-      // Временно показываем приветствие с именем из Telegram
-      if(user.first_name) {
-        userData = {
-          fullName: user.first_name + (user.last_name ? ' ' + user.last_name : ''),
-          age: "—",
-          city: "—",
-          sport: "—",
-          level: "—"
-        };
-      } else {
-        userData = {
-          fullName: "Пользователь",
-          age: "—",
-          city: "—",
-          sport: "—",
-          level: "—"
-        };
-      }
-      return Promise.resolve(userData);
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
     }
 
-    // Обработчик кнопки "Мой профиль"
-    profileBtn.addEventListener('click', () => {
-      fetchUserProfile().then(data => {
-        content.textContent =
-          👤 Профиль:\n\n +
-          ФИО: ${data.fullName}\n +
-          Возраст: ${data.age}\n +
-          Город: ${data.city}\n +
-          Вид спорта: ${data.sport}\n +
-          Уровень: ${data.level};
-      });
-    });
+    function openProfile() {
+      showScreen('profile');
+    }
 
-    // Обработчик кнопки "Поиск партнёра"
-    searchBtn.addEventListener('click', () => {
-      // Сейчас заглушка — потом сделаем запрос на сервер
-      content.textContent = "🔎 Поиск партнёров...\n\n" +
-        "Пока список пуст — будем добавлять эту функцию.";
-    });
+    function openSearch() {
+      showScreen('search');
+    }
 
-    // Обработчик кнопки "Поддержка"
-    supportBtn.addEventListener('click', () => {
-      content.textContent = "📞 Свяжитесь с нами:\n\n" +
-        "Telegram: @MateoSupport\n" +
-        "Email: support@mateosport.app";
-    });
+    function openSupport() {
+      showScreen('support');
+    }
+
+    function goHome() {
+      showScreen('home');
+    }
   </script>
+
 </body>
 </html>

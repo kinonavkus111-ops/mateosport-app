@@ -1,165 +1,108 @@
-print("Бот MateoSport запущен")
+print("БОТ ФАЙЛ ЗАПУСТИЛСЯ")
 
-from telegram import (
-    Update,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
-    WebAppInfo
-)
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    MessageHandler,
-    Filters,
-    ConversationHandler,
-    CallbackContext
-)
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
-# Этапы регистрации
-FULLNAME, AGE, CITY, SPORT, LEVEL, PHOTO = range(6)
+FULLNAME, AGE, CITY, ACTIVITY = range(4)
 
-# Хранилище пользователей
 users = {}
 
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
-        "Привет! 👋 Добро пожаловать в MateoSport!\n\n"
-        "Давай начнём регистрацию.\n"
-        "Напиши своё ФИО:"
+        "Привет! 👋\n"
+        "Давай зарегистрируемся.\n\n"
+        "Напиши, пожалуйста, своё ФИО:"
     )
     return FULLNAME
 
 def fullname(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
-    users[user_id] = {
-        "fullName": update.message.text
-    }
+    users[user_id] = {'fullName': update.message.text}
     update.message.reply_text("Сколько тебе лет?")
     return AGE
 
 def age(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
-    text = update.message.text
-    if not text.isdigit():
-        update.message.reply_text("Пожалуйста, введи возраст числом.")
+
+    if not update.message.text.isdigit():
+        update.message.reply_text("Пожалуйста, введи возраст цифрами 🙂")
         return AGE
-    users[user_id]["age"] = text
-    update.message.reply_text("Из какого ты города?")
+
+    users[user_id]['age'] = update.message.text
+    update.message.reply_text("Теперь введи свой город:")
     return CITY
 
 def city(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
-    users[user_id]["city"] = update.message.text
+    users[user_id]['city'] = update.message.text
 
     keyboard = [
-        ["⚽ Футбол", "🏀 Баскетбол", "🏐 Волейбол"],
-        ["🏒 Хоккей", "🏋️‍♂️ Фитнес", "💃 Танго"]
+        ['Футбол', 'Баскетбол', 'Танго'],
+        ['Волейбол', 'Фитнес', 'Хоккей']
     ]
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        one_time_keyboard=True,
+        resize_keyboard=True
+    )
 
     update.message.reply_text(
         "Выбери вид спорта:",
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard,
-            one_time_keyboard=True,
-            resize_keyboard=True
-        )
+        reply_markup=reply_markup
     )
-    return SPORT
+    return ACTIVITY
 
-def sport(update: Update, context: CallbackContext):
+def activity(update: Update, context: CallbackContext):
     user_id = update.message.from_user.id
-    users[user_id]["sport"] = update.message.text
+    users[user_id]['activity'] = update.message.text
 
-    keyboard = [
-        ["Новичок", "Любитель", "Профессионал"]
-    ]
-
-    update.message.reply_text(
-        "Какой у тебя уровень игры?",
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard,
-            one_time_keyboard=True,
-            resize_keyboard=True
-        )
-    )
-    return LEVEL
-
-def level(update: Update, context: CallbackContext):
-    user_id = update.message.from_user.id
-    users[user_id]["level"] = update.message.text
-
-    update.message.reply_text(
-        "Отправь, пожалуйста, свою фотографию."
-    )
-    return PHOTO
-
-def photo(update: Update, context: CallbackContext):
-    user_id = update.message.from_user.id
-    photo_file = update.message.photo[-1].get_file()
-
-    # Создаём папку user_photos, если её нет
-    import os
-    if not os.path.exists('user_photos'):
-        os.makedirs('user_photos')
-
-    photo_path = f"user_photos/{user_id}.jpg"
-    photo_file.download(photo_path)
-
-    users[user_id]["photo"] = photo_path
-
-    info = users[user_id]
     update.message.reply_text(
         f"✅ Регистрация завершена!\n\n"
-        f"ФИО: {info['fullName']}\n"
-        f"Возраст: {info['age']}\n"
-        f"Город: {info['city']}\n"
-        f"Вид спорта: {info['sport']}\n"
-        f"Уровень: {info['level']}\n\n"
-        "Фото получено и сохранено.\n\n"
-        "Ниже 👇 нажми кнопку, чтобы открыть приложение!"
+        f"👤 Имя: {users[user_id]['fullName']}\n"
+        f"🎂 Возраст: {users[user_id]['age']}\n"
+        f"📍 Город: {users[user_id]['city']}\n"
+        f"🏅 Вид спорта: {users[user_id]['activity']}\n\n"
+        "Теперь ты можешь открыть приложение 👇"
     )
 
-    keyboard = [
-        [
-            KeyboardButton(
-                "🚀 Открыть MateoSport",
-                web_app=WebAppInfo(url="https://kinonavkus111-ops.github.io/mateosport-app/")
+    keyboard = [[
+        KeyboardButton(
+            "🚀 Открыть MateoApp",
+            web_app=WebAppInfo(
+                url="https://kinonavkus111-ops.github.io/mateosport-app/"
             )
-        ]
-    ]
+        )
+    ]]
 
     update.message.reply_text(
-        "Открывай приложение:",
+        "Нажми кнопку ниже:",
         reply_markup=ReplyKeyboardMarkup(
             keyboard,
             resize_keyboard=True
         )
     )
+
+    update.message.reply_text("👇👇👇")
 
     return ConversationHandler.END
 
 def cancel(update: Update, context: CallbackContext):
-    update.message.reply_text("Регистрация отменена.")
+    update.message.reply_text("Регистрация отменена ❌")
     return ConversationHandler.END
 
 def main():
-    updater = Updater(
-        token="8314812294:AAGjcjdPSz7P9XTg_5QHYIV9N2DQ18IK1-c",
-        use_context=True
-    )
+    updater = Updater("8314812294:AAGjcjdPSz7P9XTg_5QHYIV9N2DQ18IK1-c")
     dp = updater.dispatcher
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start)],
+        entry_points=[CommandHandler('start', start)],
         states={
             FULLNAME: [MessageHandler(Filters.text & ~Filters.command, fullname)],
             AGE: [MessageHandler(Filters.text & ~Filters.command, age)],
             CITY: [MessageHandler(Filters.text & ~Filters.command, city)],
-            SPORT: [MessageHandler(Filters.text & ~Filters.command, sport)],
-            LEVEL: [MessageHandler(Filters.text & ~Filters.command, level)],
-            PHOTO: [MessageHandler(Filters.photo, photo)]
+            ACTIVITY: [MessageHandler(Filters.text & ~Filters.command, activity)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)]
+        fallbacks=[CommandHandler('cancel', cancel)]
     )
 
     dp.add_handler(conv_handler)
@@ -167,5 +110,5 @@ def main():
     updater.start_polling()
     updater.idle()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
