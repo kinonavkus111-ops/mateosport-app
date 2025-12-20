@@ -7,80 +7,71 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #0088cc;
-      color: white;
+      background: #e0f0ff;
+      color: #005fa3;
       padding: 20px;
       margin: 0;
       text-align: center;
     }
     h1 {
+      color: #004080;
       margin-bottom: 30px;
     }
     .button {
-      background-color: white;
-      color: #0088cc;
-      padding: 15px;
-      margin: 10px auto;
-      border-radius: 8px;
-      font-size: 18px;
+      background-color: #005fa3;
+      color: white;
+      padding: 15px 30px;
+      margin: 10px;
+      border-radius: 10px;
       cursor: pointer;
-      user-select: none;
-      width: 200px;
-    }
-    #profile-info {
-      margin: 20px 0;
       font-size: 18px;
-      line-height: 1.5;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      display: inline-block;
+      min-width: 180px;
+      user-select: none;
+    }
+    #profile {
+      margin-top: 20px;
+      white-space: pre-line;
+      font-size: 16px;
+      border: 1px solid #005fa3;
+      border-radius: 10px;
       padding: 15px;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
+      background: #cfe7ff;
+      display: none;
     }
   </style>
 </head>
 <body>
-
   <h1>MateoApp</h1>
 
-  <div id="profile-info">
-    <b>Имя:</b> <span id="tg-name">Загрузка...</span><br/>
-    <b>Ник:</b> <span id="tg-username">Загрузка...</span><br/>
-    <b>ID:</b> <span id="tg-id">Загрузка...</span>
-  </div>
+  <div class="button" onclick="sendData('search_partner')">🔍 Поиск партнёра</div>
+  <div class="button" onclick="getProfile()">👤 Мой профиль</div>
+  <div class="button" onclick="alert('Поддержка: @support_username')">💬 Поддержка</div>
 
-  <div class="button" onclick="alert('Здесь будет поиск партнёров')">
-    🔍 Поиск партнёра
-  </div>
-
-  <div class="button" onclick="alert('Здесь будет мой профиль')">
-    👤 Мой профиль
-  </div>
-
-  <div class="button" onclick="alert('Здесь поддержка')">
-    💬 Поддержка
-  </div>
+  <pre id="profile"></pre>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    const user = tg.initDataUnsafe?.user;
-
-    if (user) {
-      document.getElementById("tg-name").innerText = user.first_name || "—";
-      document.getElementById("tg-username").innerText = user.username
-        ? "@" + user.username
-        : "—";
-      document.getElementById("tg-id").innerText = user.id;
-    } else {
-      console.log("Пользователь не передан!");
-      document.getElementById("tg-name").innerText = "Данные не получены";
-      document.getElementById("tg-username").innerText = "Данные не получены";
-      document.getElementById("tg-id").innerText = "Данные не получены";
+    function sendData(data) {
+      tg.sendData(data);
     }
-  </script>
 
+    function getProfile() {
+      // Отправляем данные боту с запросом на профиль
+      tg.sendData('get_profile');
+    }
+
+    // Получаем данные из бота (в ответ на sendData)
+    tg.onEvent('web_app_data', function(event) {
+      const data = event.data;
+      if (data.startsWith("ФИО")) { // простая проверка, что это профиль
+        const profile = document.getElementById('profile');
+        profile.textContent = data;
+        profile.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
