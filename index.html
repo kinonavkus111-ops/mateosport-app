@@ -2,97 +2,55 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>MateoSport</title>
-
+  <title>MateoApp</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     body {
+      font-family: Arial;
+      background: #f2f6ff;
       margin: 0;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
     }
-
     h1 {
       text-align: center;
-      color: #0a66c2;
-      margin-bottom: 30px;
+      color: #0057ff;
     }
-
-    .menu-button {
-      background: #0a66c2;
-      color: white;
-      padding: 18px;
-      border-radius: 14px;
-      font-size: 18px;
-      text-align: center;
-      margin-bottom: 15px;
-      cursor: pointer;
-    }
-
     .card {
       background: white;
-      border-radius: 14px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 15px;
       margin-top: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-      display: none;
-    }
-
-    .field {
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .label {
-      color: #777;
-      font-size: 14px;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
-  <h1>MateoSport</h1>
+<h1>Mateo</h1>
 
-  <div class="menu-button" onclick="showProfile()">👤 Мой профиль</div>
-  <div class="menu-button" onclick="showPartners()">🔍 Поиск партнёра</div>
-  <div class="menu-button" onclick="support()">💬 Поддержка</div>
-
-  <div class="card" id="profileCard">
-    <div class="field"><span class="label">ФИО:</span> <span id="fullName">—</span></div>
-    <div class="field"><span class="label">Возраст:</span> <span id="age">—</span></div>
-    <div class="field"><span class="label">Город:</span> <span id="city">—</span></div>
-    <div class="field"><span class="label">Вид спорта:</span> <span id="sport">—</span></div>
-    <div class="field"><span class="label">Уровень:</span> <span id="level">—</span></div>
-  </div>
+<div class="card" id="profile">Загрузка...</div>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.ready();
 
-  // Получаем данные, которые бот передал при открытии приложения
-  const userData = tg.initDataUnsafe?.user_data;
+  const userId = tg.initDataUnsafe.user.id;
 
-  function showProfile() {
-    document.getElementById("profileCard").style.display = "block";
-
-    if (userData) {
-      document.getElementById("fullName").innerText = userData.fullName;
-      document.getElementById("age").innerText = userData.age;
-      document.getElementById("city").innerText = userData.city;
-      document.getElementById("sport").innerText = userData.activity;
-      document.getElementById("level").innerText = userData.level;
-    }
-  }
-
-  function showPartners() {
-    alert("Следующий этап 😉");
-  }
-
-  function support() {
-    alert("Поддержка появится позже");
-  }
+  fetch("http://localhost:5000/get_user/" + userId)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById("profile").innerHTML = `
+        <b>Имя:</b> ${data.fullName}<br>
+        <b>Возраст:</b> ${data.age}<br>
+        <b>Город:</b> ${data.city}<br>
+        <b>Спорт:</b> ${data.sport}<br>
+        <b>Уровень:</b> ${data.level}
+      `;
+    })
+    .catch(() => {
+      document.getElementById("profile").innerText = "Нет данных";
+    });
 </script>
 
 </body>
