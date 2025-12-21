@@ -2,76 +2,119 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>MateoApp</title>
+  <title>Mateo</title>
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #e0f0ff;
-      color: #005fa3;
-      padding: 20px;
       margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8ff;
+      color: #0a2a66;
+    }
+
+    header {
+      background: #0a5cff;
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .button {
+      background: #0a5cff;
+      color: white;
+      padding: 18px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      background: #e8f0ff;
+      color: #0a5cff;
+      border: 2px solid #0a5cff;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-top: 20px;
+      display: none;
+    }
+
+    .card h2 {
+      margin-top: 0;
       text-align: center;
     }
-    h1 {
-      color: #004080;
-      margin-bottom: 30px;
-    }
-    .button {
-      background-color: #005fa3;
-      color: white;
-      padding: 15px 30px;
-      margin: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      display: inline-block;
-      min-width: 180px;
-      user-select: none;
-    }
-    #profile {
-      margin-top: 20px;
-      white-space: pre-line;
+
+    .row {
+      margin-bottom: 10px;
       font-size: 16px;
-      border: 1px solid #005fa3;
-      border-radius: 10px;
-      padding: 15px;
-      background: #cfe7ff;
-      display: none;
+    }
+
+    .label {
+      font-weight: bold;
     }
   </style>
 </head>
+
 <body>
-  <h1>MateoApp</h1>
 
-  <div class="button" onclick="sendData('search_partner')">🔍 Поиск партнёра</div>
-  <div class="button" onclick="getProfile()">👤 Мой профиль</div>
-  <div class="button" onclick="alert('Поддержка: @support_username')">💬 Поддержка</div>
+  <header>Mateo</header>
 
-  <pre id="profile"></pre>
+  <div class="container">
+
+    <div class="button" onclick="showSearch()">🔍 Поиск партнёра</div>
+    <div class="button" onclick="showProfile()">👤 Мой профиль</div>
+    <div class="button secondary" onclick="showSupport()">💬 Поддержка</div>
+
+    <div class="card" id="profileCard">
+      <h2>Моя анкета</h2>
+
+      <div class="row"><span class="label">ФИО:</span> <span id="fullName">—</span></div>
+      <div class="row"><span class="label">Возраст:</span> <span id="age">—</span></div>
+      <div class="row"><span class="label">Город:</span> <span id="city">—</span></div>
+      <div class="row"><span class="label">Вид спорта:</span> <span id="sport">—</span></div>
+      <div class="row"><span class="label">Уровень:</span> <span id="level">—</span></div>
+    </div>
+
+  </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    function sendData(data) {
-      tg.sendData(data);
+    function showProfile() {
+      document.getElementById("profileCard").style.display = "block";
+
+      // 🔧 ВРЕМЕННЫЕ ДАННЫЕ (ЗАГЛУШКА)
+      // На следующем этапе подключим реальные данные из бота
+      document.getElementById("fullName").innerText = "Иван Иванов";
+      document.getElementById("age").innerText = "22";
+      document.getElementById("city").innerText = "Казань";
+      document.getElementById("sport").innerText = "Футбол";
+      document.getElementById("level").innerText = "Любитель";
     }
 
-    function getProfile() {
-      // Отправляем данные боту с запросом на профиль
-      tg.sendData('get_profile');
+    function showSearch() {
+      alert("Скоро здесь будет поиск партнёров 👥");
     }
 
-    // Получаем данные из бота (в ответ на sendData)
-    tg.onEvent('web_app_data', function(event) {
-      const data = event.data;
-      if (data.startsWith("ФИО")) { // простая проверка, что это профиль
-        const profile = document.getElementById('profile');
-        profile.textContent = data;
-        profile.style.display = 'block';
-      }
-    });
+    function showSupport() {
+      alert("Поддержка: @mateo_support");
+    }
   </script>
+
 </body>
 </html>
