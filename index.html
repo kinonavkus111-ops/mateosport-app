@@ -1,63 +1,115 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>MateoSport</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f8ff;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #005bff;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-top: 20px;
-    }
-    .row {
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    .label {
-      color: #777;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mateo Sport</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  body {
+    margin: 0; padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f9ff;
+    color: #003366;
+  }
+  h1 {
+    text-align: center;
+    color: #0066cc;
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+  .button {
+    background-color: #0066cc;
+    color: white;
+    padding: 16px;
+    margin: 10px auto;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 600;
+    width: 90%;
+    max-width: 350px;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .button:hover {
+    background-color: #004a99;
+  }
+  #profile, #search, #support {
+    display: none;
+  }
+  .info-label {
+    font-weight: 600;
+  }
+  .info-value {
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  .back-button {
+    margin-top: 20px;
+    background-color: #004a99;
+  }
+</style>
 </head>
-
 <body>
-  <h1>Мой профиль</h1>
 
-  <div class="card" id="profile">
-    Загрузка профиля...
-  </div>
+<h1>Mateo Sport</h1>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+<!-- Главное меню -->
+<div id="main-menu">
+  <div class="button" onclick="showSection('search')">🔍 Поиск партнёра</div>
+  <div class="button" onclick="showSection('profile')">👤 Мой профиль</div>
+  <div class="button" onclick="showSection('support')">🆘 Поддержка</div>
+</div>
 
-    if (!tg.initDataUnsafe || !tg.initDataUnsafe.start_param) {
-      document.getElementById("profile").innerText =
-        "Открой приложение через кнопку в боте";
-    } else {
-      const data = JSON.parse(tg.initDataUnsafe.start_param);
+<!-- Профиль -->
+<div id="profile">
+  <h2>Мой профиль</h2>
+  <div><span class="info-label">Имя:</span> <span class="info-value" id="profile-name">Загрузка...</span></div>
+  <div><span class="info-label">Username:</span> <span class="info-value" id="profile-username">Загрузка...</span></div>
+  <div><span class="info-label">ID Telegram:</span> <span class="info-value" id="profile-id">Загрузка...</span></div>
+  <!-- Тут можно добавить другие поля из бота, когда сделаем передачу -->
+  <div class="button back-button" onclick="showSection('main-menu')">⬅ Назад</div>
+</div>
 
-      document.getElementById("profile").innerHTML = `
-        <div class="row"><span class="label">ФИО:</span> ${data.fullName}</div>
-        <div class="row"><span class="label">Возраст:</span> ${data.age}</div>
-        <div class="row"><span class="label">Город:</span> ${data.city}</div>
-        <div class="row"><span class="label">Вид спорта:</span> ${data.sport}</div>
-        <div class="row"><span class="label">Уровень:</span> ${data.level}</div>
-      `;
-    }
-  </script>
+<!-- Поиск (пока заглушка) -->
+<div id="search">
+  <h2>Поиск партнёра</h2>
+  <p>Здесь будет поиск по городу и виду спорта.</p>
+  <div class="button back-button" onclick="showSection('main-menu')">⬅ Назад</div>
+</div>
+
+<!-- Поддержка (заглушка) -->
+<div id="support">
+  <h2>Поддержка</h2>
+  <p>Свяжитесь с нами: support@mateosport.app</p>
+  <div class="button back-button" onclick="showSection('main-menu')">⬅ Назад</div>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+
+  function showSection(id) {
+    ['main-menu', 'profile', 'search', 'support'].forEach(section => {
+      document.getElementById(section).style.display = (section === id) ? 'block' : 'none';
+    });
+  }
+
+  // Показываем главное меню при загрузке
+  showSection('main-menu');
+
+  // Заполняем профиль из данных Telegram (пока что только стандартные)
+  function fillProfile() {
+    const user = tg.initDataUnsafe.user || {};
+    document.getElementById('profile-name').textContent = user.first_name || 'Неизвестно';
+    document.getElementById('profile-username').textContent = user.username ? '@' + user.username : 'Нет username';
+    document.getElementById('profile-id').textContent = user.id || 'Нет данных';
+  }
+
+  fillProfile();
+</script>
+
 </body>
 </html>
