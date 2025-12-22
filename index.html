@@ -2,106 +2,62 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Mateo</title>
-
+  <title>MateoSport</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     body {
-      margin: 0;
-      padding: 0;
       font-family: Arial, sans-serif;
       background: #f4f8ff;
-      color: #1c1c1c;
-    }
-
-    header {
-      background: #0a66ff;
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .container {
+      margin: 0;
       padding: 20px;
     }
-
-    .button {
-      background: #0a66ff;
-      color: white;
-      padding: 16px;
-      margin-bottom: 12px;
-      border-radius: 10px;
+    h1 {
       text-align: center;
-      font-size: 18px;
-      cursor: pointer;
+      color: #005bff;
     }
-
-    .profile-card {
+    .card {
       background: white;
-      border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      display: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
-
-    .profile-row {
-      margin-bottom: 12px;
+    .row {
+      margin-bottom: 10px;
       font-size: 16px;
     }
-
     .label {
-      font-weight: bold;
-      color: #555;
+      color: #777;
     }
   </style>
 </head>
 
 <body>
+  <h1>Мой профиль</h1>
 
-  <header>Mateo</header>
-
-  <div class="container">
-
-    <div class="button" onclick="showProfile()">👤 Мой профиль</div>
-    <div class="button">🔍 Поиск партнёра</div>
-    <div class="button">🆘 Поддержка</div>
-
-    <div class="profile-card" id="profile">
-      <div class="profile-row"><span class="label">ФИО:</span> <span id="fullname">—</span></div>
-      <div class="profile-row"><span class="label">Возраст:</span> <span id="age">—</span></div>
-      <div class="profile-row"><span class="label">Город:</span> <span id="city">—</span></div>
-      <div class="profile-row"><span class="label">Вид спорта:</span> <span id="sport">—</span></div>
-      <div class="profile-row"><span class="label">Уровень:</span> <span id="level">—</span></div>
-    </div>
-
+  <div class="card" id="profile">
+    Загрузка профиля...
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    function showProfile() {
-      const user = tg.initDataUnsafe?.user;
+    if (!tg.initDataUnsafe || !tg.initDataUnsafe.start_param) {
+      document.getElementById("profile").innerText =
+        "Открой приложение через кнопку в боте";
+    } else {
+      const data = JSON.parse(tg.initDataUnsafe.start_param);
 
-      if (!user) {
-        alert("Данные пользователя не получены");
-        return;
-      }
-
-      // ⚠️ ВРЕМЕННО
-      // Пока сервер не подключён, показываем заглушку
-      document.getElementById("fullname").innerText = "Данные из бота";
-      document.getElementById("age").innerText = "—";
-      document.getElementById("city").innerText = "—";
-      document.getElementById("sport").innerText = "—";
-      document.getElementById("level").innerText = "—";
-
-      document.getElementById("profile").style.display = "block";
+      document.getElementById("profile").innerHTML = `
+        <div class="row"><span class="label">ФИО:</span> ${data.fullName}</div>
+        <div class="row"><span class="label">Возраст:</span> ${data.age}</div>
+        <div class="row"><span class="label">Город:</span> ${data.city}</div>
+        <div class="row"><span class="label">Вид спорта:</span> ${data.sport}</div>
+        <div class="row"><span class="label">Уровень:</span> ${data.level}</div>
+      `;
     }
   </script>
-
 </body>
 </html>
