@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>MateoSport</title>
-
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -26,9 +25,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    .container {
-      padding: 16px;
-    }
+    .container { padding: 16px; }
 
     .card {
       background: #0077ff;
@@ -38,8 +35,6 @@
       margin-bottom: 12px;
       font-size: 16px;
       font-weight: 600;
-      display: flex;
-      justify-content: space-between;
       cursor: pointer;
     }
 
@@ -52,7 +47,6 @@
       cursor: pointer;
     }
 
-    /* Карточка анкеты */
     .profile-card {
       background: white;
       border-radius: 16px;
@@ -61,10 +55,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
-    .profile-row {
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
+    .profile-row { margin-bottom: 6px; }
 
     .write-btn {
       margin-top: 10px;
@@ -77,6 +68,22 @@
       font-size: 15px;
       cursor: pointer;
     }
+
+    select, button.filter-btn {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button.filter-btn {
+      background: #0077ff;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -86,16 +93,45 @@
 <!-- ГЛАВНЫЙ ЭКРАН -->
 <div class="container" id="home">
   <div class="card" onclick="openPartners()">Найти партнёра 🔍</div>
-  <div class="card" onclick="alert('Позже')">Найти тренера 🧑‍🏫</div>
-  <div class="card" onclick="alert('Позже')">Мой профиль 👤</div>
-  <div class="card" onclick="alert('Позже')">Настройки ⚙️</div>
+  <div class="card" onclick="alert('Экран тренеров — позже')">Найти тренера 🧑‍🏫</div>
+  <div class="card" onclick="openProfile()">Мой профиль 👤</div>
+  <div class="card" onclick="alert('Настройки — позже')">Настройки ⚙️</div>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div class="container hidden" id="profile">
+  <div class="back" onclick="goHome()">← Назад</div>
+
+  <div class="profile-card">
+    <div class="profile-row"><b>Иван Иванов</b></div>
+    <div class="profile-row">🎂 22 года</div>
+    <div class="profile-row">📍 Казань</div>
+    <div class="profile-row">⚽ Футбол</div>
+    <div class="profile-row">⭐ Любитель</div>
+  </div>
 </div>
 
 <!-- ПОИСК ПАРТНЁРОВ -->
 <div class="container hidden" id="partners">
   <div class="back" onclick="goHome()">← Назад</div>
 
-  <div class="profile-card">
+  <!-- ФИЛЬТР -->
+  <select id="cityFilter">
+    <option value="">Город</option>
+    <option value="Казань">Казань</option>
+    <option value="Москва">Москва</option>
+  </select>
+
+  <select id="sportFilter">
+    <option value="">Вид спорта</option>
+    <option value="Футбол">Футбол</option>
+    <option value="Баскетбол">Баскетбол</option>
+  </select>
+
+  <button class="filter-btn" onclick="applyFilter()">Показать</button>
+
+  <!-- КАРТОЧКИ -->
+  <div class="profile-card" data-city="Казань" data-sport="Футбол">
     <div class="profile-row"><b>Иван, 22</b></div>
     <div class="profile-row">📍 Казань</div>
     <div class="profile-row">⚽ Футбол</div>
@@ -103,7 +139,7 @@
     <button class="write-btn">Написать</button>
   </div>
 
-  <div class="profile-card">
+  <div class="profile-card" data-city="Москва" data-sport="Баскетбол">
     <div class="profile-row"><b>Алексей, 27</b></div>
     <div class="profile-row">📍 Москва</div>
     <div class="profile-row">🏀 Баскетбол</div>
@@ -117,16 +153,33 @@
   const tg = window.Telegram.WebApp;
   tg.ready();
 
+  function goHome() {
+    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
+    document.getElementById("home").classList.remove("hidden");
+    document.getElementById("title").innerText = "MateoSport";
+  }
+
   function openPartners() {
-    document.getElementById("home").classList.add("hidden");
+    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
     document.getElementById("partners").classList.remove("hidden");
     document.getElementById("title").innerText = "Найти партнёра";
   }
 
-  function goHome() {
-    document.getElementById("partners").classList.add("hidden");
-    document.getElementById("home").classList.remove("hidden");
-    document.getElementById("title").innerText = "MateoSport";
+  function openProfile() {
+    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
+    document.getElementById("profile").classList.remove("hidden");
+    document.getElementById("title").innerText = "Мой профиль";
+  }
+
+  function applyFilter() {
+    const city = document.getElementById("cityFilter").value;
+    const sport = document.getElementById("sportFilter").value;
+
+    document.querySelectorAll(".profile-card").forEach(card => {
+      const matchCity = !city || card.dataset.city === city;
+      const matchSport = !sport || card.dataset.sport === sport;
+      card.style.display = matchCity && matchSport ? "block" : "none";
+    });
   }
 </script>
 
