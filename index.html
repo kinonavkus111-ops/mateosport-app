@@ -1,99 +1,140 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>MateoSport</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MateoSport</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f8fb;
-      color: #0a2540;
-    }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    header {
-      background: #ffffff;
-      padding: 18px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #0077ff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+  }
 
-    .container { padding: 16px; }
+  .header {
+    background: #007bff;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    font-size: 22px;
+    font-weight: bold;
+  }
 
-    .card {
-      background: #0077ff;
-      color: white;
-      padding: 14px 16px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+  .container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 16px;
+  }
 
-    .hidden { display: none; }
+  .hidden {
+    display: none;
+  }
 
-    .back {
-      color: #0077ff;
-      font-weight: bold;
-      margin-bottom: 16px;
-      cursor: pointer;
-    }
+  .card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
 
-    .profile-card {
-      background: white;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
+  .main-btn {
+    background: #007bff;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .main-btn:hover {
+    background-color: #0056b3;
+  }
 
-    .row { margin-bottom: 6px; }
+  .back {
+    color: #007bff;
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
 
-    select, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+  select, button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
 
-    button {
-      background: #0077ff;
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+  }
+
+  .profile-line {
+    margin-bottom: 6px;
+  }
+
+  /* Центрируем содержимое */
+  .centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+</style>
 </head>
 
 <body>
 
-<header id="title">MateoSport</header>
+<div class="header" id="title">MateoSport</div>
 
-<!-- ГЛАВНАЯ -->
-<div class="container" id="home">
-  <div class="card" onclick="openPartners()">Найти партнёра 🔍</div>
-  <div class="card" onclick="openTrainers()">Найти тренера 🧑‍🏫</div>
-  <div class="card" onclick="openProfile()">Мой профиль 👤</div>
-  <div class="card">Настройки ⚙️</div>
+<!-- ГЛАВНОЕ МЕНЮ -->
+<div class="container centered" id="home">
+  <div class="main-btn" onclick="openPartners()">Найти партнёра</div>
+  <div class="main-btn" onclick="openTrainers()">Найти тренера</div>
+  <div class="main-btn" onclick="openProfile()">Мой профиль</div>
+  <div class="main-btn" onclick="openSupport()">Поддержка</div>
 </div>
 
-<!-- ПРОФИЛЬ -->
-<div class="container hidden" id="profile">
+<!-- ПАРТНЁРЫ -->
+<div class="container hidden" id="partners">
   <div class="back" onclick="goHome()">← Назад</div>
-  <div class="profile-card">
-    <div class="row"><b>Иван Иванов</b></div>
-    <div class="row">22 года</div>
-    <div class="row">Казань</div>
-    <div class="row">Футбол · Любитель</div>
+
+  <select id="partnerCity">
+    <option value="">Город</option>
+    <option value="Казань">Казань</option>
+    <option value="Москва">Москва</option>
+  </select>
+
+  <select id="partnerSport">
+    <option value="">Вид спорта</option>
+    <option value="Футбол">Футбол</option>
+    <option value="Баскетбол">Баскетбол</option>
+  </select>
+
+  <button onclick="filterPartners()">Показать</button>
+
+  <div class="card" data-city="Казань" data-sport="Футбол">
+    <div class="profile-line"><b>Алексей</b></div>
+    <div class="profile-line">22 года · Любитель</div>
+    <div class="profile-line">📍 Казань</div>
+    <div class="profile-line">⚽ Футбол</div>
+  </div>
+
+  <div class="card" data-city="Москва" data-sport="Баскетбол">
+    <div class="profile-line"><b>Дмитрий</b></div>
+    <div class="profile-line">26 лет · Новичок</div>
+    <div class="profile-line">📍 Москва</div>
+    <div class="profile-line">🏀 Баскетбол</div>
   </div>
 </div>
 
@@ -101,74 +142,97 @@
 <div class="container hidden" id="trainers">
   <div class="back" onclick="goHome()">← Назад</div>
 
-  <select id="trainerCity">
-    <option value="">Город</option>
-    <option value="Казань">Казань</option>
-    <option value="Москва">Москва</option>
-  </select>
-
-  <select id="trainerSport">
-    <option value="">Вид спорта</option>
-    <option value="Футбол">Футбол</option>
-    <option value="Баскетбол">Баскетбол</option>
-  </select>
-
-  <button onclick="filterTrainers()">Показать</button>
-
-  <div class="profile-card" data-city="Казань" data-sport="Футбол">
-    <div class="row"><b>Сергей Петров</b></div>
-    <div class="row">🏆 Тренер по футболу</div>
-    <div class="row">📍 Казань</div>
-    <div class="row">Опыт: 8 лет</div>
-    <button>Написать</button>
+  <div class="card">
+    <div class="profile-line"><b>Сергей</b></div>
+    <div class="profile-line">Тренер по футболу</div>
+    <div class="profile-line">Опыт 8 лет</div>
+    <div class="profile-line">📍 Казань</div>
   </div>
+</div>
 
-  <div class="profile-card" data-city="Москва" data-sport="Баскетбол">
-    <div class="row"><b>Андрей Смирнов</b></div>
-    <div class="row">🏆 Тренер по баскетболу</div>
-    <div class="row">📍 Москва</div>
-    <div class="row">Опыт: 12 лет</div>
-    <button>Написать</button>
+<!-- МОЙ ПРОФИЛЬ -->
+<div class="container hidden" id="profile">
+  <div class="back" onclick="goHome()">← Назад</div>
+
+  <div class="card">
+    <div class="profile-line"><b>Иван Иванов</b></div>
+    <div class="profile-line">22 года</div>
+    <div class="profile-line">📍 Казань</div>
+    <div class="profile-line">⚽ Футбол</div>
+    <div class="profile-line">Уровень: Любитель</div>
+  </div>
+</div>
+
+<!-- ПОДДЕРЖКА -->
+<div class="container hidden" id="support">
+  <div class="back" onclick="goHome()">← Назад</div>
+
+  <div class="card">
+    <p>Если нужна помощь, напишите нам в Telegram: <a href="https://t.me/your_support_username" target="_blank">@your_support_username</a></p>
+    <p>Или напишите сюда: support@example.com</p>
   </div>
 </div>
 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
+const tg = window.Telegram.WebApp;
+tg.ready();
 
-  function goHome() {
-    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
-    home.classList.remove("hidden");
-    title.innerText = "MateoSport";
-  }
+const home = document.getElementById("home");
+const partners = document.getElementById("partners");
+const trainers = document.getElementById("trainers");
+const profile = document.getElementById("profile");
+const support = document.getElementById("support");
+const title = document.getElementById("title");
 
-  function openProfile() {
-    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
-    profile.classList.remove("hidden");
-    title.innerText = "Мой профиль";
-  }
+function hideAll() {
+  home.classList.add("hidden");
+  partners.classList.add("hidden");
+  trainers.classList.add("hidden");
+  profile.classList.add("hidden");
+  support.classList.add("hidden");
+}
 
-  function openPartners() {
-    alert("Партнёры уже готовы 👍");
-  }
+function goHome() {
+  hideAll();
+  home.classList.remove("hidden");
+  title.innerText = "MateoSport";
+}
 
-  function openTrainers() {
-    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
-    trainers.classList.remove("hidden");
-    title.innerText = "Найти тренера";
-  }
+function openPartners() {
+  hideAll();
+  partners.classList.remove("hidden");
+  title.innerText = "Найти партнёра";
+}
 
-  function filterTrainers() {
-    const city = trainerCity.value;
-    const sport = trainerSport.value;
+function openTrainers() {
+  hideAll();
+  trainers.classList.remove("hidden");
+  title.innerText = "Тренеры";
+}
 
-    document.querySelectorAll("#trainers .profile-card").forEach(card => {
-      const okCity = !city || card.dataset.city === city;
-      const okSport = !sport || card.dataset.sport === sport;
-      card.style.display = okCity && okSport ? "block" : "none";
-    });
-  }
+function openProfile() {
+  hideAll();
+  profile.classList.remove("hidden");
+  title.innerText = "Мой профиль";
+}
+
+function openSupport() {
+  hideAll();
+  support.classList.remove("hidden");
+  title.innerText = "Поддержка";
+}
+
+function filterPartners() {
+  const city = partnerCity.value;
+  const sport = partnerSport.value;
+
+  document.querySelectorAll("#partners .card").forEach(card => {
+    const okCity = !city || card.dataset.city === city;
+    const okSport = !sport || card.dataset.sport === sport;
+    card.style.display = okCity && okSport ? "block" : "none";
+  });
+}
 </script>
 
-</body
-</html
+</body>
+</html>
