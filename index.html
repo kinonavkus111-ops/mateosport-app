@@ -7,9 +7,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -41,44 +39,43 @@
       font-size: 16px;
       font-weight: 600;
       display: flex;
-      align-items: center;
       justify-content: space-between;
       cursor: pointer;
     }
 
-    .card span {
-      font-size: 22px;
-    }
+    .hidden { display: none; }
 
-    .hidden {
-      display: none;
-    }
-
-    /* Профиль */
-    .profile-card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .profile-row {
-      margin-bottom: 12px;
-      font-size: 16px;
-    }
-
-    .back-button {
-      margin-bottom: 16px;
+    .back {
       color: #0077ff;
       font-weight: bold;
+      margin-bottom: 16px;
       cursor: pointer;
     }
 
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #999;
-      padding: 12px 0;
+    /* Карточка анкеты */
+    .profile-card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .profile-row {
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .write-btn {
+      margin-top: 10px;
+      background: #0077ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      font-size: 15px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -87,68 +84,48 @@
 <header id="title">MateoSport</header>
 
 <!-- ГЛАВНЫЙ ЭКРАН -->
-<div class="container" id="homeScreen">
-
-  <div class="card" onclick="openPartnerSearch()">
-    Найти партнёра <span>🔍</span>
-  </div>
-
-  <div class="card" onclick="openTrainerSearch()">
-    Найти тренера <span>🧑‍🏫</span>
-  </div>
-
-  <div class="card" onclick="openProfile()">
-    Мой профиль <span>👤</span>
-  </div>
-
-  <div class="card" onclick="openSettings()">
-    Настройки <span>⚙️</span>
-  </div>
-
+<div class="container" id="home">
+  <div class="card" onclick="openPartners()">Найти партнёра 🔍</div>
+  <div class="card" onclick="alert('Позже')">Найти тренера 🧑‍🏫</div>
+  <div class="card" onclick="alert('Позже')">Мой профиль 👤</div>
+  <div class="card" onclick="alert('Позже')">Настройки ⚙️</div>
 </div>
 
-<!-- ЭКРАН ПРОФИЛЯ -->
-<div class="container hidden" id="profileScreen">
-
-  <div class="back-button" onclick="goHome()">← Назад</div>
+<!-- ПОИСК ПАРТНЁРОВ -->
+<div class="container hidden" id="partners">
+  <div class="back" onclick="goHome()">← Назад</div>
 
   <div class="profile-card">
-    <div class="profile-row"><b>👤 ФИО:</b> Иван Иванов</div>
-    <div class="profile-row"><b>🎂 Возраст:</b> 22 года</div>
-    <div class="profile-row"><b>📍 Город:</b> Казань</div>
-    <div class="profile-row"><b>⚽ Вид спорта:</b> Футбол</div>
-    <div class="profile-row"><b>⭐ Уровень:</b> Любитель</div>
+    <div class="profile-row"><b>Иван, 22</b></div>
+    <div class="profile-row">📍 Казань</div>
+    <div class="profile-row">⚽ Футбол</div>
+    <div class="profile-row">⭐ Любитель</div>
+    <button class="write-btn">Написать</button>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-row"><b>Алексей, 27</b></div>
+    <div class="profile-row">📍 Москва</div>
+    <div class="profile-row">🏀 Баскетбол</div>
+    <div class="profile-row">⭐ Профессионал</div>
+    <button class="write-btn">Написать</button>
   </div>
 
 </div>
-
-<footer>MateoSport © 2025</footer>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.ready();
 
-  function openPartnerSearch() {
-    alert("Экран поиска партнёров — следующий этап");
-  }
-
-  function openTrainerSearch() {
-    alert("Экран поиска тренеров — следующий этап");
-  }
-
-  function openSettings() {
-    alert("Настройки — следующий этап");
-  }
-
-  function openProfile() {
-    document.getElementById("homeScreen").classList.add("hidden");
-    document.getElementById("profileScreen").classList.remove("hidden");
-    document.getElementById("title").innerText = "Мой профиль";
+  function openPartners() {
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("partners").classList.remove("hidden");
+    document.getElementById("title").innerText = "Найти партнёра";
   }
 
   function goHome() {
-    document.getElementById("profileScreen").classList.add("hidden");
-    document.getElementById("homeScreen").classList.remove("hidden");
+    document.getElementById("partners").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
     document.getElementById("title").innerText = "MateoSport";
   }
 </script>
