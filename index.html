@@ -6,8 +6,6 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -55,21 +53,9 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
-    .profile-row { margin-bottom: 6px; }
+    .row { margin-bottom: 6px; }
 
-    .write-btn {
-      margin-top: 10px;
-      background: #0077ff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 10px;
-      width: 100%;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    select, button.filter-btn {
+    select, button {
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
@@ -78,75 +64,72 @@
       font-size: 14px;
     }
 
-    button.filter-btn {
+    button {
       background: #0077ff;
       color: white;
       border: none;
       font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
 <header id="title">MateoSport</header>
 
-<!-- ГЛАВНЫЙ ЭКРАН -->
+<!-- ГЛАВНАЯ -->
 <div class="container" id="home">
   <div class="card" onclick="openPartners()">Найти партнёра 🔍</div>
-  <div class="card" onclick="alert('Экран тренеров — позже')">Найти тренера 🧑‍🏫</div>
+  <div class="card" onclick="openTrainers()">Найти тренера 🧑‍🏫</div>
   <div class="card" onclick="openProfile()">Мой профиль 👤</div>
-  <div class="card" onclick="alert('Настройки — позже')">Настройки ⚙️</div>
+  <div class="card">Настройки ⚙️</div>
 </div>
 
 <!-- ПРОФИЛЬ -->
 <div class="container hidden" id="profile">
   <div class="back" onclick="goHome()">← Назад</div>
-
   <div class="profile-card">
-    <div class="profile-row"><b>Иван Иванов</b></div>
-    <div class="profile-row">🎂 22 года</div>
-    <div class="profile-row">📍 Казань</div>
-    <div class="profile-row">⚽ Футбол</div>
-    <div class="profile-row">⭐ Любитель</div>
+    <div class="row"><b>Иван Иванов</b></div>
+    <div class="row">22 года</div>
+    <div class="row">Казань</div>
+    <div class="row">Футбол · Любитель</div>
   </div>
 </div>
 
-<!-- ПОИСК ПАРТНЁРОВ -->
-<div class="container hidden" id="partners">
+<!-- ТРЕНЕРЫ -->
+<div class="container hidden" id="trainers">
   <div class="back" onclick="goHome()">← Назад</div>
 
-  <!-- ФИЛЬТР -->
-  <select id="cityFilter">
+  <select id="trainerCity">
     <option value="">Город</option>
     <option value="Казань">Казань</option>
     <option value="Москва">Москва</option>
   </select>
 
-  <select id="sportFilter">
+  <select id="trainerSport">
     <option value="">Вид спорта</option>
     <option value="Футбол">Футбол</option>
     <option value="Баскетбол">Баскетбол</option>
   </select>
 
-  <button class="filter-btn" onclick="applyFilter()">Показать</button>
+  <button onclick="filterTrainers()">Показать</button>
 
-  <!-- КАРТОЧКИ -->
   <div class="profile-card" data-city="Казань" data-sport="Футбол">
-    <div class="profile-row"><b>Иван, 22</b></div>
-    <div class="profile-row">📍 Казань</div>
-    <div class="profile-row">⚽ Футбол</div>
-    <div class="profile-row">⭐ Любитель</div>
-    <button class="write-btn">Написать</button>
+    <div class="row"><b>Сергей Петров</b></div>
+    <div class="row">🏆 Тренер по футболу</div>
+    <div class="row">📍 Казань</div>
+    <div class="row">Опыт: 8 лет</div>
+    <button>Написать</button>
   </div>
 
   <div class="profile-card" data-city="Москва" data-sport="Баскетбол">
-    <div class="profile-row"><b>Алексей, 27</b></div>
-    <div class="profile-row">📍 Москва</div>
-    <div class="profile-row">🏀 Баскетбол</div>
-    <div class="profile-row">⭐ Профессионал</div>
-    <button class="write-btn">Написать</button>
+    <div class="row"><b>Андрей Смирнов</b></div>
+    <div class="row">🏆 Тренер по баскетболу</div>
+    <div class="row">📍 Москва</div>
+    <div class="row">Опыт: 12 лет</div>
+    <button>Написать</button>
   </div>
-
 </div>
 
 <script>
@@ -154,31 +137,35 @@
   tg.ready();
 
   function goHome() {
-    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
-    document.getElementById("home").classList.remove("hidden");
-    document.getElementById("title").innerText = "MateoSport";
-  }
-
-  function openPartners() {
-    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
-    document.getElementById("partners").classList.remove("hidden");
-    document.getElementById("title").innerText = "Найти партнёра";
+    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
+    home.classList.remove("hidden");
+    title.innerText = "MateoSport";
   }
 
   function openProfile() {
-    document.querySelectorAll(".container").forEach(c => c.classList.add("hidden"));
-    document.getElementById("profile").classList.remove("hidden");
-    document.getElementById("title").innerText = "Мой профиль";
+    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
+    profile.classList.remove("hidden");
+    title.innerText = "Мой профиль";
   }
 
-  function applyFilter() {
-    const city = document.getElementById("cityFilter").value;
-    const sport = document.getElementById("sportFilter").value;
+  function openPartners() {
+    alert("Партнёры уже готовы 👍");
+  }
 
-    document.querySelectorAll(".profile-card").forEach(card => {
-      const matchCity = !city || card.dataset.city === city;
-      const matchSport = !sport || card.dataset.sport === sport;
-      card.style.display = matchCity && matchSport ? "block" : "none";
+  function openTrainers() {
+    document.querySelectorAll(".container").forEach(x => x.classList.add("hidden"));
+    trainers.classList.remove("hidden");
+    title.innerText = "Найти тренера";
+  }
+
+  function filterTrainers() {
+    const city = trainerCity.value;
+    const sport = trainerSport.value;
+
+    document.querySelectorAll("#trainers .profile-card").forEach(card => {
+      const okCity = !city || card.dataset.city === city;
+      const okSport = !sport || card.dataset.sport === sport;
+      card.style.display = okCity && okSport ? "block" : "none";
     });
   }
 </script>
