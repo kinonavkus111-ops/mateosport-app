@@ -1,96 +1,98 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MateoSport</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MateoSport</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
 
-  .header {
-    background: #007bff;
-    color: white;
-    text-align: center;
-    padding: 16px;
-    font-size: 22px;
-    font-weight: bold;
-  }
+    .header {
+      background: #007bff;
+      color: white;
+      text-align: center;
+      padding: 16px;
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-  .container {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 16px;
-  }
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 16px;
+    }
 
-  .hidden {
-    display: none;
-  }
+    .hidden {
+      display: none;
+    }
 
-  .card {
-    background: white;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      position: relative;
+    }
 
-  .main-btn {
-    background: #007bff;
-    color: white;
-    padding: 14px 20px;
-    border-radius: 14px;
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 14px;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease;
-  }
-  .main-btn:hover {
-    background-color: #0056b3;
-  }
+    .main-btn {
+      background: #007bff;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
 
-  .back {
-    color: #007bff;
-    margin-bottom: 14px;
-    cursor: pointer;
-    user-select: none;
-  }
+    .back {
+      color: #007bff;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
 
-  select, button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-  }
+    select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
 
-  button {
-    background: #007bff;
-    color: white;
-    border: none;
-  }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+    }
 
-  .profile-line {
-    margin-bottom: 6px;
-  }
+    .profile-line {
+      margin-bottom: 6px;
+    }
 
-  /* Центрируем содержимое */
-  .centered {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .centered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-</style>
+    .edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
@@ -155,6 +157,8 @@
   <div class="back" onclick="goHome()">← Назад</div>
 
   <div class="card">
+    <div class="edit-btn" onclick="editProfile()">✏️</div>
+
     <div class="profile-line"><b>Иван Иванов</b></div>
     <div class="profile-line">22 года</div>
     <div class="profile-line">📍 Казань</div>
@@ -168,70 +172,73 @@
   <div class="back" onclick="goHome()">← Назад</div>
 
   <div class="card">
-    <p>Если нужна помощь, напишите нам в Telegram: <a href="https://t.me/your_support_username" target="_blank">@your_support_username</a></p>
-    <p>Или напишите сюда: support@example.com</p>
+    <p>Поддержка в Telegram: <b>@your_support_username</b></p>
   </div>
 </div>
 
 <script>
-const tg = window.Telegram.WebApp;
-tg.ready();
+  const tg = window.Telegram.WebApp;
+  tg.ready();
 
-const home = document.getElementById("home");
-const partners = document.getElementById("partners");
-const trainers = document.getElementById("trainers");
-const profile = document.getElementById("profile");
-const support = document.getElementById("support");
-const title = document.getElementById("title");
+  const home = document.getElementById("home");
+  const partners = document.getElementById("partners");
+  const trainers = document.getElementById("trainers");
+  const profile = document.getElementById("profile");
+  const support = document.getElementById("support");
+  const title = document.getElementById("title");
 
-function hideAll() {
-  home.classList.add("hidden");
-  partners.classList.add("hidden");
-  trainers.classList.add("hidden");
-  profile.classList.add("hidden");
-  support.classList.add("hidden");
-}
+  function hideAll() {
+    home.classList.add("hidden");
+    partners.classList.add("hidden");
+    trainers.classList.add("hidden");
+    profile.classList.add("hidden");
+    support.classList.add("hidden");
+  }
 
-function goHome() {
-  hideAll();
-  home.classList.remove("hidden");
-  title.innerText = "MateoSport";
-}
+  function goHome() {
+    hideAll();
+    home.classList.remove("hidden");
+    title.innerText = "MateoSport";
+  }
 
-function openPartners() {
-  hideAll();
-  partners.classList.remove("hidden");
-  title.innerText = "Найти партнёра";
-}
+  function openPartners() {
+    hideAll();
+    partners.classList.remove("hidden");
+    title.innerText = "Найти партнёра";
+  }
 
-function openTrainers() {
-  hideAll();
-  trainers.classList.remove("hidden");
-  title.innerText = "Тренеры";
-}
+  function openTrainers() {
+    hideAll();
+    trainers.classList.remove("hidden");
+    title.innerText = "Тренеры";
+  }
 
-function openProfile() {
-  hideAll();
-  profile.classList.remove("hidden");
-  title.innerText = "Мой профиль";
-}
+  function openProfile() {
+    hideAll();
+    profile.classList.remove("hidden");
+    title.innerText = "Мой профиль";
+  }
 
-function openSupport() {
-  hideAll();
-  support.classList.remove("hidden");
-  title.innerText = "Поддержка";
-}
+  function openSupport() {
+    hideAll();
+    support.classList.remove("hidden");
+    title.innerText = "Поддержка";
+  }
 
-function filterPartners() {
-  const city = partnerCity.value;
-  const sport = partnerSport.value;
+  function filterPartners() {
+    const city = partnerCity.value;
+    const sport = partnerSport.value;
 
-  document.querySelectorAll("#partners .card").forEach(card => {
-    const okCity = !city || card.dataset.city === city;
-    const okSport = !sport || card.dataset.sport === sport;
-    card.style.display = okCity && okSport ? "block" : "none";
-  });
-}
+    document.querySelectorAll("#partners .card").forEach(card => {
+      const okCity = !city || card.dataset.city === city;
+      const okSport = !sport || card.dataset.sport === sport;
+      card.style.display = okCity && okSport ? "block" : "none";
+    });
+  }
+
+  function editProfile() {
+    alert("В будущем здесь будет редактирование профиля через бота 👌"); 
+  }
 </script>
 
 </body>
