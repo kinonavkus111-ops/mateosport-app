@@ -87,7 +87,7 @@
 
     .edit-btn {
       position: absolute;
-      top: 10px;
+      top: 12px;
       right: 12px;
       font-size: 20px;
       cursor: pointer;
@@ -119,24 +119,18 @@
 
   <select id="partnerSport">
     <option value="">Вид спорта</option>
-    <option value="Футбол">Футбол</option>
-    <option value="Баскетбол">Баскетбол</option>
+    <option value="Теннис">Теннис</option>
+    <option value="Падл">Падл</option>
+    <option value="Настольный теннис">Настольный теннис</option>
   </select>
 
   <button onclick="filterPartners()">Показать</button>
 
-  <div class="card" data-city="Казань" data-sport="Футбол">
+  <div class="card" data-city="Казань" data-sport="Теннис">
     <div class="profile-line"><b>Алексей</b></div>
     <div class="profile-line">22 года · Любитель</div>
     <div class="profile-line">📍 Казань</div>
-    <div class="profile-line">⚽ Футбол</div>
-  </div>
-
-  <div class="card" data-city="Москва" data-sport="Баскетбол">
-    <div class="profile-line"><b>Дмитрий</b></div>
-    <div class="profile-line">26 лет · Новичок</div>
-    <div class="profile-line">📍 Москва</div>
-    <div class="profile-line">🏀 Баскетбол</div>
+    <div class="profile-line">🎾 Теннис</div>
   </div>
 </div>
 
@@ -146,7 +140,7 @@
 
   <div class="card">
     <div class="profile-line"><b>Сергей</b></div>
-    <div class="profile-line">Тренер по футболу</div>
+    <div class="profile-line">Тренер по теннису</div>
     <div class="profile-line">Опыт 8 лет</div>
     <div class="profile-line">📍 Казань</div>
   </div>
@@ -162,7 +156,7 @@
     <div class="profile-line"><b>Иван Иванов</b></div>
     <div class="profile-line">22 года</div>
     <div class="profile-line">📍 Казань</div>
-    <div class="profile-line">⚽ Футбол</div>
+    <div class="profile-line">🎾 Теннис</div>
     <div class="profile-line">Уровень: Любитель</div>
   </div>
 </div>
@@ -172,73 +166,73 @@
   <div class="back" onclick="goHome()">← Назад</div>
 
   <div class="card">
-    <p>Поддержка в Telegram: <b>@your_support_username</b></p>
+    <p>Напишите нам в Telegram: <b>@your_support_username</b></p>
   </div>
 </div>
 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
+const tg = window.Telegram.WebApp;
+tg.ready();
 
-  const home = document.getElementById("home");
-  const partners = document.getElementById("partners");
-  const trainers = document.getElementById("trainers");
-  const profile = document.getElementById("profile");
-  const support = document.getElementById("support");
-  const title = document.getElementById("title");
+const home = document.getElementById("home");
+const partners = document.getElementById("partners");
+const trainers = document.getElementById("trainers");
+const profile = document.getElementById("profile");
+const support = document.getElementById("support");
+const title = document.getElementById("title");
 
-  function hideAll() {
-    home.classList.add("hidden");
-    partners.classList.add("hidden");
-    trainers.classList.add("hidden");
-    profile.classList.add("hidden");
-    support.classList.add("hidden");
-  }
+function hideAll() {
+  home.classList.add("hidden");
+  partners.classList.add("hidden");
+  trainers.classList.add("hidden");
+  profile.classList.add("hidden");
+  support.classList.add("hidden");
+}
 
-  function goHome() {
-    hideAll();
-    home.classList.remove("hidden");
-    title.innerText = "MateoSport";
-  }
+function goHome() {
+  hideAll();
+  home.classList.remove("hidden");
+  title.innerText = "MateoSport";
+}
 
-  function openPartners() {
-    hideAll();
-    partners.classList.remove("hidden");
-    title.innerText = "Найти партнёра";
-  }
+function openPartners() {
+  hideAll();
+  partners.classList.remove("hidden");
+  title.innerText = "Найти партнёра";
+}
 
-  function openTrainers() {
-    hideAll();
-    trainers.classList.remove("hidden");
-    title.innerText = "Тренеры";
-  }
+function openTrainers() {
+  hideAll();
+  trainers.classList.remove("hidden");
+  title.innerText = "Тренеры";
+}
 
-  function openProfile() {
-    hideAll();
-    profile.classList.remove("hidden");
-    title.innerText = "Мой профиль";
-  }
+function openProfile() {
+  hideAll();
+  profile.classList.remove("hidden");
+  title.innerText = "Мой профиль";
+}
 
-  function openSupport() {
-    hideAll();
-    support.classList.remove("hidden");
-    title.innerText = "Поддержка";
-  }
+function openSupport() {
+  hideAll();
+  support.classList.remove("hidden");
+  title.innerText = "Поддержка";
+}
 
-  function filterPartners() {
-    const city = partnerCity.value;
-    const sport = partnerSport.value;
+function filterPartners() {
+  const city = partnerCity.value;
+  const sport = partnerSport.value;
 
-    document.querySelectorAll("#partners .card").forEach(card => {
-      const okCity = !city || card.dataset.city === city;
-      const okSport = !sport || card.dataset.sport === sport;
-      card.style.display = okCity && okSport ? "block" : "none";
-    });
-  }
+  document.querySelectorAll("#partners .card").forEach(card => {
+    const okCity = !city || card.dataset.city === city;
+    const okSport = !sport || card.dataset.sport === sport;
+    card.style.display = okCity && okSport ? "block" : "none";
+  });
+}
 
-  function editProfile() {
-    alert("В будущем здесь будет редактирование профиля через бота 👌"); 
-  }
+function editProfile() {
+  Telegram.WebApp.sendData("edit_profile");
+}
 </script>
 
 </body>
