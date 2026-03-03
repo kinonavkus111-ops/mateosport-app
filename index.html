@@ -4,252 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MateoSport</title>
-
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-    }
-
-    .header {
-      background: #007bff;
-      color: white;
-      text-align: center;
-      padding: 16px;
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: 20px auto;
-      padding: 16px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      position: relative;
-    }
-
-    .main-btn {
-      background: #007bff;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 14px;
-      text-align: center;
-      font-size: 18px;
-      margin-bottom: 14px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .back {
-      color: #007bff;
-      margin-bottom: 14px;
-      cursor: pointer;
-    }
-
-    select, button {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-    }
-
-    .profile-line {
-      margin-bottom: 6px;
-    }
-
-    .centered {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .edit-btn {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="header" id="title">MateoSport</div>
-
-<!-- ГЛАВНОЕ МЕНЮ -->
-<div class="container centered" id="home">
-  <div class="main-btn" onclick="openPartners()">Найти партнёра</div>
-  <div class="main-btn" onclick="openTrainers()">Найти тренера</div>
-  <div class="main-btn" onclick="openProfile()">Мой профиль</div>
-  <div class="main-btn" onclick="openSupport()">Поддержка</div>
-</div>
-
-<!-- ПАРТНЁРЫ -->
-<div class="container hidden" id="partners">
-  <div class="back" onclick="goHome()">← Назад</div>
-
-  <select id="partnerCity">
-    <option value="">Город</option>
-    <option value="Казань">Казань</option>
-    <option value="Москва">Москва</option>
-  </select>
-
-  <select id="partnerSport">
-    <option value="">Вид спорта</option>
-    <option value="Футбол">Футбол</option>
-    <option value="Баскетбол">Баскетбол</option>
-  </select>
-
-  <button onclick="filterPartners()">Показать</button>
-
-  <div class="card" data-city="Казань" data-sport="Футбол">
-    <div class="profile-line"><b>Алексей</b></div>
-    <div class="profile-line">22 года · Любитель</div>
-    <div class="profile-line">📍 Казань</div>
-    <div class="profile-line">⚽ Футбол</div>
-  </div>
-
-  <div class="card" data-city="Москва" data-sport="Баскетбол">
-    <div class="profile-line"><b>Дмитрий</b></div>
-    <div class="profile-line">26 лет · Новичок</div>
-    <div class="profile-line">📍 Москва</div>
-    <div class="profile-line">🏀 Баскетбол</div>
-  </div>
-</div>
-
-<!-- ТРЕНЕРЫ -->
-<div class="container hidden" id="trainers">
-  <div class="back" onclick="goHome()">← Назад</div>
-
-  <div class="card">
-    <div class="profile-line"><b>Сергей</b></div>
-    <div class="profile-line">Тренер по футболу</div>
-    <div class="profile-line">Опыт 8 лет</div>
-    <div class="profile-line">📍 Казань</div>
-  </div>
-</div>
-
-<!-- МОЙ ПРОФИЛЬ -->
-<div class="container hidden" id="profile">
-  <div class="back" onclick="goHome()">← Назад</div>
-
-  <div class="card">
-    <div class="edit-btn" onclick="editProfile()">✏️</div>
-
-    <div class="profile-line"><b>Иван Иванов</b></div>
-    <div class="profile-line">22 года</div>
-    <div class="profile-line">📍 Казань</div>
-    <div class="profile-line">⚽ Футбол</div>
-    <div class="profile-line">Уровень: Любитель</div>
-  </div>
-</div>
-
-<!-- ПОДДЕРЖКА -->
-<div class="container hidden" id="support">
-  <div class="back" onclick="goHome()">← Назад</div>
-
-  <div class="card">
-    <p>Поддержка в Telegram: <b>@your_support_username</b></p>
-  </div>
-</div>
-
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-
-  const home = document.getElementById("home");
-  const partners = document.getElementById("partners");
-  const trainers = document.getElementById("trainers");
-  const profile = document.getElementById("profile");
-  const support = document.getElementById("support");
-  const title = document.getElementById("title");
-
-  function hideAll() {
-    home.classList.add("hidden");
-    partners.classList.add("hidden");
-    trainers.classList.add("hidden");
-    profile.classList.add("hidden");
-    support.classList.add("hidden");
-  }
-
-  function goHome() {
-    hideAll();
-    home.classList.remove("hidden");
-    title.innerText = "MateoSport";
-  }
-
-  function openPartners() {
-    hideAll();
-    partners.classList.remove("hidden");
-    title.innerText = "Найти партнёра";
-  }
-
-  function openTrainers() {
-    hideAll();
-    trainers.classList.remove("hidden");
-    title.innerText = "Тренеры";
-  }
-
-  function openProfile() {
-    hideAll();
-    profile.classList.remove("hidden");
-    title.innerText = "Мой профиль";
-  }
-
-  function openSupport() {
-    hideAll();
-    support.classList.remove("hidden");
-    title.innerText = "Поддержка";
-  }
-
-  function filterPartners() {
-    const city = partnerCity.value;
-    const sport = partnerSport.value;
-
-    document.querySelectorAll("#partners .card").forEach(card => {
-      const okCity = !city || card.dataset.city === city;
-      const okSport = !sport || card.dataset.sport === sport;
-      card.style.display = okCity && okSport ? "block" : "none";
-    });
-  }
-
-  function editProfile() {
-    alert("В будущем здесь будет редактирование профиля через бота 👌"); 
-  }
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MateoSport</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'SF Pro Display';
@@ -288,13 +46,14 @@
       --danger-soft: #ffe6e0;
       --danger: #d6382f;
       --radius: 14px;
-      --font-main: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      --font-main: 'Manrope', 'Avenir Next', 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: var(--font-main);
+      letter-spacing: -0.01em;
       background: var(--bg);
       color: var(--text);
     }
@@ -392,7 +151,7 @@
       font-weight: 600;
     }
 
-    .event-name { font-weight: 700; font-size: 16px; }
+    .event-name { font-weight: 800; font-size: 16px; letter-spacing: -0.015em; }
     .event-meta { font-size: 12px; color: #7d7d84; margin: 4px 0; }
     .event-footer {
       display: flex;
@@ -525,6 +284,128 @@
     .trainer-line,
     .profile-line { font-size: 13px; color: #4f5055; margin-bottom: 5px; }
 
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid rgba(198,168,106,.5);
+      object-fit: cover;
+      display: none;
+      background: #fff;
+    }
+
+    .profile-avatar.active { display: block; }
+
+    .profile-change-btn {
+      margin-top: 6px;
+      border: 1px solid var(--line);
+      background: #f8f8fa;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .stat {
+      border: 1px solid #ececf1;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fafafc;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 18px;
+      color: #121318;
+      margin-bottom: 2px;
+    }
+
+    .list-title {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #2b2c31;
+    }
+
+    .game-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: #52545c;
+      line-height: 1.45;
+    }
+
+
+    .role-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .role-btn {
+      border: 1px solid var(--line);
+      background: #f8f8fa;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .role-btn.active {
+      color: #fff;
+      background: linear-gradient(160deg, #22242b, #101216);
+      border-color: rgba(198,168,106,.45);
+    }
+
+    .input-field {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px;
+      font-size: 14px;
+      background: #fff;
+      margin-bottom: 8px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #4f5058;
+      margin-bottom: 6px;
+    }
+
+    .check-row input { margin-top: 2px; }
+
+    .legal-link {
+      color: #2d5b9a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .profile-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #2d5b9a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .hidden { display: none; }
+
     .back {
       border: none;
       background: none;
@@ -575,7 +456,57 @@
     <div>MateoSport</div>
   </div>
 
-  <div class="screen active" id="home">
+
+  <div class="screen active" id="registration">
+    <div class="title" style="font-size:28px;">Регистрация</div>
+    <div class="subtitle">Заполни анкету, чтобы участвовать в событиях и получать приглашения.</div>
+
+    <div class="profile-card">
+      <div class="role-switch">
+        <button id="rolePlayerBtn" class="role-btn active" onclick="setRegistrationRole('player')">Игрок</button>
+        <button id="roleTrainerBtn" class="role-btn" onclick="setRegistrationRole('trainer')">Тренер</button>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
+        <div class="avatar-photo" id="regPhotoFallback">+</div>
+        <img id="regPhotoPreview" class="profile-avatar" alt="Фото" />
+        <div>
+          <input id="regPhotoInput" type="file" accept="image/*" style="display:none;" />
+          <button class="profile-change-btn" onclick="openRegPhotoPicker()">Загрузить фото</button>
+        </div>
+      </div>
+
+      <input id="regName" class="input-field" placeholder="Имя" />
+      <input id="regAge" class="input-field" type="number" placeholder="Возраст" />
+      <input id="regSport" class="input-field" placeholder="Вид спорта" />
+      <input id="regTgNick" class="input-field" placeholder="Ник в Telegram (без @)" />
+
+      <div id="playerFields">
+        <input id="regPlayerLevel" class="input-field" placeholder="Уровень игры" />
+        <input id="regPlayerYears" class="input-field" type="number" placeholder="Сколько лет в спорте" />
+      </div>
+
+      <div id="trainerFields" class="hidden">
+        <input id="regTrainerExperience" class="input-field" placeholder="Опыт работы тренером (лет)" />
+        <textarea id="regTrainerAchievements" class="input-field" placeholder="Достижения"></textarea>
+        <textarea id="regTrainerEducation" class="input-field" placeholder="Где получал знания"></textarea>
+        <textarea id="regTrainerVision" class="input-field" placeholder="Взгляд на тренировки"></textarea>
+      </div>
+
+      <label class="check-row">
+        <input id="agreeTerms" type="checkbox" />
+        <span>Я принимаю <a class="legal-link" href="#" onclick="alert('Пользовательское соглашение будет открыто здесь.'); return false;">пользовательское соглашение</a>.</span>
+      </label>
+      <label class="check-row">
+        <input id="agreeData" type="checkbox" />
+        <span>Я согласен на <a class="legal-link" href="#" onclick="alert('Согласие на обработку данных будет открыто здесь.'); return false;">обработку персональных данных</a>.</span>
+      </label>
+
+      <button class="btn primary" onclick="registerUser()">Завершить регистрацию</button>
+    </div>
+  </div>
+
+  <div class="screen" id="home">
     <div class="banner">Реклама/Баннер</div>
     <div class="title">События в городе</div>
 
@@ -588,14 +519,14 @@
       <button class="chip" data-sport="Баскетбол">🏀 Баскетбол</button>
     </div>
 
-    <div class="event-card" data-sport="Футбол" data-paid="true" onclick="openEvent(0)">
+    <div class="event-card" data-sport="Футбол" onclick="openEvent(0)">
       <div class="event-tag">⚽ Футбол</div>
       <div class="event-name">Воскресная игра 5x5</div>
       <div class="event-meta">Сегодня, 19:00–20:30 · Манеж на Никольской</div>
       <div class="event-footer"><span>Нужно 12 игроков</span><span>300 ₽</span></div>
     </div>
 
-    <div class="event-card" data-sport="Теннис" data-paid="false" onclick="openEvent(1)">
+    <div class="event-card" data-sport="Теннис" onclick="openEvent(1)">
       <div class="event-tag">🎾 Теннис</div>
       <div class="event-name">Парный турнир</div>
       <div class="event-meta">Завтра, 18:00–20:00 · Корт Парк</div>
@@ -649,6 +580,29 @@
     </div>
   </div>
 
+
+  <div class="screen" id="create">
+    <button class="back" onclick="toggleCreateCancel(true)">← Назад</button>
+    <div class="event-name" style="font-size:22px;">Создание события</div>
+
+    <div class="image-box" style="height:58px;">Фото</div>
+    <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Event Title" value="Saturday Morning Basketball" maxlength="150" />
+    <textarea style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px; min-height:74px;" placeholder="Описание (опционально)"></textarea>
+    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Выберите спорт</option><option>Футбол</option><option>Теннис</option></select>
+    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Формат игры</option><option>Гибкий формат</option></select>
+    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Skill Level</option><option>Все уровни</option></select>
+
+    <div class="actions" style="margin-top:0;">
+      <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Дата" />
+      <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Время" />
+    </div>
+
+    <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Местоположение" value="Манеж на Никольской" />
+    <div class="event-meta">Платная площадка · Закрытое событие (настраивается в боте)</div>
+
+    <button class="btn primary" onclick="createEvent()">Создать</button>
+  </div>
+
   <div class="screen" id="trainers">
     <div class="title" style="font-size:28px;">Тренеры</div>
 
@@ -665,6 +619,7 @@
       <div class="trainer-line">Взгляд на тренировки: дисциплина + игровая свобода</div>
       <div class="trainer-line">Результаты: 3 команды-призёра городских лиг</div>
       <div class="trainer-line"><b>Цена:</b> от 1500 ₽ / занятие</div>
+      <a class="profile-link" href="https://t.me/sergey_coach" target="_blank" rel="noopener">@sergey_coach</a>
     </div>
 
     <div class="trainer-card">
@@ -680,6 +635,7 @@
       <div class="trainer-line">Подход: техника + выносливость + ментальная устойчивость</div>
       <div class="trainer-line">Работа с начинающими и любителями</div>
       <div class="trainer-line"><b>Цена:</b> от 2000 ₽ / занятие</div>
+      <a class="profile-link" href="https://t.me/anna_tennis" target="_blank" rel="noopener">@anna_tennis</a>
     </div>
   </div>
 
@@ -687,20 +643,35 @@
     <div class="title" style="font-size:28px;">Профиль</div>
     <div class="profile-card">
       <div class="profile-head">
-        <div class="avatar-photo">И</div>
         <div>
-          <div class="event-name">Иван Петров</div>
-          <div class="subtitle">24 года</div>
+          <div class="avatar-photo" id="profileAvatarFallback">И</div>
+          <img id="profileAvatarImage" class="profile-avatar" alt="Фото профиля" />
+          <input id="profilePhotoInput" type="file" accept="image/*" style="display:none;" />
+          <button class="profile-change-btn" onclick="openPhotoPicker()">Изменить фото</button>
+        </div>
+        <div>
+          <div class="event-name" id="profileName">Иван Петров</div>
+          <div class="subtitle" id="profileAge">24 года</div>
         </div>
       </div>
-      <div class="profile-line"><b>Опыт игры:</b> 5 лет</div>
-      <div class="profile-line"><b>Вид спорта:</b> Футбол</div>
-      <div class="profile-line"><b>Уровень:</b> Любитель</div>
-      <div class="profile-line"><b>Город:</b> Тольятти</div>
+
+      <div class="stats-grid">
+        <div class="stat"><b>4.8</b><span class="subtitle">Рейтинг игрока</span></div>
+        <div class="stat"><b>127</b><span class="subtitle">Сыграно игр</span></div>
+      </div>
+
+      <div id="profileDetails"></div>
+      <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example</a>
+
+      <div class="list-title">Предстоящие игры</div>
+      <ul class="game-list" id="upcomingGamesList"></ul>
+
+      <div class="list-title">Сыгранные игры</div>
+      <ul class="game-list" id="playedGamesList"></ul>
     </div>
   </div>
 
-  <button class="filter-btn" id="floatingBtn" onclick="openScreen('filters')">+ Разместить</button>
+  <button class="filter-btn" id="floatingBtn" onclick="openScreen('create')">+ Разместить</button>
 
   <div class="bottom-nav">
     <div class="nav-item active" data-link="home" onclick="openScreen('home', this)"><span class="emoji">★</span>События</div>
@@ -724,13 +695,21 @@
     <div class="subtitle">Telegram · VK · WhatsApp</div>
   </div>
 </div>
-
-<div class="sheet-bg" id="paywallSheet">
+<div class="sheet-bg" id="createCancelSheet">
   <div class="sheet">
-    <div class="sheet-title">Оплата участия</div>
-    <div class="sheet-sub" id="paywallText">Событие платное. Подтвердите оплату, чтобы вступить.</div>
-    <button class="btn primary" onclick="confirmPayment()">Оплатить и вступить</button>
-    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="togglePaywall(false)">Позже</button>
+    <div class="sheet-title">Заголовок отмены</div>
+    <div class="sheet-sub">Если выйдете сейчас, введённые данные не сохранятся.</div>
+    <button class="btn primary" onclick="discardCreate()">Отменить</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="toggleCreateCancel(false)">Назад</button>
+  </div>
+</div>
+
+<div class="sheet-bg" id="createdSheet">
+  <div class="sheet">
+    <div class="sheet-title">Событие создано ✅</div>
+    <div class="sheet-sub">Бот уже написал в чат регистрации и отправил приглашение в группу события.</div>
+    <button class="btn primary" onclick="finishCreateFlow()">Открыть чат регистрации</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="finishCreateFlow()">Закрыть</button>
   </div>
 </div>
 
@@ -740,6 +719,15 @@
 
   const screens = [...document.querySelectorAll('.screen')];
   const floatingBtn = document.getElementById('floatingBtn');
+  const bottomNav = document.querySelector('.bottom-nav');
+
+  const appState = {
+    role: 'player',
+    registered: false,
+    photoUrl: '',
+    upcomingGames: ['Воскресная игра 5x5 · Сегодня 19:00'],
+    playedGames: ['Матч дворовых команд · 2 дня назад']
+  };
 
   const events = [
     {
@@ -748,7 +736,6 @@
       place: 'Манеж на Никольской',
       members: 11,
       price: '300 ₽',
-      paid: true,
       description: 'Игровая тренировка 5x5. Нужны ответственные игроки, приходите за 15 минут до начала. После оплаты бот приглашает вас в группу события.'
     },
     {
@@ -757,7 +744,6 @@
       place: 'Корт Парк',
       members: 8,
       price: 'Бесплатно',
-      paid: false,
       description: 'Лёгкий турнир на вечер. Играем в формате пары на пары. Подходит для любого уровня.'
     }
   ];
@@ -768,19 +754,126 @@
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'trainers'];
+    const hideFloating = ['event', 'filters', 'profile', 'trainers', 'create', 'registration'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
+    bottomNav.style.display = id === 'registration' ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
       navEl.classList.add('active');
     } else if (id === 'home' || id === 'event' || id === 'filters') {
       document.querySelector('[data-link="home"]').classList.add('active');
+    } else if (id === 'create') {
+      document.querySelector('[data-link="home"]').classList.add('active');
     } else if (id === 'trainers') {
       document.querySelector('[data-link="trainers"]').classList.add('active');
     } else if (id === 'profile') {
       document.querySelector('[data-link="profile"]').classList.add('active');
     }
+  }
+
+
+  function setRegistrationRole(role) {
+    appState.role = role;
+    document.getElementById('playerFields').classList.toggle('hidden', role !== 'player');
+    document.getElementById('trainerFields').classList.toggle('hidden', role !== 'trainer');
+    document.getElementById('rolePlayerBtn').classList.toggle('active', role === 'player');
+    document.getElementById('roleTrainerBtn').classList.toggle('active', role === 'trainer');
+  }
+
+  function openRegPhotoPicker() {
+    document.getElementById('regPhotoInput').click();
+  }
+
+  function updateProfileView(user) {
+    document.getElementById('profileName').innerText = user.name;
+    document.getElementById('profileAge').innerText = `${user.age} лет`;
+
+    const details = document.getElementById('profileDetails');
+    details.innerHTML = '';
+
+    const common = [
+      `Вид спорта: ${user.sport}`,
+      `Роль: ${user.role === 'player' ? 'Игрок' : 'Тренер'}`
+    ];
+
+    const roleSpecific = user.role === 'player'
+      ? [`Уровень: ${user.level}`, `Лет в спорте: ${user.yearsInSport}`]
+      : [`Опыт тренера: ${user.coachExperience}`, `Достижения: ${user.achievements}`, `Где учился: ${user.education}`, `Взгляд: ${user.vision}`];
+
+    [...common, ...roleSpecific].forEach((text) => {
+      const row = document.createElement('div');
+      row.className = 'profile-line';
+      const [label, value] = text.split(': ');
+      row.innerHTML = `<b>${label}:</b> ${value || ''}`;
+      details.appendChild(row);
+    });
+
+    const tgLink = document.getElementById('profileTgLink');
+    tgLink.href = `https://t.me/${user.tgNick}`;
+    tgLink.textContent = `@${user.tgNick}`;
+
+    if (appState.photoUrl) {
+      document.getElementById('profileAvatarImage').src = appState.photoUrl;
+      document.getElementById('profileAvatarImage').classList.add('active');
+      document.getElementById('profileAvatarFallback').style.display = 'none';
+    }
+
+    renderGameLists();
+  }
+
+  function renderGameLists() {
+    const upcoming = document.getElementById('upcomingGamesList');
+    const played = document.getElementById('playedGamesList');
+
+    upcoming.innerHTML = appState.upcomingGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
+    played.innerHTML = appState.playedGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
+  }
+
+  function registerUser() {
+    const name = document.getElementById('regName').value.trim();
+    const age = document.getElementById('regAge').value.trim();
+    const sport = document.getElementById('regSport').value.trim();
+    const tgNick = document.getElementById('regTgNick').value.trim().replace('@','');
+
+    if (!name || !age || !sport || !tgNick) {
+      alert('Заполни имя, возраст, вид спорта и ник в Telegram.');
+      return;
+    }
+
+    if (!document.getElementById('agreeTerms').checked || !document.getElementById('agreeData').checked) {
+      alert('Нужно принять пользовательское соглашение и согласие на обработку данных.');
+      return;
+    }
+
+    const user = {
+      role: appState.role,
+      name,
+      age,
+      sport,
+      tgNick,
+      level: document.getElementById('regPlayerLevel').value.trim(),
+      yearsInSport: document.getElementById('regPlayerYears').value.trim(),
+      coachExperience: document.getElementById('regTrainerExperience').value.trim(),
+      achievements: document.getElementById('regTrainerAchievements').value.trim(),
+      education: document.getElementById('regTrainerEducation').value.trim(),
+      vision: document.getElementById('regTrainerVision').value.trim()
+    };
+
+    if (appState.role === 'player' && (!user.level || !user.yearsInSport)) {
+      alert('Для игрока заполни уровень и сколько лет в спорте.');
+      return;
+    }
+
+    if (appState.role === 'trainer' && (!user.coachExperience || !user.achievements || !user.education || !user.vision)) {
+      alert('Для тренера нужно заполнить опыт, достижения, где получал знания и взгляд на тренировки.');
+      return;
+    }
+
+    appState.registered = true;
+    updateProfileView(user);
+    openScreen('home');
+    alert('Регистрация завершена! Теперь у вас активный профиль.');
   }
 
   function openEvent(index) {
@@ -792,7 +885,6 @@
     document.getElementById('eventPlace').innerText = event.place;
     document.getElementById('memberCount').innerText = event.members;
     document.getElementById('eventDescription').innerText = event.description;
-    document.getElementById('paywallText').innerText = `Событие ${event.price}. Подтвердите оплату, чтобы вступить и получить приглашение в группу.`;
 
     document.getElementById('joinActions').style.display = 'flex';
     document.getElementById('leaveActions').style.display = 'none';
@@ -801,23 +893,20 @@
   }
 
   function participateInEvent() {
-    if (events[currentEvent].paid) {
-      togglePaywall(true);
-      return;
-    }
     joinEvent();
-    alert('Отлично! Бот отправит приглашение в группу события.');
-  }
-
-  function confirmPayment() {
-    togglePaywall(false);
-    joinEvent();
-    alert('Оплата прошла успешно! Бот пригласил вас в группу события.');
+    alert('Вы в событии! По оплате/деньгам участники договариваются на месте. Бот отправит приглашение в группу события.');
   }
 
   function joinEvent() {
     document.getElementById('joinActions').style.display = 'none';
     document.getElementById('leaveActions').style.display = 'flex';
+
+    const event = events[currentEvent];
+    const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
+    if (!appState.upcomingGames.includes(gameLabel)) {
+      appState.upcomingGames.unshift(gameLabel);
+      renderGameLists();
+    }
   }
 
   function leaveEvent() {
@@ -834,15 +923,62 @@
     document.getElementById('shareSheet').classList.toggle('active', state);
   }
 
-  function togglePaywall(state) {
-    document.getElementById('paywallSheet').classList.toggle('active', state);
+
+  function createEvent() {
+    document.getElementById('createdSheet').classList.add('active');
   }
+
+  function discardCreate() {
+    toggleCreateCancel(false);
+    openScreen('home');
+  }
+
+  function finishCreateFlow() {
+    document.getElementById('createdSheet').classList.remove('active');
+    openScreen('home');
+    alert('Бот: Событие создано и опубликовано. Переходите в чат регистрации для деталей.');
+  }
+
+  function toggleCreateCancel(state) {
+    document.getElementById('createCancelSheet').classList.toggle('active', state);
+  }
+
+  function openPhotoPicker() {
+    document.getElementById('profilePhotoInput').click();
+  }
+
+  document.getElementById('regPhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    appState.photoUrl = URL.createObjectURL(file);
+    const preview = document.getElementById('regPhotoPreview');
+    preview.src = appState.photoUrl;
+    preview.classList.add('active');
+    document.getElementById('regPhotoFallback').style.display = 'none';
+  });
+
+  document.getElementById('profilePhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    const image = document.getElementById('profileAvatarImage');
+    const fallback = document.getElementById('profileAvatarFallback');
+
+    image.src = imageUrl;
+    image.classList.add('active');
+    fallback.style.display = 'none';
+  });
 
   document.querySelectorAll('.sheet-bg').forEach((sheet) => {
     sheet.addEventListener('click', (e) => {
       if (e.target === sheet) sheet.classList.remove('active');
     });
   });
+
+  setRegistrationRole('player');
+  renderGameLists();
+  openScreen('registration');
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
