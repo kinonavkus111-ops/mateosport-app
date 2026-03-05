@@ -515,6 +515,44 @@
       margin-bottom: 8px;
     }
 
+    .create-photo-box {
+      border-radius: 12px;
+      border: 1px dashed #b9ccfb;
+      background: #f4f8ff;
+      height: 140px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: #6173a5;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .create-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .create-photo-box img.active { display: block; }
+
+    .create-map {
+      width: 100%;
+      height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #eef3ff;
+      margin-top: 6px;
+    }
+
+    .create-hint {
+      font-size: 12px;
+      color: #6e7384;
+      margin-top: -2px;
+    }
+
     .check-row {
       display: flex;
       align-items: flex-start;
@@ -739,11 +777,17 @@
 
     <div class="filter-group">
       <div class="section-label">Вид спорта</div>
-      <label class="filter-option"><span>Футбол</span><input type="checkbox" class="flt-sport" value="Футбол" /></label>
-      <label class="filter-option"><span>Теннис</span><input type="checkbox" class="flt-sport" value="Теннис" /></label>
-      <label class="filter-option"><span>Хоккей</span><input type="checkbox" class="flt-sport" value="Хоккей" /></label>
-      <label class="filter-option"><span>Бег</span><input type="checkbox" class="flt-sport" value="Бег" /></label>
-      <label class="filter-option"><span>Бокс</span><input type="checkbox" class="flt-sport" value="Бокс" /></label>
+      <input id="sportFilterSearch" class="input-field" placeholder="Поиск спорта" oninput="filterSportOptions(this.value)" />
+      <label class="filter-option flt-sport-row" data-sport-label="футбол"><span>Футбол</span><input type="checkbox" class="flt-sport" value="Футбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="теннис"><span>Теннис</span><input type="checkbox" class="flt-sport" value="Теннис" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="хоккей"><span>Хоккей</span><input type="checkbox" class="flt-sport" value="Хоккей" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="бег"><span>Бег</span><input type="checkbox" class="flt-sport" value="Бег" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="бокс"><span>Бокс</span><input type="checkbox" class="flt-sport" value="Бокс" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="баскетбол"><span>Баскетбол</span><input type="checkbox" class="flt-sport" value="Баскетбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="волейбол"><span>Волейбол</span><input type="checkbox" class="flt-sport" value="Волейбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="плавание"><span>Плавание</span><input type="checkbox" class="flt-sport" value="Плавание" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="падел"><span>Падел</span><input type="checkbox" class="flt-sport" value="Падел" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="настольный теннис"><span>Настольный теннис</span><input type="checkbox" class="flt-sport" value="Настольный теннис" /></label>
     </div>
 
     <div class="filter-group">
@@ -766,19 +810,51 @@
     <button class="back" onclick="toggleCreateCancel(true)">← Назад</button>
     <div class="event-name" style="font-size:22px;">Создание события</div>
 
-    <div class="image-box" style="height:58px;">Фото</div>
-    <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Event Title" value="Saturday Morning Basketball" maxlength="150" />
-    <textarea style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px; min-height:74px;" placeholder="Описание (опционально)"></textarea>
-    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Выберите спорт</option><option>Футбол</option><option>Теннис</option></select>
-    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Формат игры</option><option>Гибкий формат</option></select>
-    <select style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;"><option>Skill Level</option><option>Все уровни</option></select>
+    <div class="create-photo-box" onclick="openCreatePhotoPicker()">
+      <span id="createPhotoPlaceholder">Нажми, чтобы добавить фото события</span>
+      <img id="createPhotoPreview" alt="Фото события" />
+    </div>
+    <input id="createPhotoInput" type="file" accept="image/*" style="display:none;" />
+    <input id="createTitle" class="input-field" placeholder="Название события" value="Saturday Morning Basketball" maxlength="150" />
+    <textarea id="createDescription" class="input-field" style="min-height:74px;" placeholder="Описание (опционально)"></textarea>
+    <input id="createSport" class="input-field" list="sportsList" placeholder="Вид спорта (можно любой)" />
+    <datalist id="sportsList">
+      <option value="Футбол"></option>
+      <option value="Теннис"></option>
+      <option value="Баскетбол"></option>
+      <option value="Волейбол"></option>
+      <option value="Хоккей"></option>
+      <option value="Бег"></option>
+      <option value="Падел"></option>
+    </datalist>
+    <select id="createFormat" class="input-field">
+      <option value="">Выбери формат</option>
+      <option>5x5</option>
+      <option>7x7</option>
+      <option>11x11</option>
+      <option>Парные</option>
+      <option>Индивидуальная тренировка</option>
+      <option>Свободный формат</option>
+    </select>
+    <input id="createCustomFormat" class="input-field" placeholder="Если другой формат — напиши (например: 3х3, круговой, 2 сета)" />
+    <input id="createPeople" class="input-field" placeholder="Сколько нужно человек (например: нужно ещё 6 игроков)" />
+    <select id="createLevel" class="input-field">
+      <option value="">Уровень участников</option>
+      <option>Новичок</option>
+      <option>Любитель</option>
+      <option>Продвинутый</option>
+      <option>Профессионал</option>
+      <option>Смешанный уровень</option>
+    </select>
 
     <div class="actions" style="margin-top:0;">
-      <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Дата" />
-      <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Время" />
+      <input id="createDate" class="input-field" style="margin-bottom:0;" placeholder="Дата" />
+      <input id="createTime" class="input-field" style="margin-bottom:0;" placeholder="Время" />
     </div>
 
-    <input style="width:100%; border:1px solid var(--line); border-radius:10px; padding:11px;" placeholder="Местоположение" value="Манеж на Никольской" />
+    <input id="createLocation" class="input-field" placeholder="Местоположение" value="Манеж на Никольской" />
+    <div class="create-hint">Поставь точку на карте — координаты добавятся автоматически.</div>
+    <div id="createMap" class="create-map"></div>
     <div class="event-meta">Платная площадка · Закрытое событие (настраивается в боте)</div>
 
     <button class="btn primary" onclick="createEvent()">Создать</button>
@@ -894,6 +970,7 @@
   </div>
 </div>
 
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 <script>
   const tg = window.Telegram.WebApp;
   tg.ready();
@@ -911,7 +988,9 @@
     selectedCity: 'Тольятти',
     selectedSport: '',
     sportSearch: '',
-    advanced: { when: 'all', sports: [], levels: [] }
+    advanced: { when: 'all', sports: [], levels: [] },
+    createPhotoUrl: '',
+    createPoint: null
   };
 
   const events = [
@@ -943,7 +1022,7 @@
 
     const hideFloating = ['event', 'filters', 'profile', 'trainers', 'create', 'registration'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
-    bottomNav.style.display = ['registration', 'filters'].includes(id) ? 'none' : 'grid';
+    bottomNav.style.display = ['registration', 'filters', 'create'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
@@ -981,6 +1060,14 @@
     document.querySelectorAll('#cityOptions .city-option').forEach((option) => {
       const text = option.dataset.cityOption.toLowerCase();
       option.style.display = !q || text.includes(q) ? 'block' : 'none';
+    });
+  }
+
+  function filterSportOptions(query) {
+    const q = query.trim().toLowerCase();
+    document.querySelectorAll('.flt-sport-row').forEach((row) => {
+      const label = row.dataset.sportLabel;
+      row.style.display = !q || label.includes(q) ? 'flex' : 'none';
     });
   }
 
@@ -1025,6 +1112,9 @@
   function resetAdvancedFilters() {
     document.querySelector('input[name="when"][value="all"]').checked = true;
     document.querySelectorAll('.flt-sport, .flt-level').forEach((el) => el.checked = false);
+    const searchInput = document.getElementById('sportFilterSearch');
+    if (searchInput) searchInput.value = '';
+    filterSportOptions('');
     appState.advanced = { when: 'all', sports: [], levels: [] };
     applyAllFilters();
     openScreen('home');
@@ -1182,7 +1272,65 @@
 
 
   function createEvent() {
+    const title = document.getElementById('createTitle').value.trim();
+    const sport = document.getElementById('createSport').value.trim();
+    const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
+    const level = document.getElementById('createLevel').value.trim();
+    const people = document.getElementById('createPeople').value.trim();
+    const location = document.getElementById('createLocation').value.trim();
+
+    if (!title || !sport || !format || !level || !people || !location) {
+      alert('Заполни название, спорт, формат, уровень, количество участников и местоположение.');
+      return;
+    }
+
+    if (!appState.createPoint) {
+      alert('Поставь точку на карте, чтобы сохранить точное местоположение.');
+      return;
+    }
+
     document.getElementById('createdSheet').classList.add('active');
+  }
+
+  function openCreatePhotoPicker() {
+    document.getElementById('createPhotoInput').click();
+  }
+
+  function initCreateMap() {
+    if (!window.ymaps) {
+      document.getElementById('createMap').innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Карта временно недоступна. Впишите адрес вручную.</div>';
+      return;
+    }
+
+    ymaps.ready(() => {
+      const map = new ymaps.Map('createMap', {
+        center: [53.5078, 49.4204],
+        zoom: 12,
+        controls: ['zoomControl']
+      });
+
+      let placemark = null;
+
+      map.events.add('click', (e) => {
+        const coords = e.get('coords');
+        appState.createPoint = coords;
+
+        if (!placemark) {
+          placemark = new ymaps.Placemark(coords, {}, { preset: 'islands#blueDotIcon' });
+          map.geoObjects.add(placemark);
+        } else {
+          placemark.geometry.setCoordinates(coords);
+        }
+
+        ymaps.geocode(coords).then((res) => {
+          const first = res.geoObjects.get(0);
+          const address = first ? first.getAddressLine() : `Точка: ${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+          document.getElementById('createLocation').value = address;
+        }).catch(() => {
+          document.getElementById('createLocation').value = `Точка: ${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+        });
+      });
+    });
   }
 
   function discardCreate() {
@@ -1227,6 +1375,16 @@
     fallback.style.display = 'none';
   });
 
+  document.getElementById('createPhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    appState.createPhotoUrl = URL.createObjectURL(file);
+    const image = document.getElementById('createPhotoPreview');
+    image.src = appState.createPhotoUrl;
+    image.classList.add('active');
+    document.getElementById('createPhotoPlaceholder').style.display = 'none';
+  });
+
   document.addEventListener('click', (event) => {
     const menu = document.getElementById('cityMenu');
     const picker = document.getElementById('cityPickerBtn');
@@ -1244,6 +1402,7 @@
   setRegistrationRole('player');
   renderGameLists();
   setCity('Тольятти');
+  initCreateMap();
   openScreen('registration');
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
