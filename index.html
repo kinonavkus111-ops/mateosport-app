@@ -949,7 +949,10 @@
 <div class="sheet-bg" id="shareSheet">
   <div class="sheet">
     <div class="sheet-title" style="text-align:left;">Поделиться</div>
-    <div class="subtitle">Telegram · VK · WhatsApp</div>
+    <div class="actions" style="margin-top:2px;">
+      <button class="btn primary" onclick="copyShareLink()">Скопировать ссылку</button>
+      <button class="btn" style="background:#f1f2f4;" onclick="toggleShare(false)">Закрыть</button>
+    </div>
   </div>
 </div>
 <div class="sheet-bg" id="createCancelSheet">
@@ -1264,6 +1267,39 @@
 
   function toggleCancel(state) {
     document.getElementById('cancelSheet').classList.toggle('active', state);
+  }
+
+  function buildShareLink() {
+    const event = events[currentEvent] || events[0];
+    const slug = encodeURIComponent(event.title.toLowerCase().replace(/\s+/g, '-'));
+    return `${window.location.origin}${window.location.pathname}#event=${slug}`;
+  }
+
+  function copyShareLink() {
+    const link = buildShareLink();
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(link)
+        .then(() => alert('Ссылка скопирована ✅'))
+        .catch(() => {
+          const tempInput = document.createElement('input');
+          tempInput.value = link;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          tempInput.remove();
+          alert('Ссылка скопирована ✅');
+        });
+      return;
+    }
+
+    const tempInput = document.createElement('input');
+    tempInput.value = link;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    tempInput.remove();
+    alert('Ссылка скопирована ✅');
   }
 
   function toggleShare(state) {
