@@ -345,6 +345,23 @@
       line-height: 1.35;
     }
 
+    .route-box {
+      cursor: pointer;
+      background: #eef3ff;
+      font-weight: 700;
+      color: #2d4ea9;
+    }
+
+    .event-map {
+      width: 100%;
+      height: 170px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #eef3ff;
+      margin-top: 6px;
+    }
+
     .actions { display: flex; gap: 8px; margin-top: 10px; }
     .btn {
       border: none;
@@ -632,16 +649,7 @@
 
     <div id="cityMenu" class="city-menu">
       <input id="citySearchInput" class="city-search" placeholder="Поиск города" oninput="filterCityOptions(this.value)" />
-      <div id="cityOptions" class="city-options">
-        <button class="city-option" data-city-option="all" onclick="setCity('all')">Все города</button>
-        <button class="city-option" data-city-option="Тольятти" onclick="setCity('Тольятти')">Тольятти</button>
-        <button class="city-option" data-city-option="Казань" onclick="setCity('Казань')">Казань</button>
-        <button class="city-option" data-city-option="Москва" onclick="setCity('Москва')">Москва</button>
-        <button class="city-option" data-city-option="Санкт-Петербург" onclick="setCity('Санкт-Петербург')">Санкт-Петербург</button>
-        <button class="city-option" data-city-option="Екатеринбург" onclick="setCity('Екатеринбург')">Екатеринбург</button>
-        <button class="city-option" data-city-option="Новосибирск" onclick="setCity('Новосибирск')">Новосибирск</button>
-        <button class="city-option" data-city-option="Самара" onclick="setCity('Самара')">Самара</button>
-      </div>
+      <div id="cityOptions" class="city-options"></div>
     </div>
   </div>
 
@@ -747,7 +755,8 @@
     </div>
 
     <div class="event-meta">📍 <span id="eventPlace"></span></div>
-    <div class="route-box">Маршрут</div>
+    <div class="route-box" onclick="openEventAddressOnMap()">Открыть адрес на карте</div>
+    <div id="eventMap" class="event-map"></div>
     <div class="section-label">Описание</div>
     <div class="desc-box" id="eventDescription"></div>
 
@@ -993,7 +1002,11 @@
     sportSearch: '',
     advanced: { when: 'all', sports: [], levels: [] },
     createPhotoUrl: '',
-    createPoint: null
+    createPoint: null,
+    cityCatalog: ['Тольятти', 'Казань', 'Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Самара', 'Нижний Новгород', 'Краснодар', 'Ростов-на-Дону', 'Уфа', 'Пермь', 'Челябинск', 'Омск', 'Красноярск', 'Воронеж', 'Волгоград', 'Тюмень', 'Иркутск', 'Хабаровск'],
+    citySearchTimer: null,
+    cityRequestId: 0,
+    eventCoords: null
   };
 
   const events = [
@@ -1018,6 +1031,8 @@
   ];
 
   let currentEvent = 0;
+  let eventMap = null;
+  let eventPlacemark = null;
 
   function openScreen(id, navEl) {
     screens.forEach((s) => s.classList.remove('active'));
@@ -1043,14 +1058,85 @@
 
 
 
+  function normalizeCityName(city) {
+    return city.trim().replace(/\s+/g, ' ');
+  }
+
+  function uniqueCities(cities) {
+    const seen = new Set();
+    return cities.filter((city) => {
+      const key = city.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function renderCityOptions(cities) {
+    const container = document.getElementById('cityOptions');
+    const items = uniqueCities(cities.map(normalizeCityName)).filter(Boolean);
+
+    container.innerHTML = '';
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'city-option';
+    allBtn.textContent = 'Все города';
+    allBtn.onclick = () => setCity('all');
+    container.appendChild(allBtn);
+
+    if (items.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'subtitle';
+      empty.style.padding = '8px 10px';
+      empty.textContent = 'Город не найден. Попробуйте другой запрос.';
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach((city) => {
+      const btn = document.createElement('button');
+      btn.className = 'city-option';
+      btn.dataset.cityOption = city;
+      btn.textContent = city;
+      btn.onclick = () => setCity(city);
+      container.appendChild(btn);
+    });
+  }
+
+  async function fetchRussianCities(query) {
+    const q = query.trim();
+    if (q.length < 2) return [];
+
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=ru&city=${encodeURIComponent(q)}&addressdetails=1&limit=25&accept-language=ru`;
+      const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!response.ok) return [];
+      const data = await response.json();
+      return uniqueCities(data.map((item) => item.address?.city || item.address?.town || item.address?.municipality || item.display_name?.split(',')?.[0] || '').filter(Boolean));
+    } catch (error) {
+      return [];
+    }
+  }
+
   function toggleCityMenu() {
-    document.getElementById('cityMenu').classList.toggle('active');
+    const menu = document.getElementById('cityMenu');
+    menu.classList.toggle('active');
+
+    if (menu.classList.contains('active')) {
+      filterCityOptions(document.getElementById('citySearchInput').value || '');
+    }
   }
 
   function setCity(city) {
     appState.selectedCity = city;
     document.getElementById('cityLabel').innerText = city === 'all' ? 'Все города' : city;
     document.getElementById('cityMenu').classList.remove('active');
+
+    if (city !== 'all' && !appState.cityCatalog.some((item) => item.toLowerCase() === city.toLowerCase())) {
+      appState.cityCatalog.unshift(city);
+      appState.cityCatalog = uniqueCities(appState.cityCatalog);
+    }
+
     applyCityFilters();
   }
 
@@ -1060,10 +1146,28 @@
 
   function filterCityOptions(query) {
     const q = query.trim().toLowerCase();
-    document.querySelectorAll('#cityOptions .city-option').forEach((option) => {
-      const text = option.dataset.cityOption.toLowerCase();
-      option.style.display = !q || text.includes(q) ? 'block' : 'none';
-    });
+    const local = appState.cityCatalog.filter((city) => city.toLowerCase().includes(q));
+
+    if (appState.citySearchTimer) clearTimeout(appState.citySearchTimer);
+
+    if (!q) {
+      renderCityOptions(appState.cityCatalog);
+      return;
+    }
+
+    renderCityOptions(local);
+
+    const requestId = ++appState.cityRequestId;
+    appState.citySearchTimer = setTimeout(async () => {
+      const online = await fetchRussianCities(query);
+      if (requestId !== appState.cityRequestId) return;
+
+      const merged = uniqueCities([...local, ...online]);
+      if (online.length) {
+        appState.cityCatalog = uniqueCities([...appState.cityCatalog, ...online]);
+      }
+      renderCityOptions(merged);
+    }, 250);
   }
 
   function filterSportOptions(query) {
@@ -1226,6 +1330,53 @@
     alert('Регистрация завершена! Теперь у вас активный профиль.');
   }
 
+
+  function openEventAddressOnMap() {
+    const event = events[currentEvent];
+    const query = encodeURIComponent(`${event.place}, ${event.city}`);
+    window.open(`https://yandex.ru/maps/?text=${query}`, '_blank', 'noopener');
+  }
+
+  function renderEventMapByAddress(event) {
+    const mapContainer = document.getElementById('eventMap');
+    if (!window.ymaps || !mapContainer) {
+      mapContainer.innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Карта временно недоступна.</div>';
+      return;
+    }
+
+    ymaps.ready(() => {
+      const address = `${event.place}, ${event.city}`;
+
+      if (!eventMap) {
+        eventMap = new ymaps.Map('eventMap', {
+          center: [55.751244, 37.618423],
+          zoom: 10,
+          controls: ['zoomControl']
+        });
+      }
+
+      ymaps.geocode(address, { results: 1 }).then((res) => {
+        const first = res.geoObjects.get(0);
+        if (!first) return;
+
+        const coords = first.geometry.getCoordinates();
+        appState.eventCoords = coords;
+
+        if (!eventPlacemark) {
+          eventPlacemark = new ymaps.Placemark(coords, { balloonContent: address }, { preset: 'islands#blueDotIcon' });
+          eventMap.geoObjects.add(eventPlacemark);
+        } else {
+          eventPlacemark.geometry.setCoordinates(coords);
+          eventPlacemark.properties.set('balloonContent', address);
+        }
+
+        eventMap.setCenter(coords, 14, { duration: 200 });
+      }).catch(() => {
+        mapContainer.innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Не удалось загрузить адрес на карте.</div>';
+      });
+    });
+  }
+
   function openEvent(index) {
     currentEvent = index;
     const event = events[index];
@@ -1240,6 +1391,7 @@
     document.getElementById('leaveActions').style.display = 'none';
 
     openScreen('event');
+    renderEventMapByAddress(event);
   }
 
   function participateInEvent() {
@@ -1437,6 +1589,7 @@
 
   setRegistrationRole('player');
   renderGameLists();
+  renderCityOptions(appState.cityCatalog);
   setCity('Тольятти');
   initCreateMap();
   openScreen('registration');
