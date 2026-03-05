@@ -34,15 +34,15 @@
     }
 
     :root {
-      --bg: #f3f4f6;
+      --bg: #f4f8ff;
       --surface: #ffffff;
       --text: #222;
       --muted: #7d7d82;
-      --line: #e7e7eb;
-      --premium: #c6a86a;
-      --premium-soft: #f8f2e8;
-      --chip: #f0f0f3;
-      --primary: #111216;
+      --line: #d7e3ff;
+      --premium: #2563eb;
+      --premium-soft: #e9f1ff;
+      --chip: #eef3ff;
+      --primary: #1f57e7;
       --danger-soft: #ffe6e0;
       --danger: #d6382f;
       --radius: 14px;
@@ -79,19 +79,79 @@
       font-weight: 600;
       border-bottom: 1px solid #f4f4f6;
       letter-spacing: -0.01em;
+      position: relative;
     }
+
+    .city-picker {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d3f8f;
+      cursor: pointer;
+    }
+
+    .city-menu {
+      position: absolute;
+      backdrop-filter: blur(3px);
+      top: 44px;
+      left: 12px;
+      z-index: 60;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+      min-width: 180px;
+      display: none;
+      padding: 4px;
+    }
+
+    .city-menu.active { display: block; }
+
+    .city-search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 12px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      background: #fafbfc;
+    }
+
+    .city-options {
+      max-height: 180px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .city-option {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .city-option:hover { background: #edf3ff; }
 
     .screen {
       display: none;
-      padding: 12px 14px;
-      gap: 10px;
+      padding: 14px 14px 12px;
+      gap: 12px;
       flex-direction: column;
     }
     .screen.active { display: flex; }
 
     .banner {
-      border-radius: 12px;
-      background: linear-gradient(120deg, #ebedf2, #f6f7fa);
+      border-radius: 14px;
+      background: linear-gradient(120deg, #deebff, #f2f7ff);
       height: 76px;
       display: grid;
       place-items: center;
@@ -102,7 +162,7 @@
 
     .title {
       margin-top: 2px;
-      font-size: 30px;
+      font-size: 32px;
       font-weight: 700;
       letter-spacing: -0.02em;
       line-height: 1.1;
@@ -114,9 +174,57 @@
       margin-top: 2px;
     }
 
-    .chips { display: flex; gap: 6px; overflow: auto; padding-bottom: 4px; }
+    .chips { display: flex; gap: 7px; overflow: auto; padding-bottom: 6px; }
+
+    .sport-search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 13px;
+      padding: 10px 12px;
+      background: #fafbfc;
+    }
+
+    .home-tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tools-btn {
+      border: 1px solid #c9d9ff;
+      background: #f0f5ff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .filter-group {
+      border-top: 1px solid #e6ecfb;
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    .filter-option {
+      display: flex;
+      border-bottom: 1px solid #eff3ff;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 8px 0;
+      color: #2e2f35;
+    }
+
+    .filter-option input { width: 16px; height: 16px; accent-color: #1f57e7; }
+
+    .filter-option:last-child { border-bottom: none; }
+
     .chip {
       border: 1px solid var(--line);
+      box-shadow: 0 1px 0 rgba(255,255,255,.7) inset;
       background: var(--chip);
       color: #4e4e53;
       border-radius: 8px;
@@ -125,26 +233,28 @@
       padding: 6px 10px;
       cursor: pointer;
     }
-    .chip.active { background: #101114; color: #fff; border-color: #101114; }
+    .chip.active { background: #245cff; color: #fff; border-color: #245cff; }
 
     .event-card,
     .trainer-card,
     .profile-card {
       border-radius: 16px;
-      background: linear-gradient(155deg, #ffffff, #fcfcfd);
-      border: 1px solid #ececf1;
+      background: linear-gradient(165deg, #ffffff, #f8fbff);
+      border: 1px solid #dfe9ff;
       padding: 13px;
-      box-shadow: 0 10px 24px rgba(17,18,22,0.06);
+      box-shadow: 0 8px 24px rgba(30,78,216,0.08);
     }
 
-    .event-card { cursor: pointer; }
+    .event-card { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+
+    .event-card:active { transform: scale(0.995); box-shadow: 0 5px 14px rgba(37,99,235,0.12); }
 
     .event-tag {
       display: inline-block;
       font-size: 11px;
-      color: #5b4a28;
+      color: #1d4ed8;
       background: var(--premium-soft);
-      border: 1px solid rgba(198,168,106,0.35);
+      border: 1px solid rgba(47,107,255,0.3);
       border-radius: 999px;
       padding: 4px 9px;
       margin-bottom: 8px;
@@ -163,11 +273,12 @@
 
     .filter-btn {
       position: fixed;
+      letter-spacing: -0.01em;
       left: 50%;
       transform: translateX(-50%);
       bottom: 88px;
       border: 1px solid rgba(198,168,106,0.45);
-      background: linear-gradient(160deg, #1f2024, #111216);
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
       color: #fff;
       border-radius: 999px;
       font-weight: 700;
@@ -198,8 +309,8 @@
       color: #9a9aa2;
       cursor: pointer;
     }
-    .nav-item .emoji { font-size: 18px; display: block; margin-bottom: 3px; }
-    .nav-item.active { color: #131419; font-weight: 700; }
+    .nav-item .emoji { font-size: 18px; display: block; margin-bottom: 3px; color: #1d3f8f; }
+    .nav-item.active { color: #1d4ed8; font-weight: 700; }
 
     .image-box {
       border-radius: 12px;
@@ -244,9 +355,9 @@
       width: 100%;
     }
     .btn.primary {
-      background: linear-gradient(160deg, #22242b, #101216);
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
       color: #fff;
-      border: 1px solid rgba(198,168,106,.35);
+      border: 1px solid rgba(47,107,255,.35);
     }
     .btn.danger-soft { background: var(--danger-soft); color: var(--danger); }
     .btn.gray { width: 46px; background: #1b1c21; color: #fff; }
@@ -257,6 +368,32 @@
       gap: 10px;
       align-items: center;
       margin-bottom: 8px;
+    }
+
+    .profile-head {
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .profile-identity {
+      margin-top: 10px;
+      margin-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      justify-content: flex-start;
+      min-height: 52px;
+    }
+
+    #profileName {
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    #profileAge {
+      margin: 0;
+      line-height: 1.1;
     }
 
     .avatar-photo {
@@ -278,7 +415,7 @@
       padding: 6px 9px;
       border-radius: 999px;
       background: var(--premium-soft);
-      border: 1px solid rgba(198,168,106,.35);
+      border: 1px solid rgba(47,107,255,.35);
     }
 
     .trainer-line,
@@ -316,10 +453,10 @@
     }
 
     .stat {
-      border: 1px solid #ececf1;
+      border: 1px solid #dbe6ff;
       border-radius: 12px;
       padding: 10px;
-      background: #fafafc;
+      background: #f5f8ff;
     }
 
     .stat b {
@@ -364,7 +501,7 @@
 
     .role-btn.active {
       color: #fff;
-      background: linear-gradient(160deg, #22242b, #101216);
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
       border-color: rgba(198,168,106,.45);
     }
 
@@ -452,8 +589,22 @@
 <body>
 <div class="app">
   <div class="topbar">
-    <div>📍 Тольятти ▾</div>
+    <button id="cityPickerBtn" class="city-picker" onclick="toggleCityMenu()">📍 <span id="cityLabel">Тольятти</span> ▾</button>
     <div>MateoSport</div>
+
+    <div id="cityMenu" class="city-menu">
+      <input id="citySearchInput" class="city-search" placeholder="Поиск города" oninput="filterCityOptions(this.value)" />
+      <div id="cityOptions" class="city-options">
+        <button class="city-option" data-city-option="all" onclick="setCity('all')">Все города</button>
+        <button class="city-option" data-city-option="Тольятти" onclick="setCity('Тольятти')">Тольятти</button>
+        <button class="city-option" data-city-option="Казань" onclick="setCity('Казань')">Казань</button>
+        <button class="city-option" data-city-option="Москва" onclick="setCity('Москва')">Москва</button>
+        <button class="city-option" data-city-option="Санкт-Петербург" onclick="setCity('Санкт-Петербург')">Санкт-Петербург</button>
+        <button class="city-option" data-city-option="Екатеринбург" onclick="setCity('Екатеринбург')">Екатеринбург</button>
+        <button class="city-option" data-city-option="Новосибирск" onclick="setCity('Новосибирск')">Новосибирск</button>
+        <button class="city-option" data-city-option="Самара" onclick="setCity('Самара')">Самара</button>
+      </div>
+    </div>
   </div>
 
 
@@ -510,23 +661,34 @@
     <div class="banner">Реклама/Баннер</div>
     <div class="title">События в городе</div>
 
+    <div class="home-tools">
+      <input id="sportSearchInput" class="sport-search" placeholder="Поиск вида спорта" oninput="setSportSearch(this.value)" />
+      <button class="tools-btn" onclick="openScreen('filters')">Фильтры</button>
+    </div>
+
     <div class="chips" id="sportChips">
-      <button class="chip active" data-sport="">⚙️ Все</button>
+      <button class="chip active" data-sport="">☰ Все</button>
       <button class="chip" data-sport="Футбол">⚽ Футбол</button>
       <button class="chip" data-sport="Теннис">🎾 Теннис</button>
       <button class="chip" data-sport="Хоккей">🏒 Хоккей</button>
       <button class="chip" data-sport="Бег">🏃 Бег</button>
       <button class="chip" data-sport="Баскетбол">🏀 Баскетбол</button>
+      <button class="chip" data-sport="Волейбол">🏐 Волейбол</button>
+      <button class="chip" data-sport="Плавание">🏊 Плавание</button>
+      <button class="chip" data-sport="Бокс">🥊 Бокс</button>
+      <button class="chip" data-sport="ММА">🥋 ММА</button>
+      <button class="chip" data-sport="Йога">🧘 Йога</button>
+      <button class="chip" data-sport="Кроссфит">🏋️ Кроссфит</button>
     </div>
 
-    <div class="event-card" data-sport="Футбол" onclick="openEvent(0)">
+    <div class="event-card" data-sport="Футбол" data-city="Тольятти" data-when="today" data-level="Любитель" onclick="openEvent(0)">
       <div class="event-tag">⚽ Футбол</div>
       <div class="event-name">Воскресная игра 5x5</div>
       <div class="event-meta">Сегодня, 19:00–20:30 · Манеж на Никольской</div>
       <div class="event-footer"><span>Нужно 12 игроков</span><span>300 ₽</span></div>
     </div>
 
-    <div class="event-card" data-sport="Теннис" onclick="openEvent(1)">
+    <div class="event-card" data-sport="Теннис" data-city="Казань" data-when="tomorrow" data-level="Новичок" onclick="openEvent(1)">
       <div class="event-tag">🎾 Теннис</div>
       <div class="event-name">Парный турнир</div>
       <div class="event-meta">Завтра, 18:00–20:00 · Корт Парк</div>
@@ -565,18 +727,37 @@
   <div class="screen" id="filters">
     <button class="back" onclick="openScreen('home')">← Назад</button>
     <div class="event-name" style="font-size:22px;">Фильтры</div>
-    <div class="section-label">Когда</div>
-    <label><input type="radio" name="date" checked /> Сегодня</label>
-    <label><input type="radio" name="date" /> Завтра</label>
 
-    <div class="section-label" style="margin-top:10px;">Вид спорта</div>
-    <label><input type="checkbox" checked /> Футбол</label>
-    <label><input type="checkbox" /> Теннис</label>
-    <label><input type="checkbox" /> Хоккей</label>
+    <div class="filter-group">
+      <div class="section-label">Когда</div>
+      <label class="filter-option"><span>Любая дата</span><input type="radio" name="when" value="all" checked /></label>
+      <label class="filter-option"><span>Сегодня</span><input type="radio" name="when" value="today" /></label>
+      <label class="filter-option"><span>Завтра</span><input type="radio" name="when" value="tomorrow" /></label>
+      <label class="filter-option"><span>На этой неделе</span><input type="radio" name="when" value="week" /></label>
+      <label class="filter-option"><span>На выходных</span><input type="radio" name="when" value="weekend" /></label>
+    </div>
+
+    <div class="filter-group">
+      <div class="section-label">Вид спорта</div>
+      <label class="filter-option"><span>Футбол</span><input type="checkbox" class="flt-sport" value="Футбол" /></label>
+      <label class="filter-option"><span>Теннис</span><input type="checkbox" class="flt-sport" value="Теннис" /></label>
+      <label class="filter-option"><span>Хоккей</span><input type="checkbox" class="flt-sport" value="Хоккей" /></label>
+      <label class="filter-option"><span>Бег</span><input type="checkbox" class="flt-sport" value="Бег" /></label>
+      <label class="filter-option"><span>Бокс</span><input type="checkbox" class="flt-sport" value="Бокс" /></label>
+    </div>
+
+    <div class="filter-group">
+      <div class="section-label">Уровень</div>
+      <label class="filter-option"><span>Новичок</span><input type="checkbox" class="flt-level" value="Новичок" /></label>
+      <label class="filter-option"><span>Любитель</span><input type="checkbox" class="flt-level" value="Любитель" /></label>
+      <label class="filter-option"><span>Эксперт</span><input type="checkbox" class="flt-level" value="Эксперт" /></label>
+      <label class="filter-option"><span>Профессионал</span><input type="checkbox" class="flt-level" value="Профессионал" /></label>
+    </div>
+
 
     <div class="actions">
-      <button class="btn" style="background:#f2f2f4;" onclick="openScreen('home')">Сбросить</button>
-      <button class="btn primary" onclick="openScreen('home')">Показать события</button>
+      <button class="btn" style="background:#f2f2f4;" onclick="resetAdvancedFilters()">Сбросить</button>
+      <button class="btn primary" onclick="applyAdvancedFilters()">Показать события</button>
     </div>
   </div>
 
@@ -606,12 +787,12 @@
   <div class="screen" id="trainers">
     <div class="title" style="font-size:28px;">Тренеры</div>
 
-    <div class="trainer-card">
+    <div class="trainer-card" data-city="Тольятти">
       <div class="trainer-head">
         <div class="avatar-photo">С</div>
         <div>
           <div class="event-name">Сергей Иванов</div>
-          <div class="subtitle">Футбол · UEFA C</div>
+          <div class="subtitle">Футбол · UEFA C · Тольятти</div>
         </div>
         <div class="rating">⭐ 4.9</div>
       </div>
@@ -622,12 +803,12 @@
       <a class="profile-link" href="https://t.me/sergey_coach" target="_blank" rel="noopener">@sergey_coach</a>
     </div>
 
-    <div class="trainer-card">
+    <div class="trainer-card" data-city="Казань">
       <div class="trainer-head">
         <div class="avatar-photo">А</div>
         <div>
           <div class="event-name">Анна Петрова</div>
-          <div class="subtitle">Теннис · ITF Level 1</div>
+          <div class="subtitle">Теннис · ITF Level 1 · Казань</div>
         </div>
         <div class="rating">⭐ 4.8</div>
       </div>
@@ -649,7 +830,7 @@
           <input id="profilePhotoInput" type="file" accept="image/*" style="display:none;" />
           <button class="profile-change-btn" onclick="openPhotoPicker()">Изменить фото</button>
         </div>
-        <div>
+        <div class="profile-identity">
           <div class="event-name" id="profileName">Иван Петров</div>
           <div class="subtitle" id="profileAge">24 года</div>
         </div>
@@ -675,8 +856,8 @@
 
   <div class="bottom-nav">
     <div class="nav-item active" data-link="home" onclick="openScreen('home', this)"><span class="emoji">★</span>События</div>
-    <div class="nav-item" data-link="trainers" onclick="openScreen('trainers', this)"><span class="emoji">✦</span>Тренеры</div>
-    <div class="nav-item" data-link="profile" onclick="openScreen('profile', this)"><span class="emoji">☆</span>Профиль</div>
+    <div class="nav-item" data-link="trainers" onclick="openScreen('trainers', this)"><span class="emoji">★</span>Тренеры</div>
+    <div class="nav-item" data-link="profile" onclick="openScreen('profile', this)"><span class="emoji">★</span>Профиль</div>
   </div>
 </div>
 
@@ -726,7 +907,11 @@
     registered: false,
     photoUrl: '',
     upcomingGames: ['Воскресная игра 5x5 · Сегодня 19:00'],
-    playedGames: ['Матч дворовых команд · 2 дня назад']
+    playedGames: ['Матч дворовых команд · 2 дня назад'],
+    selectedCity: 'Тольятти',
+    selectedSport: '',
+    sportSearch: '',
+    advanced: { when: 'all', sports: [], levels: [] }
   };
 
   const events = [
@@ -736,6 +921,7 @@
       place: 'Манеж на Никольской',
       members: 11,
       price: '300 ₽',
+      city: 'Тольятти',
       description: 'Игровая тренировка 5x5. Нужны ответственные игроки, приходите за 15 минут до начала. После оплаты бот приглашает вас в группу события.'
     },
     {
@@ -744,6 +930,7 @@
       place: 'Корт Парк',
       members: 8,
       price: 'Бесплатно',
+      city: 'Казань',
       description: 'Лёгкий турнир на вечер. Играем в формате пары на пары. Подходит для любого уровня.'
     }
   ];
@@ -756,7 +943,7 @@
 
     const hideFloating = ['event', 'filters', 'profile', 'trainers', 'create', 'registration'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
-    bottomNav.style.display = id === 'registration' ? 'none' : 'grid';
+    bottomNav.style.display = ['registration', 'filters'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
@@ -772,6 +959,76 @@
     }
   }
 
+
+
+  function toggleCityMenu() {
+    document.getElementById('cityMenu').classList.toggle('active');
+  }
+
+  function setCity(city) {
+    appState.selectedCity = city;
+    document.getElementById('cityLabel').innerText = city === 'all' ? 'Все города' : city;
+    document.getElementById('cityMenu').classList.remove('active');
+    applyCityFilters();
+  }
+
+  function applyCityFilters() {
+    applyAllFilters();
+  }
+
+  function filterCityOptions(query) {
+    const q = query.trim().toLowerCase();
+    document.querySelectorAll('#cityOptions .city-option').forEach((option) => {
+      const text = option.dataset.cityOption.toLowerCase();
+      option.style.display = !q || text.includes(q) ? 'block' : 'none';
+    });
+  }
+
+  function setSportSearch(value) {
+    appState.sportSearch = value.trim().toLowerCase();
+    applyAllFilters();
+  }
+
+  function applyAllFilters() {
+    document.querySelectorAll('#home .event-card').forEach((card) => {
+      const cityOk = appState.selectedCity === 'all' || card.dataset.city === appState.selectedCity;
+      const selectedSport = appState.selectedSport;
+      const chipOk = !selectedSport || card.dataset.sport === selectedSport;
+      const searchOk = !appState.sportSearch || card.dataset.sport.toLowerCase().includes(appState.sportSearch);
+
+      const whenOk = appState.advanced.when === 'all' || card.dataset.when === appState.advanced.when || (appState.advanced.when === 'week' && ['today','tomorrow','weekend'].includes(card.dataset.when)) || (appState.advanced.when === 'weekend' && card.dataset.when === 'weekend');
+      const sportAdvancedOk = appState.advanced.sports.length === 0 || appState.advanced.sports.includes(card.dataset.sport);
+      const levelOk = appState.advanced.levels.length === 0 || appState.advanced.levels.includes(card.dataset.level);
+
+      card.style.display = cityOk && chipOk && searchOk && whenOk && sportAdvancedOk && levelOk ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('#trainers .trainer-card').forEach((card) => {
+      const cityOk = appState.selectedCity === 'all' || card.dataset.city === appState.selectedCity;
+      card.style.display = cityOk ? 'block' : 'none';
+    });
+  }
+
+  function collectCheckedValues(selector) {
+    return [...document.querySelectorAll(selector)].filter((el) => el.checked).map((el) => el.value);
+  }
+
+  function applyAdvancedFilters() {
+    const when = document.querySelector('input[name="when"]:checked')?.value || 'all';
+    appState.advanced.when = when;
+    appState.advanced.sports = collectCheckedValues('.flt-sport');
+    appState.advanced.levels = collectCheckedValues('.flt-level');
+    applyAllFilters();
+    openScreen('home');
+  }
+
+  function resetAdvancedFilters() {
+    document.querySelector('input[name="when"][value="all"]').checked = true;
+    document.querySelectorAll('.flt-sport, .flt-level').forEach((el) => el.checked = false);
+    appState.advanced = { when: 'all', sports: [], levels: [] };
+    applyAllFilters();
+    openScreen('home');
+  }
 
   function setRegistrationRole(role) {
     appState.role = role;
@@ -970,6 +1227,14 @@
     fallback.style.display = 'none';
   });
 
+  document.addEventListener('click', (event) => {
+    const menu = document.getElementById('cityMenu');
+    const picker = document.getElementById('cityPickerBtn');
+    if (!menu.contains(event.target) && !picker.contains(event.target)) {
+      menu.classList.remove('active');
+    }
+  });
+
   document.querySelectorAll('.sheet-bg').forEach((sheet) => {
     sheet.addEventListener('click', (e) => {
       if (e.target === sheet) sheet.classList.remove('active');
@@ -978,6 +1243,7 @@
 
   setRegistrationRole('player');
   renderGameLists();
+  setCity('Тольятти');
   openScreen('registration');
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
@@ -987,10 +1253,8 @@
     document.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
     chip.classList.add('active');
 
-    const sport = chip.dataset.sport;
-    document.querySelectorAll('#home .event-card').forEach((card) => {
-      card.style.display = !sport || card.dataset.sport === sport ? 'block' : 'none';
-    });
+    appState.selectedSport = chip.dataset.sport;
+    applyAllFilters();
   });
 </script>
 </body>
