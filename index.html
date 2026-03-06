@@ -5,24 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MateoSport</title>
   <style>
+    /* Общий сброс стилей */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    /* Базовые стили тела */
     body {
       font-family: Arial, Helvetica, sans-serif;
       background-color: #f4f8ff;
       color: #333;
     }
 
+    /* Обертка приложения */
     .app {
       max-width: 430px;
       margin: 0 auto;
       padding: 1rem;
     }
 
+    /* Верхняя панель */
     header {
       display: flex;
       justify-content: space-between;
@@ -30,11 +34,12 @@
       margin-bottom: 1rem;
     }
 
-    h1 {
-      font-size: 1.5rem;
-      font-weight: bold;
+    /* Основное содержание */
+    main {
+      padding: 1rem;
     }
 
+    /* Экраны приложения */
     .screen {
       display: none;
       padding: 1rem;
@@ -44,11 +49,13 @@
       display: block;
     }
 
+    /* Списки событий и тренеров */
     .event-list, .trainer-list {
       display: grid;
       grid-gap: 1rem;
     }
 
+    /* Карточки событий и тренеров */
     .event-card, .trainer-card {
       background-color: #fff;
       border-radius: 8px;
@@ -56,6 +63,7 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    /* Ногти */
     footer {
       display: flex;
       justify-content: space-around;
@@ -68,6 +76,7 @@
       box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    /* Кнопки */
     button {
       background-color: #1f57e7;
       color: #fff;
@@ -81,22 +90,18 @@
       outline: none;
     }
 
+    /* Профильная информация */
     .profile-info p {
       margin-bottom: 0.5rem;
     }
 
-    /* Красивые акценты и оформление */
+    /* Акцентированные стили */
     .app {
       font-family: 'Roboto', sans-serif;
       color: #333;
     }
 
-    .topbar {
-      background-color: #1f57e7;
-      color: #fff;
-      padding: 1rem;
-    }
-
+    /* Фон карточек */
     .event-card::before {
       content: '';
       display: block;
@@ -117,7 +122,7 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Темная тема для эффекта премиум-класса */
+    /* Темная тема */
     body.dark-theme {
       background-color: #1f1f1f;
       color: #fff;
@@ -133,7 +138,7 @@
       color: #1f57e7;
     }
 
-    /* Анимация перехода между экранами */
+    /* Анимация переходов */
     .screen.fade-in {
       animation: fadeIn 0.5s forwards;
     }
@@ -179,7 +184,7 @@
       <button id="themeToggleBtn">🌞</button>
     </header>
 
-    <!-- Главное содержание -->
+    <!-- Главная страница -->
     <main class="screen active fade-in" id="home">
       <h2>Главные события поблизости</h2>
       <div class="event-list">
@@ -197,7 +202,25 @@
       </div>
     </main>
 
-    <!-- Экран тренеров -->
+    <!-- Регистрация -->
+    <div class="screen fade-in" id="registration">
+      <form action="#">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" required>
+        <button type="submit">Зарегистрироваться</button>
+      </form>
+    </div>
+
+    <!-- Создание события -->
+    <div class="screen fade-in" id="create-event">
+      <form action="#">
+        <label for="event-title">Название события:</label>
+        <input type="text" id="event-title" required>
+        <button type="submit">Создать событие</button>
+      </form>
+    </div>
+
+    <!-- Тренеры -->
     <div class="screen fade-in" id="trainers">
       <h2>Наши тренеры</h2>
       <div class="trainer-list">
@@ -245,7 +268,7 @@
       </div>
     </div>
 
-    <!-- Экран профиля -->
+    <!-- Профиль -->
     <div class="screen fade-in" id="profile">
       <h2>Ваш профиль</h2>
       <div class="profile-info">
