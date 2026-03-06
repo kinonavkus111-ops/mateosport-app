@@ -1,341 +1,1825 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MateoSport</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Общий сброс стилей */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    @font-face {
+      font-family: 'SF Pro Display';
+      src: local('SF Pro Display'), local('SFProDisplay-Regular');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
     }
 
-    /* Базовые стили тела */
+    @font-face {
+      font-family: 'SF Pro Display';
+      src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'SF Pro Display';
+      src: local('SF Pro Display Bold'), local('SFProDisplay-Bold');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #f4f8ff;
+      --surface: #ffffff;
+      --text: #222;
+      --muted: #7d7d82;
+      --line: #d7e3ff;
+      --premium: #2563eb;
+      --premium-soft: #e9f1ff;
+      --chip: #eef3ff;
+      --primary: #1f57e7;
+      --danger-soft: #ffe6e0;
+      --danger: #d6382f;
+      --radius: 14px;
+      --font-main: 'Manrope', 'Avenir Next', 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #f4f8ff;
-      color: #333;
+      margin: 0;
+      font-family: var(--font-main);
+      letter-spacing: -0.01em;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    /* Обертка приложения */
+    button, input, textarea, select { font-family: inherit; }
+
     .app {
       max-width: 430px;
       margin: 0 auto;
-      padding: 1rem;
+      min-height: 100vh;
+      background: var(--surface);
+      position: relative;
+      padding-bottom: 78px;
+      overflow: hidden;
     }
 
-    /* Верхняя панель */
-    header {
+    .topbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #f4f4f6;
+      letter-spacing: -0.01em;
+      position: relative;
     }
 
-    /* Основное содержание */
-    main {
-      padding: 1rem;
+    .city-picker {
+      border: none;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d3f8f;
+      cursor: pointer;
     }
 
-    /* Экраны приложения */
+    .city-menu {
+      position: absolute;
+      backdrop-filter: blur(3px);
+      top: 44px;
+      left: 12px;
+      z-index: 60;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+      min-width: 180px;
+      display: none;
+      padding: 4px;
+    }
+
+    .city-menu.active { display: block; }
+
+    .city-search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 12px;
+      padding: 8px 10px;
+      margin-bottom: 4px;
+      background: #fafbfc;
+    }
+
+    .city-options {
+      max-height: 180px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .city-option {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .city-option:hover { background: #edf3ff; }
+
     .screen {
       display: none;
-      padding: 1rem;
+      padding: 14px 14px 12px;
+      gap: 12px;
+      flex-direction: column;
     }
+    .screen.active { display: flex; }
 
-    .screen.active {
-      display: block;
-    }
-
-    /* Списки событий и тренеров */
-    .event-list, .trainer-list {
+    .banner {
+      border-radius: 14px;
+      background: linear-gradient(120deg, #deebff, #f2f7ff);
+      height: 76px;
       display: grid;
-      grid-gap: 1rem;
+      place-items: center;
+      color: #7f8086;
+      font-size: 13px;
+      border: 1px solid #eceef2;
     }
 
-    /* Карточки событий и тренеров */
-    .event-card, .trainer-card {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .title {
+      margin-top: 2px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
     }
 
-    /* Ногти */
-    footer {
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .chips { display: flex; gap: 7px; overflow: auto; padding-bottom: 6px; }
+
+    .sport-search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 13px;
+      padding: 10px 12px;
+      background: #fafbfc;
+    }
+
+    .home-tools {
       display: flex;
-      justify-content: space-around;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tools-btn {
+      border: 1px solid #c9d9ff;
+      background: #f0f5ff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .trainer-level-filter {
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .trainer-filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+    }
+
+    .star-btn {
+      border: none;
+      background: transparent;
+      font-size: 22px;
+      color: #c8cedf;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .star-btn.active { color: #f4b400; }
+
+    .filter-group {
+      border-top: 1px solid #e6ecfb;
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    .filter-option {
+      display: flex;
+      border-bottom: 1px solid #eff3ff;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      padding: 8px 0;
+      color: #2e2f35;
+    }
+
+    .filter-option input { width: 16px; height: 16px; accent-color: #1f57e7; }
+
+    .filter-option:last-child { border-bottom: none; }
+
+    .chip {
+      border: 1px solid var(--line);
+      box-shadow: 0 1px 0 rgba(255,255,255,.7) inset;
+      background: var(--chip);
+      color: #4e4e53;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .chip.active { background: #245cff; color: #fff; border-color: #245cff; }
+
+    .event-card,
+    .trainer-card,
+    .profile-card {
+      border-radius: 16px;
+      background: linear-gradient(165deg, #ffffff, #f8fbff);
+      border: 1px solid #dfe9ff;
+      padding: 13px;
+      box-shadow: 0 8px 24px rgba(30,78,216,0.08);
+    }
+
+    .event-card { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+
+    .event-card:active { transform: scale(0.995); box-shadow: 0 5px 14px rgba(37,99,235,0.12); }
+
+    .event-tag {
+      display: inline-block;
+      font-size: 11px;
+      color: #1d4ed8;
+      background: var(--premium-soft);
+      border: 1px solid rgba(47,107,255,0.3);
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .event-name { font-weight: 800; font-size: 16px; letter-spacing: -0.015em; }
+    .event-meta { font-size: 12px; color: #7d7d84; margin: 4px 0; }
+    .event-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #7f8086;
+      margin-top: 8px;
+    }
+
+    .filter-btn {
+      position: fixed;
+      letter-spacing: -0.01em;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 88px;
+      border: 1px solid rgba(198,168,106,0.45);
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
+      color: #fff;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 11px 16px;
+      box-shadow: 0 12px 20px rgba(0,0,0,.22);
+      z-index: 20;
+      cursor: pointer;
+    }
+
+    .bottom-nav {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: #fff;
-      padding: 0.5rem;
-      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(430px, 100%);
+      background: linear-gradient(180deg, #ffffff, #fbfbfd);
+      border-top: 1px solid #ececf1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 6px 8px 10px;
+      z-index: 30;
     }
 
-    /* Кнопки */
-    button {
-      background-color: #1f57e7;
-      color: #fff;
+    .nav-item {
+      text-align: center;
+      font-size: 11px;
+      color: #9a9aa2;
+      cursor: pointer;
+    }
+    .nav-item .emoji { font-size: 18px; display: block; margin-bottom: 3px; color: #1d3f8f; }
+    .nav-item.active { color: #1d4ed8; font-weight: 700; }
+
+    .image-box {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #f0f1f4;
+      color: #9b9ca2;
+      height: 120px;
+      display: grid;
+      place-items: center;
+    }
+
+    .avatars { display: flex; align-items: center; margin: 8px 0 10px; }
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #15161a;
+      border: 2px solid #fff;
+      margin-right: -7px;
+    }
+    .avatar.plus { background: #0f1014; color: #fff; display: grid; place-items: center; }
+
+    .section-label { margin-top: 4px; font-size: 12px; font-weight: 600; }
+
+    .route-box, .desc-box {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #f3f4f7;
+      padding: 10px;
+      font-size: 13px;
+      color: #4f5056;
+      line-height: 1.35;
+    }
+
+    .route-box {
+      cursor: pointer;
+      background: #eef3ff;
+      font-weight: 700;
+      color: #2d4ea9;
+    }
+
+    .event-map {
+      width: 100%;
+      height: 170px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #eef3ff;
+      margin-top: 6px;
+    }
+
+    .actions { display: flex; gap: 8px; margin-top: 10px; }
+    .btn {
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 700;
       cursor: pointer;
+      width: 100%;
     }
-
-    button:focus {
-      outline: none;
-    }
-
-    /* Профильная информация */
-    .profile-info p {
-      margin-bottom: 0.5rem;
-    }
-
-    /* Акцентированные стили */
-    .app {
-      font-family: 'Roboto', sans-serif;
-      color: #333;
-    }
-
-    /* Фон карточек */
-    .event-card::before {
-      content: '';
-      display: block;
-      padding-top: 100%;
-      background-image: url('https://via.placeholder.com/300x200.png?text=MateoSport');
-      background-size: cover;
-      border-radius: 8px;
-      margin-bottom: 0.5rem;
-    }
-
-    .trainer-card::before {
-      content: '';
-      display: block;
-      padding-top: 100%;
-      background-image: url('https://via.placeholder.com/300x200.png?text=Trainer');
-      background-size: cover;
-      border-radius: 8px;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Темная тема */
-    body.dark-theme {
-      background-color: #1f1f1f;
+    .btn.primary {
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
       color: #fff;
+      border: 1px solid rgba(47,107,255,.35);
     }
+    .btn.danger-soft { background: var(--danger-soft); color: var(--danger); }
+    .btn.gray { width: 46px; background: #1b1c21; color: #fff; }
 
-    body.dark-theme .event-card, body.dark-theme .trainer-card {
-      background-color: #333;
-      color: #fff;
-    }
-
-    body.dark-theme button {
-      background-color: #fff;
-      color: #1f57e7;
-    }
-
-    /* Анимация переходов */
-    .screen.fade-in {
-      animation: fadeIn 0.5s forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* Геолокация и отзывы */
-    .review-form {
-      margin-top: 1rem;
-    }
-
-    .stars-input {
+    .trainer-head,
+    .profile-head {
       display: flex;
-      gap: 0.5rem;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .stars-input label {
+    .profile-head {
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .profile-identity {
+      margin-top: 10px;
+      margin-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      justify-content: flex-start;
+      min-height: 52px;
+    }
+
+    #profileName {
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    #profileAge {
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .avatar-photo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, #1e2026, #0d0e12);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .rating {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--premium-soft);
+      border: 1px solid rgba(47,107,255,.35);
+    }
+
+    .trainer-line,
+    .profile-line { font-size: 13px; color: #4f5055; margin-bottom: 5px; }
+
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid rgba(198,168,106,.5);
+      object-fit: cover;
+      display: none;
+      background: #fff;
+    }
+
+    .profile-avatar.active { display: block; }
+
+    .profile-change-btn {
+      margin-top: 6px;
+      border: 1px solid var(--line);
+      background: #f8f8fa;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
       cursor: pointer;
     }
 
-    .stars-input input {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .stat {
+      border: 1px solid #dbe6ff;
+      border-radius: 12px;
+      padding: 10px;
+      background: #f5f8ff;
+    }
+
+    .stat b {
+      display: block;
+      font-size: 18px;
+      color: #121318;
+      margin-bottom: 2px;
+    }
+
+    .list-title {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #2b2c31;
+    }
+
+    .game-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: #52545c;
+      line-height: 1.45;
+    }
+
+
+    .role-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .role-btn {
+      border: 1px solid var(--line);
+      background: #f8f8fa;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .role-btn.active {
+      color: #fff;
+      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
+      border-color: rgba(198,168,106,.45);
+    }
+
+    .input-field {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px;
+      font-size: 14px;
+      background: #fff;
+      margin-bottom: 8px;
+    }
+
+    .create-photo-box {
+      border-radius: 12px;
+      border: 1px dashed #b9ccfb;
+      background: #f4f8ff;
+      height: 140px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: #6173a5;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .create-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       display: none;
     }
 
-    .stars-input span {
-      font-size: 2rem;
-      color: gold;
+    .create-photo-box img.active { display: block; }
+
+    .create-map {
+      width: 100%;
+      height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #eef3ff;
+      margin-top: 6px;
     }
 
-    .stars-input input:checked ~ span {
-      color: darkgoldenrod;
+    .create-hint {
+      font-size: 12px;
+      color: #6e7384;
+      margin-top: -2px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #4f5058;
+      margin-bottom: 6px;
+    }
+
+    .check-row input { margin-top: 2px; }
+
+    .legal-link {
+      color: #2d5b9a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .profile-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #2d5b9a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .hidden { display: none; }
+
+    .back {
+      border: none;
+      background: none;
+      padding: 0;
+      font-size: 14px;
+      color: #3d3e44;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 6px;
+    }
+
+    .sheet-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.24);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 50;
+    }
+    .sheet-bg.active { display: flex; }
+
+    .sheet {
+      width: min(430px, 100%);
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sheet-title { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .sheet-sub { text-align: center; font-size: 12px; color: #81838c; margin-bottom: 10px; }
+
+    .center-state {
+      min-height: 45vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #7a7b82;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <!-- Верхняя панель -->
-    <header class="topbar">
-      <h1>MateoSport</h1>
-      <button id="themeToggleBtn">🌞</button>
-    </header>
+<div class="app">
+  <div class="topbar">
+    <button id="cityPickerBtn" class="city-picker" onclick="toggleCityMenu()">📍 <span id="cityLabel">Тольятти</span> ▾</button>
+    <div>MateoSport</div>
 
-    <!-- Главная страница -->
-    <main class="screen active fade-in" id="home">
-      <h2>Главные события поблизости</h2>
-      <div class="event-list">
-        <!-- Примеры карточек событий -->
-        <article class="event-card">
-          <h3>Чемпионат по футболу</h3>
-          <p>19:00–20:30</p>
-          <small>Центральный стадион</small>
-        </article>
-        <article class="event-card">
-          <h3>Забег на 10 км</h3>
-          <p>14:00–16:00</p>
-          <small>Городская набережная</small>
-        </article>
-      </div>
-    </main>
-
-    <!-- Регистрация -->
-    <div class="screen fade-in" id="registration">
-      <form action="#">
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" required>
-        <button type="submit">Зарегистрироваться</button>
-      </form>
+    <div id="cityMenu" class="city-menu">
+      <input id="citySearchInput" class="city-search" placeholder="Поиск города" oninput="filterCityOptions(this.value)" />
+      <div id="cityOptions" class="city-options"></div>
     </div>
-
-    <!-- Создание события -->
-    <div class="screen fade-in" id="create-event">
-      <form action="#">
-        <label for="event-title">Название события:</label>
-        <input type="text" id="event-title" required>
-        <button type="submit">Создать событие</button>
-      </form>
-    </div>
-
-    <!-- Тренеры -->
-    <div class="screen fade-in" id="trainers">
-      <h2>Наши тренеры</h2>
-      <div class="trainer-list">
-        <!-- Примеры карточек тренеров -->
-        <article class="trainer-card">
-          <h3>Александр Петров</h3>
-          <p>Футбол | Опыт: 5 лет</p>
-          <div class="review-form">
-            <div class="stars-input">
-              <input type="radio" id="star5" name="rate" value="5"/>
-              <label for="star5"><span>★</span></label>
-              <input type="radio" id="star4" name="rate" value="4"/>
-              <label for="star4"><span>★</span></label>
-              <input type="radio" id="star3" name="rate" value="3"/>
-              <label for="star3"><span>★</span></label>
-              <input type="radio" id="star2" name="rate" value="2"/>
-              <label for="star2"><span>★</span></label>
-              <input type="radio" id="star1" name="rate" value="1"/>
-              <label for="star1"><span>★</span></label>
-            </div>
-            <textarea placeholder="Оставьте отзыв"></textarea>
-            <button>Отправить</button>
-          </div>
-        </article>
-        <article class="trainer-card">
-          <h3>Ольга Смирнова</h3>
-          <p>Теннис | Опыт: 3 года</p>
-          <div class="review-form">
-            <div class="stars-input">
-              <input type="radio" id="star5-trainer2" name="rate-trainer2" value="5"/>
-              <label for="star5-trainer2"><span>★</span></label>
-              <input type="radio" id="star4-trainer2" name="rate-trainer2" value="4"/>
-              <label for="star4-trainer2"><span>★</span></label>
-              <input type="radio" id="star3-trainer2" name="rate-trainer2" value="3"/>
-              <label for="star3-trainer2"><span>★</span></label>
-              <input type="radio" id="star2-trainer2" name="rate-trainer2" value="2"/>
-              <label for="star2-trainer2"><span>★</span></label>
-              <input type="radio" id="star1-trainer2" name="rate-trainer2" value="1"/>
-              <label for="star1-trainer2"><span>★</span></label>
-            </div>
-            <textarea placeholder="Оставьте отзыв"></textarea>
-            <button>Отправить</button>
-          </div>
-        </article>
-      </div>
-    </div>
-
-    <!-- Профиль -->
-    <div class="screen fade-in" id="profile">
-      <h2>Ваш профиль</h2>
-      <div class="profile-info">
-        <p>Имя: Петр Сергеевич</p>
-        <p>Возраст: 25 лет</p>
-        <p>Активность: Участвовал в 10 соревнованиях</p>
-      </div>
-    </div>
-
-    <!-- Нижняя навигация -->
-    <footer class="bottom-nav">
-      <button data-target="home">События</button>
-      <button data-target="trainers">Тренеры</button>
-      <button data-target="profile">Профиль</button>
-    </footer>
   </div>
 
-  <script>
-    const screens = document.querySelectorAll('.screen');
-    const navButtons = document.querySelectorAll('button[data-target]');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-    // Управление активным экраном
-    navButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const target = button.getAttribute('data-toggle') || button.getAttribute('data-target');
-        screens.forEach(screen => {
-          screen.classList.remove('active');
-        });
-        document.getElementById(target).classList.add('active');
-      });
+  <div class="screen active" id="registration">
+    <div class="title" style="font-size:28px;">Регистрация</div>
+    <div class="subtitle">Заполни анкету, чтобы участвовать в событиях и получать приглашения.</div>
+
+    <div class="profile-card">
+      <div class="role-switch">
+        <button id="rolePlayerBtn" class="role-btn active" onclick="setRegistrationRole('player')">Игрок</button>
+        <button id="roleTrainerBtn" class="role-btn" onclick="setRegistrationRole('trainer')">Тренер</button>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; margin:10px 0;">
+        <div class="avatar-photo" id="regPhotoFallback">+</div>
+        <img id="regPhotoPreview" class="profile-avatar" alt="Фото" />
+        <div>
+          <input id="regPhotoInput" type="file" accept="image/*" style="display:none;" />
+          <button class="profile-change-btn" onclick="openRegPhotoPicker()">Загрузить фото</button>
+        </div>
+      </div>
+
+      <input id="regName" class="input-field" placeholder="Имя" />
+      <input id="regAge" class="input-field" type="number" placeholder="Возраст" />
+      <input id="regSport" class="input-field" placeholder="Вид спорта" />
+      <input id="regTgNick" class="input-field" placeholder="Ник в Telegram (без @)" />
+
+      <div id="playerFields">
+        <input id="regPlayerLevel" class="input-field" placeholder="Уровень игры" />
+        <input id="regPlayerYears" class="input-field" type="number" placeholder="Сколько лет в спорте" />
+      </div>
+
+      <div id="trainerFields" class="hidden">
+        <input id="regTrainerExperience" class="input-field" placeholder="Опыт работы тренером (лет)" />
+        <textarea id="regTrainerAchievements" class="input-field" placeholder="Достижения"></textarea>
+        <textarea id="regTrainerEducation" class="input-field" placeholder="Где получал знания"></textarea>
+        <textarea id="regTrainerVision" class="input-field" placeholder="Взгляд на тренировки"></textarea>
+      </div>
+
+      <label class="check-row">
+        <input id="agreeTerms" type="checkbox" />
+        <span>Я принимаю <a class="legal-link" href="#" onclick="alert('Пользовательское соглашение будет открыто здесь.'); return false;">пользовательское соглашение</a>.</span>
+      </label>
+      <label class="check-row">
+        <input id="agreeData" type="checkbox" />
+        <span>Я согласен на <a class="legal-link" href="#" onclick="alert('Согласие на обработку данных будет открыто здесь.'); return false;">обработку персональных данных</a>.</span>
+      </label>
+
+      <button class="btn primary" onclick="registerUser()">Завершить регистрацию</button>
+    </div>
+  </div>
+
+  <div class="screen" id="home">
+    <div class="banner">Реклама/Баннер</div>
+    <div class="title">События в городе</div>
+
+    <div class="home-tools">
+      <input id="sportSearchInput" class="sport-search" placeholder="Поиск вида спорта" oninput="setSportSearch(this.value)" />
+      <button class="tools-btn" onclick="openScreen('filters')">Фильтры</button>
+    </div>
+
+    <div class="chips" id="sportChips">
+      <button class="chip active" data-sport="">☰ Все</button>
+      <button class="chip" data-sport="Футбол">⚽ Футбол</button>
+      <button class="chip" data-sport="Теннис">🎾 Теннис</button>
+      <button class="chip" data-sport="Хоккей">🏒 Хоккей</button>
+      <button class="chip" data-sport="Бег">🏃 Бег</button>
+      <button class="chip" data-sport="Баскетбол">🏀 Баскетбол</button>
+      <button class="chip" data-sport="Волейбол">🏐 Волейбол</button>
+      <button class="chip" data-sport="Плавание">🏊 Плавание</button>
+      <button class="chip" data-sport="Бокс">🥊 Бокс</button>
+      <button class="chip" data-sport="ММА">🥋 ММА</button>
+      <button class="chip" data-sport="Йога">🧘 Йога</button>
+      <button class="chip" data-sport="Кроссфит">🏋️ Кроссфит</button>
+    </div>
+
+    <div class="event-card" data-sport="Футбол" data-city="Тольятти" data-when="today" data-level="Любитель" onclick="openEvent(0)">
+      <div class="event-tag">⚽ Футбол</div>
+      <div class="event-name">Воскресная игра 5x5</div>
+      <div class="event-meta">Сегодня, 19:00–20:30 · Манеж на Никольской</div>
+      <div class="event-footer"><span>Нужно 12 игроков</span><span>300 ₽</span></div>
+    </div>
+
+    <div class="event-card" data-sport="Теннис" data-city="Казань" data-when="tomorrow" data-level="Новичок" onclick="openEvent(1)">
+      <div class="event-tag">🎾 Теннис</div>
+      <div class="event-name">Парный турнир</div>
+      <div class="event-meta">Завтра, 18:00–20:00 · Корт Парк</div>
+      <div class="event-footer"><span>Нужно 8 игроков</span><span>Бесплатно</span></div>
+    </div>
+  </div>
+
+  <div class="screen" id="event">
+    <button class="back" onclick="openScreen('home')">← Назад</button>
+    <div class="image-box">🖼️ Фото события</div>
+    <div class="subtitle" id="eventMeta"></div>
+    <div class="event-name" id="eventTitle" style="font-size: 32px; line-height: 1.05; margin-top:4px;"></div>
+    <div class="event-meta" style="color:#15161a;font-weight:600;">👤👤 Участников: <span id="memberCount">9</span></div>
+
+    <div class="avatars">
+      <div class="avatar"></div><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div>
+      <div class="avatar plus">+</div>
+    </div>
+
+    <div class="event-meta">📍 <span id="eventPlace"></span></div>
+    <div class="route-box" onclick="openEventAddressOnMap()">Открыть адрес на карте</div>
+    <div id="eventMap" class="event-map"></div>
+    <div class="section-label">Описание</div>
+    <div class="desc-box" id="eventDescription"></div>
+
+    <div class="actions" id="joinActions">
+      <button class="btn primary" onclick="participateInEvent()">Участвую</button>
+      <button class="btn gray" onclick="toggleShare(true)">🔗</button>
+    </div>
+
+    <div class="actions" id="leaveActions" style="display:none;">
+      <button class="btn danger-soft" onclick="toggleCancel(true)">Отменить участие</button>
+      <button class="btn gray" onclick="toggleShare(true)">🔗</button>
+    </div>
+  </div>
+
+  <div class="screen" id="filters">
+    <button class="back" onclick="openScreen('home')">← Назад</button>
+    <div class="event-name" style="font-size:22px;">Фильтры</div>
+
+    <div class="filter-group">
+      <div class="section-label">Когда</div>
+      <label class="filter-option"><span>Любая дата</span><input type="radio" name="when" value="all" checked /></label>
+      <label class="filter-option"><span>Сегодня</span><input type="radio" name="when" value="today" /></label>
+      <label class="filter-option"><span>Завтра</span><input type="radio" name="when" value="tomorrow" /></label>
+      <label class="filter-option"><span>На этой неделе</span><input type="radio" name="when" value="week" /></label>
+      <label class="filter-option"><span>На выходных</span><input type="radio" name="when" value="weekend" /></label>
+    </div>
+
+    <div class="filter-group">
+      <div class="section-label">Вид спорта</div>
+      <input id="sportFilterSearch" class="input-field" placeholder="Поиск спорта" oninput="filterSportOptions(this.value)" />
+      <label class="filter-option flt-sport-row" data-sport-label="футбол"><span>Футбол</span><input type="checkbox" class="flt-sport" value="Футбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="теннис"><span>Теннис</span><input type="checkbox" class="flt-sport" value="Теннис" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="хоккей"><span>Хоккей</span><input type="checkbox" class="flt-sport" value="Хоккей" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="бег"><span>Бег</span><input type="checkbox" class="flt-sport" value="Бег" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="бокс"><span>Бокс</span><input type="checkbox" class="flt-sport" value="Бокс" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="баскетбол"><span>Баскетбол</span><input type="checkbox" class="flt-sport" value="Баскетбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="волейбол"><span>Волейбол</span><input type="checkbox" class="flt-sport" value="Волейбол" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="плавание"><span>Плавание</span><input type="checkbox" class="flt-sport" value="Плавание" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="падел"><span>Падел</span><input type="checkbox" class="flt-sport" value="Падел" /></label>
+      <label class="filter-option flt-sport-row" data-sport-label="настольный теннис"><span>Настольный теннис</span><input type="checkbox" class="flt-sport" value="Настольный теннис" /></label>
+    </div>
+
+    <div class="filter-group">
+      <div class="section-label">Уровень</div>
+      <label class="filter-option"><span>Новичок</span><input type="checkbox" class="flt-level" value="Новичок" /></label>
+      <label class="filter-option"><span>Любитель</span><input type="checkbox" class="flt-level" value="Любитель" /></label>
+      <label class="filter-option"><span>Эксперт</span><input type="checkbox" class="flt-level" value="Эксперт" /></label>
+      <label class="filter-option"><span>Профессионал</span><input type="checkbox" class="flt-level" value="Профессионал" /></label>
+    </div>
+
+
+    <div class="actions">
+      <button class="btn" style="background:#f2f2f4;" onclick="resetAdvancedFilters()">Сбросить</button>
+      <button class="btn primary" onclick="applyAdvancedFilters()">Показать события</button>
+    </div>
+  </div>
+
+
+  <div class="screen" id="create">
+    <button class="back" onclick="toggleCreateCancel(true)">← Назад</button>
+    <div class="event-name" style="font-size:22px;">Создание события</div>
+
+    <div class="create-photo-box" onclick="openCreatePhotoPicker()">
+      <span id="createPhotoPlaceholder">Нажми, чтобы добавить фото события</span>
+      <img id="createPhotoPreview" alt="Фото события" />
+    </div>
+    <input id="createPhotoInput" type="file" accept="image/*" style="display:none;" />
+    <input id="createTitle" class="input-field" placeholder="Название события" value="Saturday Morning Basketball" maxlength="150" />
+    <textarea id="createDescription" class="input-field" style="min-height:74px;" placeholder="Описание (опционально)"></textarea>
+    <input id="createSport" class="input-field" list="sportsList" placeholder="Вид спорта (можно любой)" />
+    <datalist id="sportsList">
+      <option value="Футбол"></option>
+      <option value="Теннис"></option>
+      <option value="Баскетбол"></option>
+      <option value="Волейбол"></option>
+      <option value="Хоккей"></option>
+      <option value="Бег"></option>
+      <option value="Падел"></option>
+    </datalist>
+    <select id="createFormat" class="input-field">
+      <option value="">Выбери формат</option>
+      <option>5x5</option>
+      <option>7x7</option>
+      <option>11x11</option>
+      <option>Парные</option>
+      <option>Индивидуальная тренировка</option>
+      <option>Свободный формат</option>
+    </select>
+    <input id="createCustomFormat" class="input-field" placeholder="Если другой формат — напиши (например: 3х3, круговой, 2 сета)" />
+    <input id="createPeople" class="input-field" placeholder="Сколько нужно человек (например: нужно ещё 6 игроков)" />
+    <select id="createLevel" class="input-field">
+      <option value="">Уровень участников</option>
+      <option>Новичок</option>
+      <option>Любитель</option>
+      <option>Продвинутый</option>
+      <option>Профессионал</option>
+      <option>Смешанный уровень</option>
+    </select>
+
+    <div class="actions" style="margin-top:0;">
+      <input id="createDate" class="input-field" style="margin-bottom:0;" placeholder="Дата" />
+      <input id="createTime" class="input-field" style="margin-bottom:0;" placeholder="Время" />
+    </div>
+
+    <input id="createLocation" class="input-field" placeholder="Местоположение" value="Манеж на Никольской" />
+    <div class="create-hint">Поставь точку на карте — координаты добавятся автоматически.</div>
+    <div id="createMap" class="create-map"></div>
+    <div class="event-meta">Платная площадка · Закрытое событие (настраивается в боте)</div>
+
+    <button class="btn primary" onclick="createEvent()">Создать</button>
+  </div>
+
+  <div class="screen" id="trainers">
+    <div class="home-tools" style="margin-bottom:2px;">
+      <div class="title" style="font-size:28px; margin:0;">Тренеры</div>
+      <button class="tools-btn" onclick="toggleTrainerFilterSheet(true)">Фильтры</button>
+    </div>
+
+    <div class="home-tools">
+      <div class="trainer-filter-grid">
+        <select id="trainerSportFilter" class="trainer-level-filter" onchange="setTrainerSport(this.value)">
+          <option value="">Любой вид спорта</option>
+          <option value="Футбол">Футбол</option>
+          <option value="Теннис">Теннис</option>
+          <option value="Хоккей">Хоккей</option>
+          <option value="Бег">Бег</option>
+          <option value="Бокс">Бокс</option>
+          <option value="Баскетбол">Баскетбол</option>
+          <option value="Волейбол">Волейбол</option>
+          <option value="Плавание">Плавание</option>
+          <option value="Падел">Падел</option>
+          <option value="Настольный теннис">Настольный теннис</option>
+        </select>
+
+        <select id="trainerLevelFilter" class="trainer-level-filter" onchange="setTrainerLevel(this.value)">
+          <option value="">Любой уровень</option>
+          <option value="Новичок">Новичок</option>
+          <option value="Любитель">Любитель</option>
+          <option value="Продвинутый">Продвинутый</option>
+          <option value="Профессионал">Профессионал</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="home-tools" style="margin-top:-2px;">
+      <select id="trainerPriceFilter" class="trainer-level-filter" onchange="setTrainerPrice(this.value)">
+        <option value="">Любая стоимость</option>
+        <option value="low">до 1500 ₽</option>
+        <option value="mid">1500–2500 ₽</option>
+        <option value="high">от 2500 ₽</option>
+      </select>
+    </div>
+
+    <div class="trainer-card" data-city="Тольятти" data-sport="Футбол" data-level="Продвинутый" data-price="1500" data-rating="4.9">
+      <div class="trainer-head">
+        <div class="avatar-photo">С</div>
+        <div>
+          <div class="event-name">Сергей Иванов</div>
+          <div class="subtitle">Футбол · UEFA C · Тольятти</div>
+        </div>
+        <div class="rating">⭐ 4.9</div>
+      </div>
+      <div class="trainer-line">Стаж тренерской карьеры: 8 лет</div>
+      <div class="trainer-line">Уровень: продвинутый / профессионал</div>
+      <div class="trainer-line">Взгляд на тренировки: дисциплина + игровая свобода</div>
+      <div class="trainer-line">Результаты: 3 команды-призёра городских лиг</div>
+      <div class="trainer-line"><b>Цена:</b> от 1500 ₽ / занятие</div>
+      <a class="profile-link" href="https://t.me/sergey_coach" target="_blank" rel="noopener">@sergey_coach</a>
+    </div>
+
+    <div class="trainer-card" data-city="Казань" data-sport="Теннис" data-level="Любитель" data-price="2000" data-rating="4.8">
+      <div class="trainer-head">
+        <div class="avatar-photo">А</div>
+        <div>
+          <div class="event-name">Анна Петрова</div>
+          <div class="subtitle">Теннис · ITF Level 1 · Казань</div>
+        </div>
+        <div class="rating">⭐ 4.8</div>
+      </div>
+      <div class="trainer-line">Стаж тренерской карьеры: 6 лет</div>
+      <div class="trainer-line">Уровень: новичок / любитель</div>
+      <div class="trainer-line">Подход: техника + выносливость + ментальная устойчивость</div>
+      <div class="trainer-line">Работа с начинающими и любителями</div>
+      <div class="trainer-line"><b>Цена:</b> от 2000 ₽ / занятие</div>
+      <a class="profile-link" href="https://t.me/anna_tennis" target="_blank" rel="noopener">@anna_tennis</a>
+    </div>
+
+    <div class="trainer-card" data-city="Москва" data-sport="Баскетбол" data-level="Профессионал" data-price="2500" data-rating="5.0">
+      <div class="trainer-head">
+        <div class="avatar-photo">М</div>
+        <div>
+          <div class="event-name">Михаил Орлов</div>
+          <div class="subtitle">Баскетбол · FIBA Coach · Москва</div>
+        </div>
+        <div class="rating">⭐ 5.0</div>
+      </div>
+      <div class="trainer-line">Стаж тренерской карьеры: 10 лет</div>
+      <div class="trainer-line">Уровень: продвинутый / профессионал</div>
+      <div class="trainer-line">Фокус: бросок, тактика, физподготовка, индивидуальная работа</div>
+      <div class="trainer-line"><b>Цена:</b> от 2500 ₽ / занятие</div>
+      <a class="profile-link" href="https://t.me/mike_basket" target="_blank" rel="noopener">@mike_basket</a>
+    </div>
+  </div>
+
+  <div class="screen" id="profile">
+    <div class="title" style="font-size:28px;">Профиль</div>
+    <div class="profile-card">
+      <div class="profile-head">
+        <div>
+          <div class="avatar-photo" id="profileAvatarFallback">И</div>
+          <img id="profileAvatarImage" class="profile-avatar" alt="Фото профиля" />
+          <input id="profilePhotoInput" type="file" accept="image/*" style="display:none;" />
+          <button class="profile-change-btn" onclick="openPhotoPicker()">Изменить фото</button>
+        </div>
+        <div class="profile-identity">
+          <div class="event-name" id="profileName">Иван Петров</div>
+          <div class="subtitle" id="profileAge">24 года</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat"><b>4.8</b><span class="subtitle">Рейтинг игрока</span></div>
+        <div class="stat"><b>127</b><span class="subtitle">Сыграно игр</span></div>
+      </div>
+
+      <div id="profileDetails"></div>
+      <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example</a>
+
+      <div class="list-title">Предстоящие игры</div>
+      <ul class="game-list" id="upcomingGamesList"></ul>
+
+      <div class="list-title">Сыгранные игры</div>
+      <ul class="game-list" id="playedGamesList"></ul>
+    </div>
+  </div>
+
+  <button class="filter-btn" id="floatingBtn" onclick="openScreen('create')">+ Разместить</button>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" data-link="home" onclick="openScreen('home', this)"><span class="emoji">★</span>События</div>
+    <div class="nav-item" data-link="trainers" onclick="openScreen('trainers', this)"><span class="emoji">★</span>Тренеры</div>
+    <div class="nav-item" data-link="profile" onclick="openScreen('profile', this)"><span class="emoji">★</span>Профиль</div>
+  </div>
+</div>
+
+<div class="sheet-bg" id="cancelSheet">
+  <div class="sheet">
+    <div class="sheet-title">Отменить участие?</div>
+    <div class="sheet-sub">Вы потеряете место в событии.</div>
+    <button class="btn danger-soft" onclick="leaveEvent()">Отменить</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="toggleCancel(false)">Назад</button>
+  </div>
+</div>
+
+<div class="sheet-bg" id="shareSheet">
+  <div class="sheet">
+    <div class="sheet-title" style="text-align:left;">Поделиться</div>
+    <div class="actions" style="margin-top:2px;">
+      <button class="btn primary" onclick="copyShareLink()">Скопировать ссылку</button>
+      <button class="btn" style="background:#f1f2f4;" onclick="toggleShare(false)">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-bg" id="trainerFilterSheet">
+  <div class="sheet">
+    <div class="sheet-title" style="text-align:left;">Фильтры тренеров</div>
+    <select id="trainerFilterSport" class="input-field">
+      <option value="">Любой вид спорта</option>
+      <option value="Футбол">Футбол</option>
+      <option value="Теннис">Теннис</option>
+      <option value="Хоккей">Хоккей</option>
+      <option value="Бег">Бег</option>
+      <option value="Бокс">Бокс</option>
+      <option value="Баскетбол">Баскетбол</option>
+      <option value="Волейбол">Волейбол</option>
+      <option value="Плавание">Плавание</option>
+      <option value="Падел">Падел</option>
+      <option value="Настольный теннис">Настольный теннис</option>
+    </select>
+    <select id="trainerFilterLevel" class="input-field">
+      <option value="">Любой уровень</option>
+      <option value="Новичок">Новичок</option>
+      <option value="Любитель">Любитель</option>
+      <option value="Продвинутый">Продвинутый</option>
+      <option value="Профессионал">Профессионал</option>
+    </select>
+    <select id="trainerFilterPrice" class="input-field">
+      <option value="">Любая стоимость</option>
+      <option value="low">до 1500 ₽</option>
+      <option value="mid">1500–2500 ₽</option>
+      <option value="high">от 2500 ₽</option>
+    </select>
+    <select id="trainerFilterCity" class="input-field">
+      <option value="">Любой город</option>
+      <option value="Тольятти">Тольятти</option>
+      <option value="Казань">Казань</option>
+      <option value="Москва">Москва</option>
+      <option value="Санкт-Петербург">Санкт-Петербург</option>
+    </select>
+
+    <div class="section-label">Рейтинг (минимум)</div>
+    <div class="rating-stars" id="trainerRatingStars">
+      <button class="star-btn" data-rating="1" onclick="setTrainerRating(1)">★</button>
+      <button class="star-btn" data-rating="2" onclick="setTrainerRating(2)">★</button>
+      <button class="star-btn" data-rating="3" onclick="setTrainerRating(3)">★</button>
+      <button class="star-btn" data-rating="4" onclick="setTrainerRating(4)">★</button>
+      <button class="star-btn" data-rating="5" onclick="setTrainerRating(5)">★</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn" style="background:#f2f2f4;" onclick="resetTrainerFilters()">Сбросить</button>
+      <button class="btn primary" onclick="applyTrainerFilters()">Показать</button>
+    </div>
+  </div>
+</div>
+<div class="sheet-bg" id="createCancelSheet">
+  <div class="sheet">
+    <div class="sheet-title">Заголовок отмены</div>
+    <div class="sheet-sub">Если выйдете сейчас, введённые данные не сохранятся.</div>
+    <button class="btn primary" onclick="discardCreate()">Отменить</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="toggleCreateCancel(false)">Назад</button>
+  </div>
+</div>
+
+<div class="sheet-bg" id="createdSheet">
+  <div class="sheet">
+    <div class="sheet-title">Событие создано ✅</div>
+    <div class="sheet-sub">Бот уже написал в чат регистрации и отправил приглашение в группу события.</div>
+    <button class="btn primary" onclick="finishCreateFlow()">Открыть чат регистрации</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="finishCreateFlow()">Закрыть</button>
+  </div>
+</div>
+
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+
+  const screens = [...document.querySelectorAll('.screen')];
+  const floatingBtn = document.getElementById('floatingBtn');
+  const bottomNav = document.querySelector('.bottom-nav');
+
+  const appState = {
+    role: 'player',
+    registered: false,
+    photoUrl: '',
+    upcomingGames: ['Воскресная игра 5x5 · Сегодня 19:00'],
+    playedGames: ['Матч дворовых команд · 2 дня назад'],
+    selectedCity: 'Тольятти',
+    selectedSport: '',
+    sportSearch: '',
+    trainerSport: '',
+    trainerLevel: '',
+    trainerPrice: '',
+    trainerCity: '',
+    trainerMinRating: 0,
+    advanced: { when: 'all', sports: [], levels: [] },
+    createPhotoUrl: '',
+    createPoint: null,
+    cityCatalog: ['Тольятти', 'Казань', 'Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Самара', 'Нижний Новгород', 'Краснодар', 'Ростов-на-Дону', 'Уфа', 'Пермь', 'Челябинск', 'Омск', 'Красноярск', 'Воронеж', 'Волгоград', 'Тюмень', 'Иркутск', 'Хабаровск'],
+    citySearchTimer: null,
+    cityRequestId: 0,
+    eventCoords: null
+  };
+
+  const events = [
+    {
+      title: '5x5 Saturday Morning Basketball',
+      meta: 'Платно · футбол · Сегодня, 19:00–20:30',
+      place: 'Манеж на Никольской',
+      members: 11,
+      price: '300 ₽',
+      city: 'Тольятти',
+      description: 'Игровая тренировка 5x5. Нужны ответственные игроки, приходите за 15 минут до начала. После оплаты бот приглашает вас в группу события.'
+    },
+    {
+      title: 'Парный турнир по теннису',
+      meta: 'Бесплатно · теннис · Завтра, 18:00–20:00',
+      place: 'Корт Парк',
+      members: 8,
+      price: 'Бесплатно',
+      city: 'Казань',
+      description: 'Лёгкий турнир на вечер. Играем в формате пары на пары. Подходит для любого уровня.'
+    }
+  ];
+
+  let currentEvent = 0;
+  let eventMap = null;
+  let eventPlacemark = null;
+
+  function openScreen(id, navEl) {
+    screens.forEach((s) => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    const hideFloating = ['event', 'filters', 'profile', 'trainers', 'create', 'registration'];
+    floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
+    bottomNav.style.display = ['registration', 'filters', 'create'].includes(id) ? 'none' : 'grid';
+
+    document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
+    if (navEl) {
+      navEl.classList.add('active');
+    } else if (id === 'home' || id === 'event' || id === 'filters') {
+      document.querySelector('[data-link="home"]').classList.add('active');
+    } else if (id === 'create') {
+      document.querySelector('[data-link="home"]').classList.add('active');
+    } else if (id === 'trainers') {
+      document.querySelector('[data-link="trainers"]').classList.add('active');
+    } else if (id === 'profile') {
+      document.querySelector('[data-link="profile"]').classList.add('active');
+    }
+  }
+
+
+
+  function normalizeCityName(city) {
+    return city.trim().replace(/\s+/g, ' ');
+  }
+
+  function uniqueCities(cities) {
+    const seen = new Set();
+    return cities.filter((city) => {
+      const key = city.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
     });
+  }
 
-    // Активируем первый элемент меню
-    navButtons[0].classList.add('active');
+  function renderCityOptions(cities) {
+    const container = document.getElementById('cityOptions');
+    const items = uniqueCities(cities.map(normalizeCityName)).filter(Boolean);
 
-    // Переключатель светлой и темной темы
-    themeToggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-theme');
-      themeToggleBtn.textContent = document.body.classList.contains('dark-theme') ? "🌜" : "🌞";
+    container.innerHTML = '';
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'city-option';
+    allBtn.textContent = 'Все города';
+    allBtn.onclick = () => setCity('all');
+    container.appendChild(allBtn);
+
+    if (items.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'subtitle';
+      empty.style.padding = '8px 10px';
+      empty.textContent = 'Город не найден. Попробуйте другой запрос.';
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach((city) => {
+      const btn = document.createElement('button');
+      btn.className = 'city-option';
+      btn.dataset.cityOption = city;
+      btn.textContent = city;
+      btn.onclick = () => setCity(city);
+      container.appendChild(btn);
     });
+  }
 
-    // Геолокация
-    const geolocationBtn = document.createElement('button');
-    geolocationBtn.textContent = 'Определить моё местоположение';
-    geolocationBtn.addEventListener('click', () => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(position => {
-          alert(`Ваше местоположение:\nШирота: ${position.coords.latitude}\nДолгота: ${position.coords.longitude}`);
-        }, error => {
-          alert('Не удалось определить местоположение.');
-        });
-      } else {
-        alert('Геолокация не поддерживается вашим устройством.');
+  async function fetchRussianCities(query) {
+    const q = query.trim();
+    if (q.length < 2) return [];
+
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=ru&city=${encodeURIComponent(q)}&addressdetails=1&limit=25&accept-language=ru`;
+      const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!response.ok) return [];
+      const data = await response.json();
+      return uniqueCities(data.map((item) => item.address?.city || item.address?.town || item.address?.municipality || item.display_name?.split(',')?.[0] || '').filter(Boolean));
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function toggleCityMenu() {
+    const menu = document.getElementById('cityMenu');
+    menu.classList.toggle('active');
+
+    if (menu.classList.contains('active')) {
+      filterCityOptions(document.getElementById('citySearchInput').value || '');
+    }
+  }
+
+  function setCity(city) {
+    appState.selectedCity = city;
+    document.getElementById('cityLabel').innerText = city === 'all' ? 'Все города' : city;
+    document.getElementById('cityMenu').classList.remove('active');
+
+    if (city !== 'all' && !appState.cityCatalog.some((item) => item.toLowerCase() === city.toLowerCase())) {
+      appState.cityCatalog.unshift(city);
+      appState.cityCatalog = uniqueCities(appState.cityCatalog);
+    }
+
+    applyCityFilters();
+  }
+
+  function applyCityFilters() {
+    applyAllFilters();
+  }
+
+  function filterCityOptions(query) {
+    const q = query.trim().toLowerCase();
+    const local = appState.cityCatalog.filter((city) => city.toLowerCase().includes(q));
+
+    if (appState.citySearchTimer) clearTimeout(appState.citySearchTimer);
+
+    if (!q) {
+      renderCityOptions(appState.cityCatalog);
+      return;
+    }
+
+    renderCityOptions(local);
+
+    const requestId = ++appState.cityRequestId;
+    appState.citySearchTimer = setTimeout(async () => {
+      const online = await fetchRussianCities(query);
+      if (requestId !== appState.cityRequestId) return;
+
+      const merged = uniqueCities([...local, ...online]);
+      if (online.length) {
+        appState.cityCatalog = uniqueCities([...appState.cityCatalog, ...online]);
       }
+      renderCityOptions(merged);
+    }, 250);
+  }
+
+  function filterSportOptions(query) {
+    const q = query.trim().toLowerCase();
+    document.querySelectorAll('.flt-sport-row').forEach((row) => {
+      const label = row.dataset.sportLabel;
+      row.style.display = !q || label.includes(q) ? 'flex' : 'none';
+    });
+  }
+
+  function setSportSearch(value) {
+    appState.sportSearch = value.trim().toLowerCase();
+    applyAllFilters();
+  }
+
+  function setTrainerLevel(value) {
+    appState.trainerLevel = value;
+    applyAllFilters();
+  }
+
+  function setTrainerSport(value) {
+    appState.trainerSport = value;
+    applyAllFilters();
+  }
+
+  function setTrainerPrice(value) {
+    appState.trainerPrice = value;
+    applyAllFilters();
+  }
+
+  function setTrainerRating(rating) {
+    appState.trainerMinRating = rating;
+    document.querySelectorAll('#trainerRatingStars .star-btn').forEach((btn) => {
+      btn.classList.toggle('active', Number(btn.dataset.rating) <= rating);
+    });
+  }
+
+  function toggleTrainerFilterSheet(state) {
+    if (state) {
+      document.getElementById('trainerFilterSport').value = appState.trainerSport;
+      document.getElementById('trainerFilterLevel').value = appState.trainerLevel;
+      document.getElementById('trainerFilterPrice').value = appState.trainerPrice;
+      document.getElementById('trainerFilterCity').value = appState.trainerCity;
+      setTrainerRating(appState.trainerMinRating || 0);
+    }
+    document.getElementById('trainerFilterSheet').classList.toggle('active', state);
+  }
+
+  function applyTrainerFilters() {
+    appState.trainerSport = document.getElementById('trainerFilterSport').value;
+    appState.trainerLevel = document.getElementById('trainerFilterLevel').value;
+    appState.trainerPrice = document.getElementById('trainerFilterPrice').value;
+    appState.trainerCity = document.getElementById('trainerFilterCity').value;
+    applyAllFilters();
+    toggleTrainerFilterSheet(false);
+  }
+
+  function resetTrainerFilters() {
+    appState.trainerSport = '';
+    appState.trainerLevel = '';
+    appState.trainerPrice = '';
+    appState.trainerCity = '';
+    appState.trainerMinRating = 0;
+    setTrainerRating(0);
+    document.getElementById('trainerFilterSport').value = '';
+    document.getElementById('trainerFilterLevel').value = '';
+    document.getElementById('trainerFilterPrice').value = '';
+    document.getElementById('trainerFilterCity').value = '';
+    applyAllFilters();
+  }
+
+  function applyAllFilters() {
+    document.querySelectorAll('#home .event-card').forEach((card) => {
+      const cityOk = appState.selectedCity === 'all' || card.dataset.city === appState.selectedCity;
+      const selectedSport = appState.selectedSport;
+      const chipOk = !selectedSport || card.dataset.sport === selectedSport;
+      const searchOk = !appState.sportSearch || card.dataset.sport.toLowerCase().includes(appState.sportSearch);
+
+      const whenOk = appState.advanced.when === 'all' || card.dataset.when === appState.advanced.when || (appState.advanced.when === 'week' && ['today','tomorrow','weekend'].includes(card.dataset.when)) || (appState.advanced.when === 'weekend' && card.dataset.when === 'weekend');
+      const sportAdvancedOk = appState.advanced.sports.length === 0 || appState.advanced.sports.includes(card.dataset.sport);
+      const levelOk = appState.advanced.levels.length === 0 || appState.advanced.levels.includes(card.dataset.level);
+
+      card.style.display = cityOk && chipOk && searchOk && whenOk && sportAdvancedOk && levelOk ? 'block' : 'none';
     });
 
-    document.body.appendChild(geolocationBtn);
+    document.querySelectorAll('#trainers .trainer-card').forEach((card) => {
+      const cityFilter = appState.trainerCity || appState.selectedCity;
+      const cityOk = cityFilter === 'all' || !cityFilter || card.dataset.city === cityFilter;
+      const sportOk = !appState.trainerSport || card.dataset.sport === appState.trainerSport;
+      const levelOk = !appState.trainerLevel || card.dataset.level === appState.trainerLevel || (appState.trainerLevel === 'Профессионал' && card.dataset.level === 'Продвинутый');
+      const price = Number(card.dataset.price || 0);
+      const rating = Number(card.dataset.rating || 0);
+      const priceOk = !appState.trainerPrice
+        || (appState.trainerPrice === 'low' && price <= 1500)
+        || (appState.trainerPrice === 'mid' && price > 1500 && price <= 2500)
+        || (appState.trainerPrice === 'high' && price >= 2500);
+      const ratingOk = !appState.trainerMinRating || rating >= appState.trainerMinRating;
+      card.style.display = cityOk && sportOk && levelOk && priceOk && ratingOk ? 'block' : 'none';
+    });
+  }
 
-    // Отзывы и оценка
-    const reviewForms = document.querySelectorAll('.review-form');
-    reviewForms.forEach(form => {
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        alert('Спасибо за ваш отзыв!');
+  function collectCheckedValues(selector) {
+    return [...document.querySelectorAll(selector)].filter((el) => el.checked).map((el) => el.value);
+  }
+
+  function applyAdvancedFilters() {
+    const when = document.querySelector('input[name="when"]:checked')?.value || 'all';
+    appState.advanced.when = when;
+    appState.advanced.sports = collectCheckedValues('.flt-sport');
+    appState.advanced.levels = collectCheckedValues('.flt-level');
+    applyAllFilters();
+    openScreen('home');
+  }
+
+  function resetAdvancedFilters() {
+    document.querySelector('input[name="when"][value="all"]').checked = true;
+    document.querySelectorAll('.flt-sport, .flt-level').forEach((el) => el.checked = false);
+    const searchInput = document.getElementById('sportFilterSearch');
+    if (searchInput) searchInput.value = '';
+    filterSportOptions('');
+    appState.advanced = { when: 'all', sports: [], levels: [] };
+    applyAllFilters();
+    openScreen('home');
+  }
+
+  function setRegistrationRole(role) {
+    appState.role = role;
+    document.getElementById('playerFields').classList.toggle('hidden', role !== 'player');
+    document.getElementById('trainerFields').classList.toggle('hidden', role !== 'trainer');
+    document.getElementById('rolePlayerBtn').classList.toggle('active', role === 'player');
+    document.getElementById('roleTrainerBtn').classList.toggle('active', role === 'trainer');
+  }
+
+  function openRegPhotoPicker() {
+    document.getElementById('regPhotoInput').click();
+  }
+
+  function updateProfileView(user) {
+    document.getElementById('profileName').innerText = user.name;
+    document.getElementById('profileAge').innerText = `${user.age} лет`;
+
+    const details = document.getElementById('profileDetails');
+    details.innerHTML = '';
+
+    const common = [
+      `Вид спорта: ${user.sport}`,
+      `Роль: ${user.role === 'player' ? 'Игрок' : 'Тренер'}`
+    ];
+
+    const roleSpecific = user.role === 'player'
+      ? [`Уровень: ${user.level}`, `Лет в спорте: ${user.yearsInSport}`]
+      : [`Опыт тренера: ${user.coachExperience}`, `Достижения: ${user.achievements}`, `Где учился: ${user.education}`, `Взгляд: ${user.vision}`];
+
+    [...common, ...roleSpecific].forEach((text) => {
+      const row = document.createElement('div');
+      row.className = 'profile-line';
+      const [label, value] = text.split(': ');
+      row.innerHTML = `<b>${label}:</b> ${value || ''}`;
+      details.appendChild(row);
+    });
+
+    const tgLink = document.getElementById('profileTgLink');
+    tgLink.href = `https://t.me/${user.tgNick}`;
+    tgLink.textContent = `@${user.tgNick}`;
+
+    if (appState.photoUrl) {
+      document.getElementById('profileAvatarImage').src = appState.photoUrl;
+      document.getElementById('profileAvatarImage').classList.add('active');
+      document.getElementById('profileAvatarFallback').style.display = 'none';
+    }
+
+    renderGameLists();
+  }
+
+  function renderGameLists() {
+    const upcoming = document.getElementById('upcomingGamesList');
+    const played = document.getElementById('playedGamesList');
+
+    upcoming.innerHTML = appState.upcomingGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
+    played.innerHTML = appState.playedGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
+  }
+
+  function registerUser() {
+    const name = document.getElementById('regName').value.trim();
+    const age = document.getElementById('regAge').value.trim();
+    const sport = document.getElementById('regSport').value.trim();
+    const tgNick = document.getElementById('regTgNick').value.trim().replace('@','');
+
+    if (!name || !age || !sport || !tgNick) {
+      alert('Заполни имя, возраст, вид спорта и ник в Telegram.');
+      return;
+    }
+
+    if (!document.getElementById('agreeTerms').checked || !document.getElementById('agreeData').checked) {
+      alert('Нужно принять пользовательское соглашение и согласие на обработку данных.');
+      return;
+    }
+
+    const user = {
+      role: appState.role,
+      name,
+      age,
+      sport,
+      tgNick,
+      level: document.getElementById('regPlayerLevel').value.trim(),
+      yearsInSport: document.getElementById('regPlayerYears').value.trim(),
+      coachExperience: document.getElementById('regTrainerExperience').value.trim(),
+      achievements: document.getElementById('regTrainerAchievements').value.trim(),
+      education: document.getElementById('regTrainerEducation').value.trim(),
+      vision: document.getElementById('regTrainerVision').value.trim()
+    };
+
+    if (appState.role === 'player' && (!user.level || !user.yearsInSport)) {
+      alert('Для игрока заполни уровень и сколько лет в спорте.');
+      return;
+    }
+
+    if (appState.role === 'trainer' && (!user.coachExperience || !user.achievements || !user.education || !user.vision)) {
+      alert('Для тренера нужно заполнить опыт, достижения, где получал знания и взгляд на тренировки.');
+      return;
+    }
+
+    appState.registered = true;
+    updateProfileView(user);
+    openScreen('home');
+    alert('Регистрация завершена! Теперь у вас активный профиль.');
+  }
+
+
+  function openEventAddressOnMap() {
+    const event = events[currentEvent];
+    const query = encodeURIComponent(`${event.place}, ${event.city}`);
+    window.open(`https://yandex.ru/maps/?text=${query}`, '_blank', 'noopener');
+  }
+
+  function renderEventMapByAddress(event) {
+    const mapContainer = document.getElementById('eventMap');
+    if (!window.ymaps || !mapContainer) {
+      mapContainer.innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Карта временно недоступна.</div>';
+      return;
+    }
+
+    ymaps.ready(() => {
+      const address = `${event.place}, ${event.city}`;
+
+      if (!eventMap) {
+        eventMap = new ymaps.Map('eventMap', {
+          center: [55.751244, 37.618423],
+          zoom: 10,
+          controls: ['zoomControl']
+        });
+      }
+
+      ymaps.geocode(address, { results: 1 }).then((res) => {
+        const first = res.geoObjects.get(0);
+        if (!first) return;
+
+        const coords = first.geometry.getCoordinates();
+        appState.eventCoords = coords;
+
+        if (!eventPlacemark) {
+          eventPlacemark = new ymaps.Placemark(coords, { balloonContent: address }, { preset: 'islands#blueDotIcon' });
+          eventMap.geoObjects.add(eventPlacemark);
+        } else {
+          eventPlacemark.geometry.setCoordinates(coords);
+          eventPlacemark.properties.set('balloonContent', address);
+        }
+
+        eventMap.setCenter(coords, 14, { duration: 200 });
+      }).catch(() => {
+        mapContainer.innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Не удалось загрузить адрес на карте.</div>';
       });
     });
-  </script>
+  }
+
+  function openEvent(index) {
+    currentEvent = index;
+    const event = events[index];
+
+    document.getElementById('eventTitle').innerText = event.title;
+    document.getElementById('eventMeta').innerText = event.meta;
+    document.getElementById('eventPlace').innerText = event.place;
+    document.getElementById('memberCount').innerText = event.members;
+    document.getElementById('eventDescription').innerText = event.description;
+
+    document.getElementById('joinActions').style.display = 'flex';
+    document.getElementById('leaveActions').style.display = 'none';
+
+    openScreen('event');
+    renderEventMapByAddress(event);
+  }
+
+  function participateInEvent() {
+    joinEvent();
+    alert('Вы в событии! По оплате/деньгам участники договариваются на месте. Бот отправит приглашение в группу события.');
+  }
+
+  function joinEvent() {
+    document.getElementById('joinActions').style.display = 'none';
+    document.getElementById('leaveActions').style.display = 'flex';
+
+    const event = events[currentEvent];
+    const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
+    if (!appState.upcomingGames.includes(gameLabel)) {
+      appState.upcomingGames.unshift(gameLabel);
+      renderGameLists();
+    }
+  }
+
+  function leaveEvent() {
+    document.getElementById('joinActions').style.display = 'flex';
+    document.getElementById('leaveActions').style.display = 'none';
+    toggleCancel(false);
+  }
+
+  function toggleCancel(state) {
+    document.getElementById('cancelSheet').classList.toggle('active', state);
+  }
+
+  function buildShareLink() {
+    const event = events[currentEvent] || events[0];
+    const slug = encodeURIComponent(event.title.toLowerCase().replace(/\s+/g, '-'));
+    return `${window.location.origin}${window.location.pathname}#event=${slug}`;
+  }
+
+  function copyShareLink() {
+    const link = buildShareLink();
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(link)
+        .then(() => alert('Ссылка скопирована ✅'))
+        .catch(() => {
+          const tempInput = document.createElement('input');
+          tempInput.value = link;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          tempInput.remove();
+          alert('Ссылка скопирована ✅');
+        });
+      return;
+    }
+
+    const tempInput = document.createElement('input');
+    tempInput.value = link;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    tempInput.remove();
+    alert('Ссылка скопирована ✅');
+  }
+
+  function toggleShare(state) {
+    document.getElementById('shareSheet').classList.toggle('active', state);
+  }
+
+
+  function createEvent() {
+    const title = document.getElementById('createTitle').value.trim();
+    const sport = document.getElementById('createSport').value.trim();
+    const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
+    const level = document.getElementById('createLevel').value.trim();
+    const people = document.getElementById('createPeople').value.trim();
+    const location = document.getElementById('createLocation').value.trim();
+
+    if (!title || !sport || !format || !level || !people || !location) {
+      alert('Заполни название, спорт, формат, уровень, количество участников и местоположение.');
+      return;
+    }
+
+    if (!appState.createPoint) {
+      alert('Поставь точку на карте, чтобы сохранить точное местоположение.');
+      return;
+    }
+
+    document.getElementById('createdSheet').classList.add('active');
+  }
+
+  function openCreatePhotoPicker() {
+    document.getElementById('createPhotoInput').click();
+  }
+
+  function initCreateMap() {
+    if (!window.ymaps) {
+      document.getElementById('createMap').innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Карта временно недоступна. Впишите адрес вручную.</div>';
+      return;
+    }
+
+    ymaps.ready(() => {
+      const map = new ymaps.Map('createMap', {
+        center: [53.5078, 49.4204],
+        zoom: 12,
+        controls: ['zoomControl']
+      });
+
+      let placemark = null;
+
+      map.events.add('click', (e) => {
+        const coords = e.get('coords');
+        appState.createPoint = coords;
+
+        if (!placemark) {
+          placemark = new ymaps.Placemark(coords, {}, { preset: 'islands#blueDotIcon' });
+          map.geoObjects.add(placemark);
+        } else {
+          placemark.geometry.setCoordinates(coords);
+        }
+
+        ymaps.geocode(coords).then((res) => {
+          const first = res.geoObjects.get(0);
+          const address = first ? first.getAddressLine() : `Точка: ${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+          document.getElementById('createLocation').value = address;
+        }).catch(() => {
+          document.getElementById('createLocation').value = `Точка: ${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+        });
+      });
+    });
+  }
+
+  function discardCreate() {
+    toggleCreateCancel(false);
+    openScreen('home');
+  }
+
+  function finishCreateFlow() {
+    document.getElementById('createdSheet').classList.remove('active');
+    openScreen('home');
+    alert('Бот: Событие создано и опубликовано. Переходите в чат регистрации для деталей.');
+  }
+
+  function toggleCreateCancel(state) {
+    document.getElementById('createCancelSheet').classList.toggle('active', state);
+  }
+
+  function openPhotoPicker() {
+    document.getElementById('profilePhotoInput').click();
+  }
+
+  document.getElementById('regPhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    appState.photoUrl = URL.createObjectURL(file);
+    const preview = document.getElementById('regPhotoPreview');
+    preview.src = appState.photoUrl;
+    preview.classList.add('active');
+    document.getElementById('regPhotoFallback').style.display = 'none';
+  });
+
+  document.getElementById('profilePhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    const image = document.getElementById('profileAvatarImage');
+    const fallback = document.getElementById('profileAvatarFallback');
+
+    image.src = imageUrl;
+    image.classList.add('active');
+    fallback.style.display = 'none';
+  });
+
+  document.getElementById('createPhotoInput').addEventListener('change', (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    appState.createPhotoUrl = URL.createObjectURL(file);
+    const image = document.getElementById('createPhotoPreview');
+    image.src = appState.createPhotoUrl;
+    image.classList.add('active');
+    document.getElementById('createPhotoPlaceholder').style.display = 'none';
+  });
+
+  document.addEventListener('click', (event) => {
+    const menu = document.getElementById('cityMenu');
+    const picker = document.getElementById('cityPickerBtn');
+    if (!menu.contains(event.target) && !picker.contains(event.target)) {
+      menu.classList.remove('active');
+    }
+  });
+
+  document.querySelectorAll('.sheet-bg').forEach((sheet) => {
+    sheet.addEventListener('click', (e) => {
+      if (e.target === sheet) sheet.classList.remove('active');
+    });
+  });
+
+  setRegistrationRole('player');
+  renderGameLists();
+  renderCityOptions(appState.cityCatalog);
+  setCity('Тольятти');
+  initCreateMap();
+  openScreen('registration');
+
+  document.getElementById('sportChips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+
+    document.querySelectorAll('#sportChips .chip').forEach((c) => c.classList.remove('active'));
+    chip.classList.add('active');
+
+    appState.selectedSport = chip.dataset.sport;
+    applyAllFilters();
+  });
+</script>
 </body>
 </html>
