@@ -34,18 +34,18 @@
     }
 
     :root {
-      --bg: #f4f8ff;
-      --surface: #ffffff;
-      --text: #222;
-      --muted: #7d7d82;
-      --line: #d7e3ff;
-      --premium: #2563eb;
-      --premium-soft: #e9f1ff;
-      --chip: #eef3ff;
-      --primary: #1f57e7;
+      --bg: #E8F0FE;
+      --surface: #FFFFFF;
+      --text: #12203f;
+      --muted: #5c6b8f;
+      --line: #c9d8fb;
+      --premium: #2563EB;
+      --premium-soft: #eaf1ff;
+      --chip: rgba(232, 240, 254, 0.8);
+      --primary: #2563EB;
       --danger-soft: #ffe6e0;
       --danger: #d6382f;
-      --radius: 14px;
+      --radius: 18px;
       --font-main: 'Manrope', 'Avenir Next', 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
 
@@ -54,7 +54,7 @@
       margin: 0;
       font-family: var(--font-main);
       letter-spacing: -0.01em;
-      background: var(--bg);
+      background: radial-gradient(circle at top, #f7faff 0%, var(--bg) 38%, #dbe8ff 100%);
       color: var(--text);
     }
 
@@ -64,10 +64,13 @@
       max-width: 430px;
       margin: 0 auto;
       min-height: 100vh;
-      background: var(--surface);
+      background: rgba(255,255,255,0.94);
       position: relative;
       padding-bottom: 78px;
       overflow: hidden;
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 18px 50px rgba(37,99,235,.20);
+      backdrop-filter: blur(8px);
     }
 
     .topbar {
@@ -76,21 +79,25 @@
       justify-content: space-between;
       padding: 14px 16px 10px;
       font-size: 14px;
-      font-weight: 600;
-      border-bottom: 1px solid #f4f4f6;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(37,99,235,.14);
       letter-spacing: -0.01em;
       position: relative;
+      background: rgba(232,240,254,.62);
+      backdrop-filter: blur(10px);
     }
 
     .city-picker {
-      border: none;
-      background: transparent;
-      padding: 0;
+      border: 1px solid rgba(37,99,235,.24);
+      background: rgba(255,255,255,.92);
+      padding: 7px 11px;
       margin: 0;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
       color: #1d3f8f;
       cursor: pointer;
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(37,99,235,.10);
     }
 
     .city-menu {
@@ -192,14 +199,15 @@
     }
 
     .tools-btn {
-      border: 1px solid #c9d9ff;
-      background: #f0f5ff;
-      border-radius: 10px;
+      border: 1px solid rgba(37,99,235,.35);
+      background: linear-gradient(160deg, rgba(255,255,255,.94), rgba(232,240,254,.96));
+      border-radius: 14px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       padding: 10px 12px;
       white-space: nowrap;
       cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37,99,235,.12);
     }
 
     .trainer-level-filter {
@@ -269,16 +277,17 @@
       padding: 6px 10px;
       cursor: pointer;
     }
-    .chip.active { background: #245cff; color: #fff; border-color: #245cff; }
+    .chip.active { background: linear-gradient(160deg, #2563EB, #1e4fd6); color: #fff; border-color: #2563EB; box-shadow: 0 8px 18px rgba(37,99,235,.24); }
 
     .event-card,
     .trainer-card,
     .profile-card {
-      border-radius: 16px;
-      background: linear-gradient(165deg, #ffffff, #f8fbff);
-      border: 1px solid #dfe9ff;
+      border-radius: 22px;
+      background: linear-gradient(165deg, rgba(255,255,255,.98), rgba(237,244,255,.94));
+      border: 1px solid rgba(37,99,235,.16);
       padding: 13px;
-      box-shadow: 0 8px 24px rgba(30,78,216,0.08);
+      box-shadow: 0 12px 30px rgba(37,99,235,0.14);
+      backdrop-filter: blur(7px);
     }
 
     .event-card { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
@@ -331,12 +340,13 @@
       left: 50%;
       transform: translateX(-50%);
       width: min(430px, 100%);
-      background: linear-gradient(180deg, #ffffff, #fbfbfd);
-      border-top: 1px solid #ececf1;
+      background: rgba(255,255,255,.94);
+      border-top: 1px solid rgba(37,99,235,.14);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       padding: 6px 8px 10px;
       z-index: 30;
+      backdrop-filter: blur(10px);
     }
 
     .nav-item {
@@ -398,6 +408,44 @@
       margin-top: 6px;
     }
 
+    .discovery-map {
+      width: 100%;
+      height: 220px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #eef3ff;
+    }
+
+    .nearby-block {
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: linear-gradient(165deg, rgba(255,255,255,.94), rgba(232,240,254,.72));
+      box-shadow: 0 10px 24px rgba(37,99,235,.12);
+    }
+
+    .nearby-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nearby-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nearby-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: #3d4967;
+      line-height: 1.45;
+    }
+
     .actions { display: flex; gap: 8px; margin-top: 10px; }
     .btn {
       border: none;
@@ -408,9 +456,10 @@
       width: 100%;
     }
     .btn.primary {
-      background: linear-gradient(160deg, #2d67ef, #1e4fd6);
+      background: linear-gradient(160deg, #2563EB, #1f57e7);
       color: #fff;
       border: 1px solid rgba(47,107,255,.35);
+      box-shadow: 0 10px 22px rgba(37,99,235,.28);
     }
     .btn.danger-soft { background: var(--danger-soft); color: var(--danger); }
     .btn.gray { width: 46px; background: #1b1c21; color: #fff; }
@@ -437,6 +486,32 @@
       gap: 2px;
       justify-content: flex-start;
       min-height: 52px;
+      width: 100%;
+    }
+
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .profile-rating-badge {
+      display: none;
+      font-size: 12px;
+      font-weight: 700;
+      color: #d79b00;
+      background: #fff7d6;
+      border: 1px solid #ffe08a;
+      border-radius: 999px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .profile-rating-badge.active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     #profileName {
@@ -526,12 +601,101 @@
       color: #2b2c31;
     }
 
+    .profile-tabs {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #eef3ff;
+      border: 1px solid #dbe6ff;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .profile-tab-btn {
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      padding: 9px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5b6ea8;
+      cursor: pointer;
+    }
+
+    .profile-tab-btn.active {
+      background: #fff;
+      color: #1f57e7;
+      box-shadow: 0 1px 3px rgba(31,87,231,.16);
+    }
+
+    .profile-comments {
+      margin-top: 10px;
+      border: 1px solid rgba(37,99,235,.16);
+      border-radius: 16px;
+      background: rgba(255,255,255,.92);
+      padding: 12px;
+      box-shadow: 0 8px 20px rgba(37,99,235,.10);
+    }
+
+    .profile-comment-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: #52545c;
+      line-height: 1.45;
+    }
+
+    .profile-comment-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .profile-rating-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #565a67;
+    }
+
+    .profile-rate-stars {
+      display: inline-flex;
+      gap: 2px;
+    }
+
+    .profile-rate-star {
+      border: none;
+      background: transparent;
+      color: #d4d8e5;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 1px;
+    }
+
+    .profile-rate-star.active {
+      color: #f4b400;
+    }
+
     .game-list {
       margin: 6px 0 0;
       padding-left: 18px;
       font-size: 12px;
       color: #52545c;
       line-height: 1.45;
+      border: 1px solid #edf3ff;
+      border-radius: 10px;
+      background: #fff;
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
 
 
@@ -567,28 +731,6 @@
       background: #fff;
       margin-bottom: 8px;
     }
-
-    .create-photo-box {
-      border-radius: 12px;
-      border: 1px dashed #b9ccfb;
-      background: #f4f8ff;
-      height: 140px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      color: #6173a5;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .create-photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-
-    .create-photo-box img.active { display: block; }
 
     .create-map {
       width: 100%;
@@ -763,6 +905,18 @@
       <button class="chip" data-sport="Кроссфит">🏋️ Кроссфит</button>
     </div>
 
+    <div id="discoveryMap" class="discovery-map"></div>
+    <div class="nearby-block">
+      <div class="nearby-head">
+        <div class="section-label">Рядом со мной</div>
+        <div class="nearby-actions">
+          <button class="tools-btn" onclick="requestUserLocation()">📍 Обновить</button>
+          <button class="tools-btn" onclick="saveFavoritePlace()">⭐</button>
+        </div>
+      </div>
+      <ul id="nearbyList" class="nearby-list"><li>Определи геолокацию, чтобы увидеть ближайшие события и тренеров.</li></ul>
+    </div>
+
     <div class="event-card" data-sport="Футбол" data-city="Тольятти" data-when="today" data-level="Любитель" onclick="openEvent(0)">
       <div class="event-tag">⚽ Футбол</div>
       <div class="event-name">Воскресная игра 5x5</div>
@@ -855,11 +1009,6 @@
     <button class="back" onclick="toggleCreateCancel(true)">← Назад</button>
     <div class="event-name" style="font-size:22px;">Создание события</div>
 
-    <div class="create-photo-box" onclick="openCreatePhotoPicker()">
-      <span id="createPhotoPlaceholder">Нажми, чтобы добавить фото события</span>
-      <img id="createPhotoPreview" alt="Фото события" />
-    </div>
-    <input id="createPhotoInput" type="file" accept="image/*" style="display:none;" />
     <input id="createTitle" class="input-field" placeholder="Название события" value="Saturday Morning Basketball" maxlength="150" />
     <textarea id="createDescription" class="input-field" style="min-height:74px;" placeholder="Описание (опционально)"></textarea>
     <input id="createSport" class="input-field" list="sportsList" placeholder="Вид спорта (можно любой)" />
@@ -882,7 +1031,6 @@
       <option>Свободный формат</option>
     </select>
     <input id="createCustomFormat" class="input-field" placeholder="Если другой формат — напиши (например: 3х3, круговой, 2 сета)" />
-    <input id="createPeople" class="input-field" placeholder="Сколько нужно человек (например: нужно ещё 6 игроков)" />
     <select id="createLevel" class="input-field">
       <option value="">Уровень участников</option>
       <option>Новичок</option>
@@ -946,7 +1094,7 @@
       </select>
     </div>
 
-    <div class="trainer-card" data-city="Тольятти" data-sport="Футбол" data-level="Продвинутый" data-price="1500" data-rating="4.9">
+    <div class="trainer-card" data-city="Тольятти" data-sport="Футбол" data-level="Продвинутый" data-price="1500" data-rating="4.9" data-lat="53.5078" data-lon="49.4204">
       <div class="trainer-head">
         <div class="avatar-photo">С</div>
         <div>
@@ -963,7 +1111,7 @@
       <a class="profile-link" href="https://t.me/sergey_coach" target="_blank" rel="noopener">@sergey_coach</a>
     </div>
 
-    <div class="trainer-card" data-city="Казань" data-sport="Теннис" data-level="Любитель" data-price="2000" data-rating="4.8">
+    <div class="trainer-card" data-city="Казань" data-sport="Теннис" data-level="Любитель" data-price="2000" data-rating="4.8" data-lat="55.7903" data-lon="49.1347">
       <div class="trainer-head">
         <div class="avatar-photo">А</div>
         <div>
@@ -980,7 +1128,7 @@
       <a class="profile-link" href="https://t.me/anna_tennis" target="_blank" rel="noopener">@anna_tennis</a>
     </div>
 
-    <div class="trainer-card" data-city="Москва" data-sport="Баскетбол" data-level="Профессионал" data-price="2500" data-rating="5.0">
+    <div class="trainer-card" data-city="Москва" data-sport="Баскетбол" data-level="Профессионал" data-price="2500" data-rating="5.0" data-lat="55.7558" data-lon="37.6176">
       <div class="trainer-head">
         <div class="avatar-photo">М</div>
         <div>
@@ -1008,7 +1156,10 @@
           <button class="profile-change-btn" onclick="openPhotoPicker()">Изменить фото</button>
         </div>
         <div class="profile-identity">
-          <div class="event-name" id="profileName">Иван Петров</div>
+          <div class="profile-name-row">
+            <div class="event-name" id="profileName">Иван Петров</div>
+            <button id="profileRatingBadge" class="profile-rating-badge" onclick="openProfileFeedbackScreen()">★★★★★ 5.0</button>
+          </div>
           <div class="subtitle" id="profileAge">24 года</div>
         </div>
       </div>
@@ -1021,11 +1172,42 @@
       <div id="profileDetails"></div>
       <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example</a>
 
-      <div class="list-title">Предстоящие игры</div>
-      <ul class="game-list" id="upcomingGamesList"></ul>
 
-      <div class="list-title">Сыгранные игры</div>
-      <ul class="game-list" id="playedGamesList"></ul>
+      <div class="profile-tabs">
+        <button id="upcomingListTitle" class="profile-tab-btn active" onclick="setProfileTab('upcoming')">Предстоящие игры</button>
+        <button id="playedListTitle" class="profile-tab-btn" onclick="setProfileTab('played')">Прошедшие игры</button>
+      </div>
+      <ul class="game-list" id="upcomingGamesList"></ul>
+      <ul class="game-list hidden" id="playedGamesList"></ul>
+
+      <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openProfileFeedbackScreen()">Оценки и комментарии</button>
+    </div>
+  </div>
+
+  <div class="screen" id="profileComments">
+    <button class="back" onclick="openScreen('profile')">← Назад</button>
+    <div class="event-name" style="font-size:22px;">Оценки и комментарии</div>
+
+    <div class="profile-comments">
+      <div class="list-title" style="margin-top:0;">Ваш отзыв</div>
+      <div class="profile-rating-input">
+        <span>Ваша оценка:</span>
+        <div id="profileRateStars" class="profile-rate-stars">
+          <button class="profile-rate-star" data-rating="1" onclick="setProfileRating(1)">★</button>
+          <button class="profile-rate-star" data-rating="2" onclick="setProfileRating(2)">★</button>
+          <button class="profile-rate-star" data-rating="3" onclick="setProfileRating(3)">★</button>
+          <button class="profile-rate-star" data-rating="4" onclick="setProfileRating(4)">★</button>
+          <button class="profile-rate-star" data-rating="5" onclick="setProfileRating(5)">★</button>
+        </div>
+        <span id="profileRateValue">0/5</span>
+      </div>
+      <textarea id="profileCommentInput" class="profile-comment-input" placeholder="Оставить комментарий"></textarea>
+      <button class="btn primary" style="padding:10px;" onclick="submitProfileFeedback()">Отправить отзыв</button>
+    </div>
+
+    <div class="profile-comments">
+      <div class="list-title" style="margin-top:0;">Комментарии</div>
+      <ul id="profileCommentList" class="profile-comment-list"></ul>
     </div>
   </div>
 
@@ -1142,6 +1324,25 @@
     photoUrl: '',
     upcomingGames: ['Воскресная игра 5x5 · Сегодня 19:00'],
     playedGames: ['Матч дворовых команд · 2 дня назад'],
+    upcomingTrainings: ['Функциональная тренировка · Завтра 10:00'],
+    playedTrainings: ['Техника удара · 3 дня назад'],
+    currentUser: {
+      role: 'player',
+      name: 'Иван Петров',
+      age: '24',
+      sport: 'Футбол',
+      level: 'Любитель',
+      tgNick: 'example',
+      coachExperience: '',
+      achievements: '',
+      education: '',
+      vision: '',
+      rating: 4.8
+    },
+    activeProfileTab: 'upcoming',
+    profileComments: ['Отличный партнёр по игре!', 'Пунктуальный и ответственный.'],
+    profileRatings: [5, 4, 5, 5],
+    profileDraftRating: 0,
     selectedCity: 'Тольятти',
     selectedSport: '',
     sportSearch: '',
@@ -1151,12 +1352,15 @@
     trainerCity: '',
     trainerMinRating: 0,
     advanced: { when: 'all', sports: [], levels: [] },
-    createPhotoUrl: '',
     createPoint: null,
     cityCatalog: ['Тольятти', 'Казань', 'Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Самара', 'Нижний Новгород', 'Краснодар', 'Ростов-на-Дону', 'Уфа', 'Пермь', 'Челябинск', 'Омск', 'Красноярск', 'Воронеж', 'Волгоград', 'Тюмень', 'Иркутск', 'Хабаровск'],
     citySearchTimer: null,
     cityRequestId: 0,
-    eventCoords: null
+    eventCoords: null,
+    userCoords: null,
+    discoveryMapReady: false,
+    favoritePlaces: [],
+    discoveryMarkers: []
   };
 
   const events = [
@@ -1167,6 +1371,9 @@
       members: 11,
       price: '300 ₽',
       city: 'Тольятти',
+      lat: 53.5087,
+      lon: 49.4148,
+      kind: 'group',
       description: 'Игровая тренировка 5x5. Нужны ответственные игроки, приходите за 15 минут до начала. После оплаты бот приглашает вас в группу события.'
     },
     {
@@ -1176,6 +1383,9 @@
       members: 8,
       price: 'Бесплатно',
       city: 'Казань',
+      lat: 55.7961,
+      lon: 49.1064,
+      kind: 'competition',
       description: 'Лёгкий турнир на вечер. Играем в формате пары на пары. Подходит для любого уровня.'
     }
   ];
@@ -1188,9 +1398,9 @@
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'trainers', 'create', 'registration'];
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'create', 'registration'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
-    bottomNav.style.display = ['registration', 'filters', 'create'].includes(id) ? 'none' : 'grid';
+    bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
@@ -1201,8 +1411,12 @@
       document.querySelector('[data-link="home"]').classList.add('active');
     } else if (id === 'trainers') {
       document.querySelector('[data-link="trainers"]').classList.add('active');
-    } else if (id === 'profile') {
+    } else if (id === 'profile' || id === 'profileComments') {
       document.querySelector('[data-link="profile"]').classList.add('active');
+    }
+
+    if (id === 'home') {
+      renderDiscoveryMap();
     }
   }
 
@@ -1288,6 +1502,8 @@
     }
 
     applyCityFilters();
+    renderDiscoveryMap();
+    renderNearbyList();
   }
 
   function applyCityFilters() {
@@ -1419,6 +1635,159 @@
     });
   }
 
+
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const toRad = (v) => v * Math.PI / 180;
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  function directionFromTo(lat1, lon1, lat2, lon2) {
+    const ns = lat2 >= lat1 ? 'север' : 'юг';
+    const ew = lon2 >= lon1 ? 'восток' : 'запад';
+    return `${ns}-${ew}`;
+  }
+
+  function eventPresetByKind(kind) {
+    if (kind === 'competition') return 'islands#redSportIcon';
+    if (kind === 'camp') return 'islands#violetSportIcon';
+    return 'islands#blueSportIcon';
+  }
+
+  function getVisibleGeoItems() {
+    const visibleEvents = [...document.querySelectorAll('#home .event-card')]
+      .filter((card) => card.style.display !== 'none')
+      .map((card, index) => {
+        const ev = events[index];
+        return ev?.lat && ev?.lon ? {
+          type: 'event',
+          title: ev.title,
+          city: ev.city,
+          lat: ev.lat,
+          lon: ev.lon,
+          kind: ev.kind || 'group'
+        } : null;
+      }).filter(Boolean);
+
+    const visibleTrainers = [...document.querySelectorAll('#trainers .trainer-card')]
+      .filter((card) => card.style.display !== 'none')
+      .map((card) => ({
+        type: 'trainer',
+        title: card.querySelector('.event-name')?.textContent || 'Тренер',
+        city: card.dataset.city,
+        lat: Number(card.dataset.lat),
+        lon: Number(card.dataset.lon),
+        kind: 'trainer'
+      }))
+      .filter((item) => item.lat && item.lon);
+
+    return [...visibleEvents, ...visibleTrainers];
+  }
+
+  function renderNearbyList() {
+    const list = document.getElementById('nearbyList');
+    if (!list) return;
+    if (!appState.userCoords) {
+      list.innerHTML = '<li>Определи геолокацию, чтобы увидеть ближайшие события и тренеров.</li>';
+      return;
+    }
+
+    const items = getVisibleGeoItems().map((item) => {
+      const distance = haversineKm(appState.userCoords[0], appState.userCoords[1], item.lat, item.lon);
+      const direction = directionFromTo(appState.userCoords[0], appState.userCoords[1], item.lat, item.lon);
+      return { ...item, distance, direction };
+    }).sort((a, b) => a.distance - b.distance).slice(0, 10);
+
+    if (!items.length) {
+      list.innerHTML = '<li>Поблизости ничего не найдено по текущим фильтрам.</li>';
+      return;
+    }
+
+    list.innerHTML = items.map((item) => `<li><b>${item.type === 'event' ? 'Событие' : 'Тренер'}:</b> ${item.title} — ${item.distance.toFixed(1)} км, ${item.direction}</li>`).join('');
+  }
+
+  function setGeoStatus(text) {
+    const status = document.getElementById('geoStatus');
+    if (status) status.textContent = text;
+  }
+
+  function requestUserLocation() {
+    if (!navigator.geolocation) {
+      setGeoStatus('Геолокация не поддерживается на этом устройстве.');
+      return;
+    }
+
+    setGeoStatus('Определяем ваше местоположение...');
+    navigator.geolocation.getCurrentPosition((position) => {
+      appState.userCoords = [position.coords.latitude, position.coords.longitude];
+      setGeoStatus(`Геолокация определена: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`);
+      renderDiscoveryMap();
+      renderNearbyList();
+
+      const nearest = getVisibleGeoItems().map((item) => haversineKm(appState.userCoords[0], appState.userCoords[1], item.lat, item.lon)).sort((a,b)=>a-b)[0];
+      if (nearest !== undefined && nearest <= 10) {
+        alert(`Рядом с вами есть события/тренеры в радиусе ${nearest.toFixed(1)} км.`);
+      }
+    }, () => {
+      setGeoStatus('Не удалось получить геолокацию. Разрешите доступ к местоположению.');
+    }, { enableHighAccuracy: true, timeout: 8000 });
+  }
+
+  function saveFavoritePlace() {
+    if (!appState.discoveryMapReady || !window.discoveryMapInstance) {
+      setGeoStatus('Сначала открой карту на главном экране.');
+      return;
+    }
+
+    const center = window.discoveryMapInstance.getCenter();
+    const item = { lat: center[0], lon: center[1], label: `Избранное ${appState.favoritePlaces.length + 1}` };
+    appState.favoritePlaces.push(item);
+    localStorage.setItem('mateosport_favorites', JSON.stringify(appState.favoritePlaces));
+    setGeoStatus('Точка сохранена в избранное.');
+    renderDiscoveryMap();
+  }
+
+  function renderDiscoveryMap() {
+    const mapContainer = document.getElementById('discoveryMap');
+    if (!mapContainer || !window.ymaps) return;
+
+    ymaps.ready(() => {
+      if (!window.discoveryMapInstance) {
+        window.discoveryMapInstance = new ymaps.Map('discoveryMap', {
+          center: appState.userCoords || [55.751244, 37.618423],
+          zoom: appState.userCoords ? 11 : 5,
+          controls: ['zoomControl']
+        });
+        appState.discoveryMapReady = true;
+      }
+
+      const map = window.discoveryMapInstance;
+      map.geoObjects.removeAll();
+
+      getVisibleGeoItems().forEach((item) => {
+        const preset = item.type === 'trainer' ? 'islands#darkBlueStretchyIcon' : eventPresetByKind(item.kind);
+        const pm = new ymaps.Placemark([item.lat, item.lon], {
+          balloonContent: `${item.type === 'event' ? 'Событие' : 'Тренер'}: ${item.title} (${item.city})`
+        }, { preset });
+        map.geoObjects.add(pm);
+      });
+
+      appState.favoritePlaces.forEach((fav) => {
+        const favPm = new ymaps.Placemark([fav.lat, fav.lon], { balloonContent: fav.label }, { preset: 'islands#yellowDotIcon' });
+        map.geoObjects.add(favPm);
+      });
+
+      if (appState.userCoords) {
+        map.setCenter(appState.userCoords, 11, { duration: 250 });
+      }
+
+      renderNearbyList();
+    });
+  }
+
   function collectCheckedValues(selector) {
     return [...document.querySelectorAll(selector)].filter((el) => el.checked).map((el) => el.value);
   }
@@ -1456,22 +1825,28 @@
   }
 
   function updateProfileView(user) {
+    appState.currentUser = user;
     document.getElementById('profileName').innerText = user.name;
-    document.getElementById('profileAge').innerText = `${user.age} лет`;
+    document.getElementById('profileAge').innerText = user.role === 'player' ? 'Игрок' : 'Тренер';
 
     const details = document.getElementById('profileDetails');
     details.innerHTML = '';
 
-    const common = [
-      `Вид спорта: ${user.sport}`,
-      `Роль: ${user.role === 'player' ? 'Игрок' : 'Тренер'}`
-    ];
+    const detailRows = user.role === 'player'
+      ? [
+        `Вид спорта: ${user.sport}`,
+        `Возраст: ${user.age} лет`,
+        `Уровень игрока: ${user.level}`
+      ]
+      : [
+        `Вид спорта: ${user.sport}`,
+        `Опыт работы тренером: ${user.coachExperience}`,
+        `Достижения: ${user.achievements}`,
+        `Образование: ${user.education}`,
+        `Философия: ${user.vision}`
+      ];
 
-    const roleSpecific = user.role === 'player'
-      ? [`Уровень: ${user.level}`, `Лет в спорте: ${user.yearsInSport}`]
-      : [`Опыт тренера: ${user.coachExperience}`, `Достижения: ${user.achievements}`, `Где учился: ${user.education}`, `Взгляд: ${user.vision}`];
-
-    [...common, ...roleSpecific].forEach((text) => {
+    detailRows.forEach((text) => {
       const row = document.createElement('div');
       row.className = 'profile-line';
       const [label, value] = text.split(': ');
@@ -1489,15 +1864,93 @@
       document.getElementById('profileAvatarFallback').style.display = 'none';
     }
 
+    const ratingBadge = document.getElementById('profileRatingBadge');
+    const computed = Number(user.rating || getAverageRating() || 5);
+    const safeRating = computed.toFixed(1);
+    ratingBadge.textContent = `${renderStars(computed)} ${safeRating}`;
+    ratingBadge.classList.add('active');
+
     renderGameLists();
+    renderProfileComments();
+  }
+
+  function renderStars(rating) {
+    const stars = Math.max(0, Math.min(5, Math.round(Number(rating) || 0)));
+    return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`;
+  }
+
+  function openProfileFeedbackScreen() {
+    openScreen('profileComments');
+  }
+
+  function setProfileTab(tab) {
+    appState.activeProfileTab = tab;
+    renderGameLists();
+  }
+
+  function setProfileRating(rating) {
+    appState.profileDraftRating = rating;
+    document.querySelectorAll('#profileRateStars .profile-rate-star').forEach((btn) => {
+      btn.classList.toggle('active', Number(btn.dataset.rating) <= rating);
+    });
+    document.getElementById('profileRateValue').textContent = `${rating}/5`;
+  }
+
+  function getAverageRating() {
+    if (!appState.profileRatings.length) return 0;
+    const sum = appState.profileRatings.reduce((acc, value) => acc + Number(value || 0), 0);
+    return sum / appState.profileRatings.length;
+  }
+
+  function submitProfileFeedback() {
+    const input = document.getElementById('profileCommentInput');
+    const value = input.value.trim();
+    const rating = Number(appState.profileDraftRating || 0);
+
+    if (!rating) {
+      alert('Поставь оценку звездами перед отправкой.');
+      return;
+    }
+
+    appState.profileRatings.unshift(rating);
+    appState.currentUser.rating = getAverageRating();
+
+    if (value) {
+      appState.profileComments.unshift(`${renderStars(rating)} ${value}`);
+      input.value = '';
+    }
+
+    setProfileRating(0);
+    updateProfileView(appState.currentUser);
+  }
+
+  function renderProfileComments() {
+    const list = document.getElementById('profileCommentList');
+    list.innerHTML = appState.profileComments.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет комментариев</li>';
   }
 
   function renderGameLists() {
     const upcoming = document.getElementById('upcomingGamesList');
     const played = document.getElementById('playedGamesList');
+    const upcomingTitle = document.getElementById('upcomingListTitle');
+    const playedTitle = document.getElementById('playedListTitle');
+    const isTrainer = appState.currentUser?.role === 'trainer';
 
-    upcoming.innerHTML = appState.upcomingGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
-    played.innerHTML = appState.playedGames.map((g) => `<li>${g}</li>`).join('') || '<li>Пока нет</li>';
+    const upcomingItems = isTrainer ? appState.upcomingTrainings : appState.upcomingGames;
+    const playedItems = isTrainer ? appState.playedTrainings : appState.playedGames;
+
+    upcomingTitle.textContent = isTrainer ? 'Предстоящие тренировки' : 'Предстоящие игры';
+    playedTitle.textContent = isTrainer ? 'Прошедшие тренировки' : 'Прошедшие игры';
+
+    const activeTab = appState.activeProfileTab || 'upcoming';
+
+    upcoming.classList.toggle('hidden', activeTab !== 'upcoming');
+    played.classList.toggle('hidden', activeTab !== 'played');
+    upcomingTitle.classList.toggle('active', activeTab === 'upcoming');
+    playedTitle.classList.toggle('active', activeTab === 'played');
+
+    upcoming.innerHTML = upcomingItems.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет</li>';
+    played.innerHTML = playedItems.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет</li>';
   }
 
   function registerUser() {
@@ -1527,7 +1980,8 @@
       coachExperience: document.getElementById('regTrainerExperience').value.trim(),
       achievements: document.getElementById('regTrainerAchievements').value.trim(),
       education: document.getElementById('regTrainerEducation').value.trim(),
-      vision: document.getElementById('regTrainerVision').value.trim()
+      vision: document.getElementById('regTrainerVision').value.trim(),
+      rating: appState.role === 'trainer' ? 5 : 4.8
     };
 
     if (appState.role === 'player' && (!user.level || !user.yearsInSport)) {
@@ -1680,11 +2134,10 @@
     const sport = document.getElementById('createSport').value.trim();
     const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
     const level = document.getElementById('createLevel').value.trim();
-    const people = document.getElementById('createPeople').value.trim();
     const location = document.getElementById('createLocation').value.trim();
 
-    if (!title || !sport || !format || !level || !people || !location) {
-      alert('Заполни название, спорт, формат, уровень, количество участников и местоположение.');
+    if (!title || !sport || !format || !level || !location) {
+      alert('Заполни название, спорт, формат, уровень и местоположение.');
       return;
     }
 
@@ -1694,10 +2147,6 @@
     }
 
     document.getElementById('createdSheet').classList.add('active');
-  }
-
-  function openCreatePhotoPicker() {
-    document.getElementById('createPhotoInput').click();
   }
 
   function initCreateMap() {
@@ -1779,16 +2228,6 @@
     fallback.style.display = 'none';
   });
 
-  document.getElementById('createPhotoInput').addEventListener('change', (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    appState.createPhotoUrl = URL.createObjectURL(file);
-    const image = document.getElementById('createPhotoPreview');
-    image.src = appState.createPhotoUrl;
-    image.classList.add('active');
-    document.getElementById('createPhotoPlaceholder').style.display = 'none';
-  });
-
   document.addEventListener('click', (event) => {
     const menu = document.getElementById('cityMenu');
     const picker = document.getElementById('cityPickerBtn');
@@ -1803,8 +2242,14 @@
     });
   });
 
+  try {
+    appState.favoritePlaces = JSON.parse(localStorage.getItem('mateosport_favorites') || '[]');
+  } catch (error) {
+    appState.favoritePlaces = [];
+  }
+
   setRegistrationRole('player');
-  renderGameLists();
+  updateProfileView(appState.currentUser);
   renderCityOptions(appState.cityCatalog);
   setCity('Тольятти');
   initCreateMap();
