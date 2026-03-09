@@ -210,6 +210,33 @@
       box-shadow: 0 8px 18px rgba(37,99,235,.12);
     }
 
+    .map-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(37,99,235,.35);
+      background: linear-gradient(160deg, rgba(255,255,255,.94), rgba(232,240,254,.96));
+      color: #6b7280;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37,99,235,.12);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .map-icon {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .map-icon-btn.active {
+      background: linear-gradient(160deg, #2563EB, #1f57e7);
+      color: #fff;
+      border-color: rgba(37,99,235,.55);
+    }
+
     .trainer-level-filter {
       width: 100%;
       margin: 0;
@@ -549,6 +576,68 @@
     .trainer-line,
     .profile-line { font-size: 13px; color: #4f5055; margin-bottom: 5px; }
 
+    .trainer-price-big {
+      margin-top: 10px;
+      padding-top: 12px;
+      border-top: 1px solid #e5ecff;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0f1f45;
+    }
+
+    .trainer-detail-box {
+      border: 1px solid #dbe6ff;
+      border-radius: 14px;
+      background: #f7faff;
+      padding: 12px;
+      font-size: 13px;
+      color: #445277;
+      line-height: 1.4;
+    }
+
+    .trainer-quick-info {
+      border: 1px solid #dbe6ff;
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: #33415f;
+      margin-top: 8px;
+    }
+
+    .trainer-quick-info b { color: #0f1f45; }
+
+
+    .trainer-open-btn {
+      margin-top: 8px;
+      border: 1px solid rgba(37,99,235,.28);
+      background: #eef3ff;
+      color: #1d4ed8;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+
+    .trainer-book-btn {
+      border: 1px solid rgba(37,99,235,.30);
+      background: #eef3ff;
+      color: #1d4ed8;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      width: 100%;
+      cursor: pointer;
+    }
+
 
     .profile-avatar {
       width: 72px;
@@ -696,6 +785,17 @@
       background: #fff;
       padding-top: 10px;
       padding-bottom: 10px;
+    }
+
+    .profile-game-link {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      padding: 0;
+      cursor: pointer;
     }
 
 
@@ -888,6 +988,12 @@
     <div class="home-tools">
       <input id="sportSearchInput" class="sport-search" placeholder="Поиск вида спорта" oninput="setSportSearch(this.value)" />
       <button class="tools-btn" onclick="openScreen('filters')">Фильтры</button>
+      <button id="homeMapIconBtn" class="map-icon-btn" onclick="toggleHomeMap()" title="Карта событий рядом" aria-label="Карта событий рядом">
+        <svg class="map-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3.75 6.75L8.75 4.5L15.25 6.75L20.25 4.5V17.25L15.25 19.5L8.75 17.25L3.75 19.5V6.75Z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8.75 4.5V17.25M15.25 6.75V19.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
     <div class="chips" id="sportChips">
@@ -905,16 +1011,18 @@
       <button class="chip" data-sport="Кроссфит">🏋️ Кроссфит</button>
     </div>
 
-    <div id="discoveryMap" class="discovery-map"></div>
-    <div class="nearby-block">
-      <div class="nearby-head">
-        <div class="section-label">Рядом со мной</div>
-        <div class="nearby-actions">
-          <button class="tools-btn" onclick="requestUserLocation()">📍 Обновить</button>
-          <button class="tools-btn" onclick="saveFavoritePlace()">⭐</button>
+    <div id="homeMapPanel" class="hidden">
+      <div id="discoveryMap" class="discovery-map"></div>
+      <div class="nearby-block">
+        <div class="nearby-head">
+          <div class="section-label">Рядом со мной</div>
+          <div class="nearby-actions">
+            <button class="tools-btn" onclick="requestUserLocation()">📍 Обновить</button>
+            <button class="tools-btn" onclick="saveFavoritePlace()">⭐</button>
+          </div>
         </div>
+        <ul id="nearbyList" class="nearby-list"><li>Определи геолокацию, чтобы увидеть ближайшие события и тренеров.</li></ul>
       </div>
-      <ul id="nearbyList" class="nearby-list"><li>Определи геолокацию, чтобы увидеть ближайшие события и тренеров.</li></ul>
     </div>
 
     <div class="event-card" data-sport="Футбол" data-city="Тольятти" data-when="today" data-level="Любитель" onclick="openEvent(0)">
@@ -1059,41 +1167,6 @@
       <button class="tools-btn" onclick="toggleTrainerFilterSheet(true)">Фильтры</button>
     </div>
 
-    <div class="home-tools">
-      <div class="trainer-filter-grid">
-        <select id="trainerSportFilter" class="trainer-level-filter" onchange="setTrainerSport(this.value)">
-          <option value="">Любой вид спорта</option>
-          <option value="Футбол">Футбол</option>
-          <option value="Теннис">Теннис</option>
-          <option value="Хоккей">Хоккей</option>
-          <option value="Бег">Бег</option>
-          <option value="Бокс">Бокс</option>
-          <option value="Баскетбол">Баскетбол</option>
-          <option value="Волейбол">Волейбол</option>
-          <option value="Плавание">Плавание</option>
-          <option value="Падел">Падел</option>
-          <option value="Настольный теннис">Настольный теннис</option>
-        </select>
-
-        <select id="trainerLevelFilter" class="trainer-level-filter" onchange="setTrainerLevel(this.value)">
-          <option value="">Любой уровень</option>
-          <option value="Новичок">Новичок</option>
-          <option value="Любитель">Любитель</option>
-          <option value="Продвинутый">Продвинутый</option>
-          <option value="Профессионал">Профессионал</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="home-tools" style="margin-top:-2px;">
-      <select id="trainerPriceFilter" class="trainer-level-filter" onchange="setTrainerPrice(this.value)">
-        <option value="">Любая стоимость</option>
-        <option value="low">до 1500 ₽</option>
-        <option value="mid">1500–2500 ₽</option>
-        <option value="high">от 2500 ₽</option>
-      </select>
-    </div>
-
     <div class="trainer-card" data-city="Тольятти" data-sport="Футбол" data-level="Продвинутый" data-price="1500" data-rating="4.9" data-lat="53.5078" data-lon="49.4204">
       <div class="trainer-head">
         <div class="avatar-photo">С</div>
@@ -1105,10 +1178,9 @@
       </div>
       <div class="trainer-line">Стаж тренерской карьеры: 8 лет</div>
       <div class="trainer-line">Уровень: продвинутый / профессионал</div>
-      <div class="trainer-line">Взгляд на тренировки: дисциплина + игровая свобода</div>
-      <div class="trainer-line">Результаты: 3 команды-призёра городских лиг</div>
+      <div class="trainer-line">Обучение: Академия РФС, лицензия UEFA C</div>
       <div class="trainer-line"><b>Цена:</b> от 1500 ₽ / занятие</div>
-      <a class="profile-link" href="https://t.me/sergey_coach" target="_blank" rel="noopener">@sergey_coach</a>
+      <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(0)">Подробнее и запись</button>
     </div>
 
     <div class="trainer-card" data-city="Казань" data-sport="Теннис" data-level="Любитель" data-price="2000" data-rating="4.8" data-lat="55.7903" data-lon="49.1347">
@@ -1122,10 +1194,9 @@
       </div>
       <div class="trainer-line">Стаж тренерской карьеры: 6 лет</div>
       <div class="trainer-line">Уровень: новичок / любитель</div>
-      <div class="trainer-line">Подход: техника + выносливость + ментальная устойчивость</div>
-      <div class="trainer-line">Работа с начинающими и любителями</div>
+      <div class="trainer-line">Обучение: ITF Level 1, академия тенниса Казани</div>
       <div class="trainer-line"><b>Цена:</b> от 2000 ₽ / занятие</div>
-      <a class="profile-link" href="https://t.me/anna_tennis" target="_blank" rel="noopener">@anna_tennis</a>
+      <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(1)">Подробнее и запись</button>
     </div>
 
     <div class="trainer-card" data-city="Москва" data-sport="Баскетбол" data-level="Профессионал" data-price="2500" data-rating="5.0" data-lat="55.7558" data-lon="37.6176">
@@ -1139,9 +1210,42 @@
       </div>
       <div class="trainer-line">Стаж тренерской карьеры: 10 лет</div>
       <div class="trainer-line">Уровень: продвинутый / профессионал</div>
-      <div class="trainer-line">Фокус: бросок, тактика, физподготовка, индивидуальная работа</div>
+      <div class="trainer-line">Обучение: FIBA Coach, высшее физкультурное</div>
       <div class="trainer-line"><b>Цена:</b> от 2500 ₽ / занятие</div>
-      <a class="profile-link" href="https://t.me/mike_basket" target="_blank" rel="noopener">@mike_basket</a>
+      <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(2)">Подробнее и запись</button>
+    </div>
+  </div>
+
+  <div class="screen" id="trainerProfile">
+    <button class="back" onclick="openScreen('trainers')">← Назад</button>
+    <div class="title" style="font-size:28px; margin:0 0 2px;">Карточка тренера</div>
+
+    <div class="trainer-card">
+      <div class="trainer-head">
+        <div class="avatar-photo" id="trainerProfileAvatar">С</div>
+        <div>
+          <div class="event-name" id="trainerProfileName">Сергей Иванов</div>
+          <div class="subtitle" id="trainerProfileMeta">Футбол · Профессионал · 2.3 км</div>
+        </div>
+        <div class="rating" id="trainerProfileRating">⭐ 4.9</div>
+      </div>
+
+      <div class="trainer-quick-info" id="trainerProfileQuickInfo">
+        <div><b>Вид спорта:</b> <span id="trainerProfileSport">Футбол</span></div>
+        <div><b>Опыт:</b> <span id="trainerProfileExperience">8 лет</span></div>
+        <div><b>Стоимость:</b> <span id="trainerProfileCost">1500 ₽/час</span></div>
+        <div><b>Обучение:</b> <span id="trainerProfileEducation">Академия РФС, UEFA C</span></div>
+      </div>
+
+      <div class="trainer-detail-box" id="trainerProfileAbout">Тренерский взгляд: тренировки строю от техники к игровым решениям, даю персональный план прогресса.</div>
+      <div class="trainer-detail-box" id="trainerProfileConditions" style="margin-top:8px;">Условия тренировки: длительность 60 минут, инвентарь на площадке, отмена не позже чем за 6 часов.</div>
+
+      <div class="trainer-price-big" id="trainerProfilePrice">1500 ₽/час</div>
+
+      <div class="actions" style="margin-top:12px;">
+        <button class="trainer-book-btn" onclick="bookTrainerTraining()">Записаться на тренировку</button>
+        <button class="btn gray" onclick="copyTrainerShareLink()">🔗</button>
+      </div>
     </div>
   </div>
 
@@ -1242,18 +1346,12 @@
 <div class="sheet-bg" id="trainerFilterSheet">
   <div class="sheet">
     <div class="sheet-title" style="text-align:left;">Фильтры тренеров</div>
+    <input id="trainerSportFilterSearch" class="input-field" placeholder="Поиск вида спорта" oninput="filterTrainerSportOptions(this.value)" />
     <select id="trainerFilterSport" class="input-field">
       <option value="">Любой вид спорта</option>
       <option value="Футбол">Футбол</option>
       <option value="Теннис">Теннис</option>
-      <option value="Хоккей">Хоккей</option>
-      <option value="Бег">Бег</option>
-      <option value="Бокс">Бокс</option>
       <option value="Баскетбол">Баскетбол</option>
-      <option value="Волейбол">Волейбол</option>
-      <option value="Плавание">Плавание</option>
-      <option value="Падел">Падел</option>
-      <option value="Настольный теннис">Настольный теннис</option>
     </select>
     <select id="trainerFilterLevel" class="input-field">
       <option value="">Любой уровень</option>
@@ -1360,7 +1458,8 @@
     userCoords: null,
     discoveryMapReady: false,
     favoritePlaces: [],
-    discoveryMarkers: []
+    discoveryMarkers: [],
+    homeMapOpen: false
   };
 
   const events = [
@@ -1390,7 +1489,47 @@
     }
   ];
 
+  const trainerProfiles = [
+    {
+      name: 'Сергей Иванов',
+      avatar: 'С',
+      sport: 'Футбол',
+      meta: 'Футбол · Профессионал · 2.3 км',
+      experience: 'Опыт: 8 лет',
+      rating: '4.9',
+      education: 'Обучение: Академия РФС, лицензия UEFA C, курсы спортивной психологии.',
+      about: 'Тренерский взгляд: баланс дисциплины и игровой свободы, упор на принятие решений и технику в темпе матча.',
+      conditions: 'Условия тренировки: 60 минут, индивидуально или мини-группа до 4 человек, перенос не позже чем за 6 часов.',
+      price: '1500 ₽/час'
+    },
+    {
+      name: 'Анна Петрова',
+      avatar: 'А',
+      sport: 'Теннис',
+      meta: 'Теннис · Любитель/Продвинутый · 1.7 км',
+      experience: 'Опыт: 6 лет',
+      rating: '4.8',
+      education: 'Обучение: ITF Level 1, сборы в теннисной академии Казани.',
+      about: 'Тренерский взгляд: сначала стабильность техники, затем скорость и тактика розыгрыша под ваш стиль игры.',
+      conditions: 'Условия тренировки: 60 минут на корте, инвентарь можно арендовать на месте, первая встреча — диагностика уровня.',
+      price: '2000 ₽/час'
+    },
+    {
+      name: 'Михаил Орлов',
+      avatar: 'М',
+      sport: 'Баскетбол',
+      meta: 'Баскетбол · Профессионал · 3.1 км',
+      experience: 'Опыт: 10 лет',
+      rating: '5.0',
+      education: 'Обучение: FIBA Coach, высшее физкультурное образование.',
+      about: 'Тренерский взгляд: системная подготовка через технику, тактику и физику, чтобы прогресс был измерим каждую неделю.',
+      conditions: 'Условия тренировки: 75 минут, формат 1:1 или 1:2, отмена/перенос не позже чем за 12 часов.',
+      price: '2500 ₽/час'
+    }
+  ];
+
   let currentEvent = 0;
+  let currentTrainer = 0;
   let eventMap = null;
   let eventPlacemark = null;
 
@@ -1398,7 +1537,7 @@
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'create', 'registration'];
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'trainerProfile', 'create', 'registration'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
     bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments'].includes(id) ? 'none' : 'grid';
 
@@ -1409,13 +1548,13 @@
       document.querySelector('[data-link="home"]').classList.add('active');
     } else if (id === 'create') {
       document.querySelector('[data-link="home"]').classList.add('active');
-    } else if (id === 'trainers') {
+    } else if (id === 'trainers' || id === 'trainerProfile') {
       document.querySelector('[data-link="trainers"]').classList.add('active');
     } else if (id === 'profile' || id === 'profileComments') {
       document.querySelector('[data-link="profile"]').classList.add('active');
     }
 
-    if (id === 'home') {
+    if (id === 'home' && appState.homeMapOpen) {
       renderDiscoveryMap();
     }
   }
@@ -1502,8 +1641,10 @@
     }
 
     applyCityFilters();
-    renderDiscoveryMap();
-    renderNearbyList();
+    if (appState.homeMapOpen) {
+      renderDiscoveryMap();
+      renderNearbyList();
+    }
   }
 
   function applyCityFilters() {
@@ -1564,6 +1705,37 @@
     applyAllFilters();
   }
 
+  function getTrainerSportsCatalog() {
+    const sports = [...document.querySelectorAll('#trainers .trainer-card')]
+      .map((card) => card.dataset.sport)
+      .filter(Boolean);
+    return uniqueCities(sports);
+  }
+
+  function filterTrainerSportOptions(query) {
+    const select = document.getElementById('trainerFilterSport');
+    if (!select) return;
+
+    const q = (query || '').trim().toLowerCase();
+    const current = select.value || appState.trainerSport || '';
+    const catalog = getTrainerSportsCatalog();
+    const filtered = !q ? catalog : catalog.filter((sport) => sport.toLowerCase().includes(q));
+
+    select.innerHTML = '<option value="">Любой вид спорта</option>';
+    filtered.forEach((sport) => {
+      const option = document.createElement('option');
+      option.value = sport;
+      option.textContent = sport;
+      select.appendChild(option);
+    });
+
+    if (current && [...select.options].some((option) => option.value === current)) {
+      select.value = current;
+    } else if (!filtered.length) {
+      select.value = '';
+    }
+  }
+
   function setTrainerRating(rating) {
     appState.trainerMinRating = rating;
     document.querySelectorAll('#trainerRatingStars .star-btn').forEach((btn) => {
@@ -1573,6 +1745,7 @@
 
   function toggleTrainerFilterSheet(state) {
     if (state) {
+      filterTrainerSportOptions(document.getElementById('trainerSportFilterSearch')?.value || '');
       document.getElementById('trainerFilterSport').value = appState.trainerSport;
       document.getElementById('trainerFilterLevel').value = appState.trainerLevel;
       document.getElementById('trainerFilterPrice').value = appState.trainerPrice;
@@ -1598,6 +1771,9 @@
     appState.trainerCity = '';
     appState.trainerMinRating = 0;
     setTrainerRating(0);
+    const sportSearch = document.getElementById('trainerSportFilterSearch');
+    if (sportSearch) sportSearch.value = '';
+    filterTrainerSportOptions('');
     document.getElementById('trainerFilterSport').value = '';
     document.getElementById('trainerFilterLevel').value = '';
     document.getElementById('trainerFilterPrice').value = '';
@@ -1635,6 +1811,18 @@
     });
   }
 
+
+  function toggleHomeMap() {
+    appState.homeMapOpen = !appState.homeMapOpen;
+    const panel = document.getElementById('homeMapPanel');
+    const iconBtn = document.getElementById('homeMapIconBtn');
+    if (panel) panel.classList.toggle('hidden', !appState.homeMapOpen);
+    if (iconBtn) iconBtn.classList.toggle('active', appState.homeMapOpen);
+    if (appState.homeMapOpen) {
+      renderDiscoveryMap();
+      renderNearbyList();
+    }
+  }
 
   function haversineKm(lat1, lon1, lat2, lon2) {
     const toRad = (v) => v * Math.PI / 180;
@@ -1939,8 +2127,8 @@
     const upcomingItems = isTrainer ? appState.upcomingTrainings : appState.upcomingGames;
     const playedItems = isTrainer ? appState.playedTrainings : appState.playedGames;
 
-    upcomingTitle.textContent = isTrainer ? 'Предстоящие тренировки' : 'Предстоящие игры';
-    playedTitle.textContent = isTrainer ? 'Прошедшие тренировки' : 'Прошедшие игры';
+    upcomingTitle.textContent = 'Предстоящие';
+    playedTitle.textContent = 'Прошедшие';
 
     const activeTab = appState.activeProfileTab || 'upcoming';
 
@@ -1949,8 +2137,32 @@
     upcomingTitle.classList.toggle('active', activeTab === 'upcoming');
     playedTitle.classList.toggle('active', activeTab === 'played');
 
-    upcoming.innerHTML = upcomingItems.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет</li>';
-    played.innerHTML = playedItems.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет</li>';
+    const buildInteractiveItem = (item) => {
+      const safe = String(item || '');
+      let handler = '';
+
+      if (safe.startsWith('Тренировка с ')) {
+        const name = safe.replace('Тренировка с ', '').split(' · ')[0].trim();
+        const trainerIndex = trainerProfiles.findIndex((trainer) => trainer.name === name);
+        if (trainerIndex >= 0) handler = `onclick="openTrainerProfileByIndex(${trainerIndex})"`;
+      } else {
+        const eventIndex = events.findIndex((event) => safe.startsWith(event.title));
+        if (eventIndex >= 0) handler = `onclick="openEvent(${eventIndex})"`;
+      }
+
+      if (handler) {
+        return `<li><button class="profile-game-link" ${handler}>${safe}</button></li>`;
+      }
+      return `<li>${safe}</li>`;
+    };
+
+    upcoming.innerHTML = upcomingItems.length
+      ? upcomingItems.map(buildInteractiveItem).join('')
+      : '<li>Пока нет</li>';
+
+    played.innerHTML = playedItems.length
+      ? playedItems.map((item) => `<li>${item}</li>`).join('')
+      : '<li>Пока нет</li>';
   }
 
   function registerUser() {
@@ -2045,6 +2257,68 @@
         mapContainer.innerHTML = '<div style="padding:12px; font-size:12px; color:#5f667d;">Не удалось загрузить адрес на карте.</div>';
       });
     });
+  }
+
+  function openTrainerProfileByIndex(index) {
+    const trainer = trainerProfiles[index];
+    if (!trainer) return;
+
+    currentTrainer = index;
+    document.getElementById('trainerProfileAvatar').textContent = trainer.avatar;
+    document.getElementById('trainerProfileName').textContent = trainer.name;
+    document.getElementById('trainerProfileMeta').textContent = trainer.meta;
+    document.getElementById('trainerProfileSport').textContent = trainer.sport || '';
+    document.getElementById('trainerProfileExperience').textContent = trainer.experience.replace('Опыт: ', '');
+    document.getElementById('trainerProfileCost').textContent = trainer.price;
+    document.getElementById('trainerProfileEducation').textContent = trainer.education.replace('Обучение: ', '');
+    document.getElementById('trainerProfileRating').textContent = `⭐ ${trainer.rating}`;
+    document.getElementById('trainerProfileAbout').textContent = trainer.about;
+    document.getElementById('trainerProfileConditions').textContent = trainer.conditions;
+    document.getElementById('trainerProfilePrice').textContent = trainer.price;
+    openScreen('trainerProfile');
+  }
+
+  function bookTrainerTraining() {
+    const trainer = trainerProfiles[currentTrainer] || trainerProfiles[0];
+    const trainingLabel = `Тренировка с ${trainer.name} · ${trainer.sport}`;
+    if (!appState.upcomingGames.includes(trainingLabel)) {
+      appState.upcomingGames.unshift(trainingLabel);
+      renderGameLists();
+    }
+    alert(`Заявка отправлена тренеру ${trainer.name}. Тренировка добавлена в ваш профиль.`);
+  }
+
+  function buildTrainerShareLink() {
+    const trainer = trainerProfiles[currentTrainer] || trainerProfiles[0];
+    const slug = encodeURIComponent(trainer.name.toLowerCase().replace(/\s+/g, '-'));
+    return `${window.location.origin}${window.location.pathname}#trainer=${slug}`;
+  }
+
+  function copyTrainerShareLink() {
+    const link = buildTrainerShareLink();
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(link)
+        .then(() => alert('Ссылка на тренера скопирована ✅'))
+        .catch(() => {
+          const tempInput = document.createElement('input');
+          tempInput.value = link;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          tempInput.remove();
+          alert('Ссылка на тренера скопирована ✅');
+        });
+      return;
+    }
+
+    const tempInput = document.createElement('input');
+    tempInput.value = link;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    tempInput.remove();
+    alert('Ссылка на тренера скопирована ✅');
   }
 
   function openEvent(index) {
