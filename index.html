@@ -685,6 +685,96 @@
       box-shadow: 0 8px 18px rgba(37,99,235,.24);
     }
 
+
+    .payment-card {
+      border: 1px solid #dbe6ff;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f5f9ff);
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .payment-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      color: #3f4d70;
+      margin-top: 6px;
+    }
+
+    .payment-line.total {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #c8d8fb;
+      font-size: 15px;
+      font-weight: 800;
+      color: #102146;
+    }
+
+    .payment-methods {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .payment-method-btn {
+      border: 1px solid #d9def0;
+      background: #f7f9ff;
+      color: #25355b;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .payment-method-btn.active {
+      border-color: #2563eb;
+      background: #edf3ff;
+      color: #1740a4;
+      box-shadow: 0 0 0 2px rgba(37,99,235,.12);
+    }
+
+    .plan-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .plan-card {
+      border: 1px solid #dbe6ff;
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .plan-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .plan-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f1f45;
+    }
+
+    .plan-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #e9f1ff;
+      color: #1d4ed8;
+    }
+
     #trainerProfile .trainer-card {
       border-radius: 18px;
       background: linear-gradient(165deg, #ffffff, #f4f8ff);
@@ -1276,6 +1366,8 @@
   <div class="screen" id="trainers">
     <div class="home-tools" style="margin-bottom:2px;">
       <div class="title" style="font-size:28px; margin:0;">Тренеры</div>
+      <button id="trainerCreateBtn" class="tools-btn hidden" onclick="openCreateFlow()">Создать событие</button>
+      <button id="trainerSubscriptionBtn" class="tools-btn hidden" onclick="openScreen('subscriptions')">Подписки PRO</button>
       <button class="tools-btn" onclick="toggleTrainerFilterSheet(true)">Фильтры</button>
     </div>
 
@@ -1390,6 +1482,52 @@
       <div class="actions" style="margin-top:12px;">
         <button class="trainer-book-btn" onclick="bookTrainerTraining()">Записаться на тренировку</button>
         <button class="btn gray" onclick="copyTrainerShareLink()">🔗</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="payment">
+    <button class="back" onclick="closePaymentScreen()">← Назад</button>
+    <div class="title" style="font-size:28px; margin:0 0 2px;">Оплата</div>
+    <div class="subtitle" id="paymentSubtitle">Проверьте заказ и выберите способ оплаты.</div>
+
+    <div class="payment-card">
+      <div class="event-name" id="paymentTitle">Участие в событии</div>
+      <div class="payment-line"><span>Стоимость</span><b id="paymentAmount">0 ₽</b></div>
+      <div class="payment-line"><span>Сервисный сбор</span><b id="paymentFee">0 ₽</b></div>
+      <div class="payment-line total"><span>К оплате</span><b id="paymentTotal">0 ₽</b></div>
+    </div>
+
+    <div class="section-label" style="margin-top:12px;">Способ оплаты</div>
+    <div class="payment-methods" id="paymentMethods">
+      <button class="payment-method-btn active" data-method="card" onclick="selectPaymentMethod(this)">💳 Банковская карта</button>
+      <button class="payment-method-btn" data-method="sbp" onclick="selectPaymentMethod(this)">📲 СБП</button>
+      <button class="payment-method-btn" data-method="wallet" onclick="selectPaymentMethod(this)">👛 Баланс приложения</button>
+    </div>
+
+    <button class="btn primary" style="margin-top:14px;" onclick="processPayment()">Оплатить</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="closePaymentScreen()">Отмена</button>
+  </div>
+
+  <div class="screen" id="subscriptions">
+    <button class="back" onclick="openScreen('trainers')">← Назад</button>
+    <div class="title" style="font-size:28px; margin:0 0 2px;">Подписки для тренера</div>
+    <div class="subtitle">Монетизация профиля и продвижение в поиске.</div>
+
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Free</div><div class="plan-price">0 ₽/мес</div></div>
+        <div class="subtitle">До 2 активных событий, базовая карточка тренера.</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Pro <span class="plan-badge">рекомендуем</span></div><div class="plan-price">990 ₽/мес</div></div>
+        <div class="subtitle">Приоритет в выдаче, бейдж «Проверен», базовая аналитика заявок.</div>
+        <button class="trainer-open-btn" onclick="startSubscriptionPayment('pro', 990)">Подключить Pro</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Max</div><div class="plan-price">2490 ₽/мес</div></div>
+        <div class="subtitle">Все из Pro + CRM мини, пакетные тренировки, авто-напоминания клиентам.</div>
+        <button class="trainer-open-btn" onclick="startSubscriptionPayment('max', 2490)">Подключить Max</button>
       </div>
     </div>
   </div>
@@ -1618,6 +1756,8 @@
     advanced: { when: 'all', sports: [], levels: [] },
     createPoint: null,
     pendingCreatedGameLabel: '',
+    pendingCreatedEventIndex: -1,
+    joinedEventIndices: [0],
     cityCatalog: ['Тольятти', 'Казань', 'Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Самара', 'Нижний Новгород', 'Краснодар', 'Ростов-на-Дону', 'Уфа', 'Пермь', 'Челябинск', 'Омск', 'Красноярск', 'Воронеж', 'Волгоград', 'Тюмень', 'Иркутск', 'Хабаровск'],
     citySearchTimer: null,
     cityRequestId: 0,
@@ -1626,7 +1766,10 @@
     discoveryMapReady: false,
     favoritePlaces: [],
     discoveryMarkers: [],
-    homeMapOpen: false
+    homeMapOpen: false,
+    paymentDraft: null,
+    paymentMethod: 'card',
+    subscriptionPlan: 'free'
   };
 
   const events = [
@@ -1760,13 +1903,41 @@
   let eventMap = null;
   let eventPlacemark = null;
 
+  function isTrainerRole() {
+    return (appState.currentUser?.role || appState.role) === 'trainer';
+  }
+
+  function updateCreateAccessUI() {
+    const trainerCreateBtn = document.getElementById('trainerCreateBtn');
+    const trainerSubscriptionBtn = document.getElementById('trainerSubscriptionBtn');
+    if (trainerCreateBtn) trainerCreateBtn.classList.toggle('hidden', !isTrainerRole());
+    if (trainerSubscriptionBtn) trainerSubscriptionBtn.classList.toggle('hidden', !isTrainerRole());
+  }
+
+  function hasActiveTrainerSubscription() {
+    return ['pro', 'max'].includes(appState.subscriptionPlan);
+  }
+
+  function openCreateFlow() {
+    if (!isTrainerRole()) {
+      alert('Создавать события может только тренер. Переключите роль и заполните профиль тренера.');
+      return;
+    }
+    if (!hasActiveTrainerSubscription()) {
+      alert('Для публикации событий нужна подписка Pro или Max. Подключите тариф во вкладке «Подписки PRO».');
+      openScreen('subscriptions');
+      return;
+    }
+    openScreen('create');
+  }
+
   function openScreen(id, navEl) {
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'trainerProfile', 'create', 'registration'];
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
-    bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments'].includes(id) ? 'none' : 'grid';
+    bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments', 'payment', 'subscriptions'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
@@ -2270,6 +2441,7 @@
     document.getElementById('trainerFields').classList.toggle('hidden', role !== 'trainer');
     document.getElementById('rolePlayerBtn').classList.toggle('active', role === 'player');
     document.getElementById('roleTrainerBtn').classList.toggle('active', role === 'trainer');
+    updateCreateAccessUI();
   }
 
   function openRegPhotoPicker() {
@@ -2324,6 +2496,7 @@
 
     renderGameLists();
     renderProfileComments();
+    updateCreateAccessUI();
   }
 
   function renderStars(rating) {
@@ -2544,14 +2717,16 @@
     openScreen('trainerProfile');
   }
 
-  function bookTrainerTraining() {
+  function bookTrainerTraining(showAlert = true) {
     const trainer = trainerProfiles[currentTrainer] || trainerProfiles[0];
     const trainingLabel = `Тренировка с ${trainer.name} · ${trainer.sport}`;
     if (!appState.upcomingGames.includes(trainingLabel)) {
       appState.upcomingGames.unshift(trainingLabel);
       renderGameLists();
     }
-    alert(`Заявка отправлена тренеру ${trainer.name}. Тренировка добавлена в ваш профиль.`);
+    if (showAlert) {
+      alert(`Заявка отправлена тренеру ${trainer.name}. Тренировка добавлена в ваш профиль.`);
+    }
   }
 
   function buildTrainerShareLink() {
@@ -2587,6 +2762,56 @@
     alert('Ссылка на тренера скопирована ✅');
   }
 
+  function openPaymentScreen() {
+    document.querySelectorAll('#paymentMethods .payment-method-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.method === appState.paymentMethod);
+    });
+
+    const draft = appState.paymentDraft;
+    if (draft) {
+      document.getElementById('paymentTitle').textContent = draft.title;
+      document.getElementById('paymentSubtitle').textContent = draft.subtitle;
+      document.getElementById('paymentAmount').textContent = `${Number(draft.amount || 0).toLocaleString('ru-RU')} ₽`;
+      document.getElementById('paymentFee').textContent = `${Number(draft.fee || 0).toLocaleString('ru-RU')} ₽`;
+      document.getElementById('paymentTotal').textContent = `${Number(draft.total || 0).toLocaleString('ru-RU')} ₽`;
+    }
+
+    openScreen('payment');
+  }
+
+  function selectPaymentMethod(btn) {
+    appState.paymentMethod = btn.dataset.method || 'card';
+    document.querySelectorAll('#paymentMethods .payment-method-btn').forEach((item) => item.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function closePaymentScreen() {
+    openScreen('subscriptions');
+  }
+
+  function startSubscriptionPayment(plan, amount) {
+    appState.paymentDraft = {
+      source: 'subscription',
+      type: 'subscription',
+      plan,
+      title: `Подписка ${plan.toUpperCase()}`,
+      subtitle: 'Ежемесячный тариф для тренера',
+      amount,
+      fee: 0,
+      total: amount
+    };
+    openPaymentScreen();
+  }
+
+  function processPayment() {
+    const draft = appState.paymentDraft;
+    if (!draft || draft.type !== 'subscription') return;
+
+    appState.subscriptionPlan = draft.plan;
+    openScreen('subscriptions');
+    alert(`Тариф ${draft.plan.toUpperCase()} активирован. Теперь вы можете создавать события как тренер.`);
+  }
+
   function openEvent(index) {
     currentEvent = index;
     const event = events[index];
@@ -2597,8 +2822,9 @@
     document.getElementById('memberCount').innerText = event.members;
     document.getElementById('eventDescription').innerText = event.description;
 
-    document.getElementById('joinActions').style.display = 'flex';
-    document.getElementById('leaveActions').style.display = 'none';
+    const isJoined = appState.joinedEventIndices.includes(index);
+    document.getElementById('joinActions').style.display = isJoined ? 'none' : 'flex';
+    document.getElementById('leaveActions').style.display = isJoined ? 'flex' : 'none';
 
     openScreen('event');
     renderEventMapByAddress(event);
@@ -2606,7 +2832,7 @@
 
   function participateInEvent() {
     joinEvent();
-    alert('Вы в событии! По оплате/деньгам участники договариваются на месте. Бот отправит приглашение в группу события.');
+    alert('Вы в событии! Деньги игрокам не переводятся через приложение. Детали участия — в чате события.');
   }
 
   function joinEvent() {
@@ -2615,6 +2841,9 @@
 
     const event = events[currentEvent];
     const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
+    if (!appState.joinedEventIndices.includes(currentEvent)) {
+      appState.joinedEventIndices.push(currentEvent);
+    }
     if (!appState.upcomingGames.includes(gameLabel)) {
       appState.upcomingGames.unshift(gameLabel);
       renderGameLists();
@@ -2624,6 +2853,16 @@
   function leaveEvent() {
     document.getElementById('joinActions').style.display = 'flex';
     document.getElementById('leaveActions').style.display = 'none';
+
+    appState.joinedEventIndices = appState.joinedEventIndices.filter((idx) => idx !== currentEvent);
+
+    const event = events[currentEvent];
+    if (event) {
+      const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
+      appState.upcomingGames = appState.upcomingGames.filter((item) => item !== gameLabel);
+      renderGameLists();
+    }
+
     toggleCancel(false);
   }
 
@@ -2670,6 +2909,17 @@
 
 
   function createEvent() {
+    if (!isTrainerRole()) {
+      alert('Создавать события может только тренер.');
+      return;
+    }
+
+    if (!hasActiveTrainerSubscription()) {
+      alert('Сначала подключите подписку Pro или Max, чтобы публиковать события.');
+      openScreen('subscriptions');
+      return;
+    }
+
     const title = document.getElementById('createTitle').value.trim();
     const sport = document.getElementById('createSport').value.trim();
     const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
@@ -2691,6 +2941,39 @@
     const details = schedule || 'Скоро';
     appState.pendingCreatedGameLabel = `${title} · ${details}`;
 
+    const eventMeta = `Платно · ${sport.toLowerCase()} · ${details}`;
+    const newEvent = {
+      title,
+      meta: eventMeta,
+      place: location,
+      members: 1,
+      price: 'Оплата при подтверждении',
+      city: appState.selectedCity === 'all' ? 'Тольятти' : appState.selectedCity,
+      lat: appState.createPoint[0],
+      lon: appState.createPoint[1],
+      kind: 'group',
+      description: document.getElementById('createDescription').value.trim() || `Событие ${title}.`
+    };
+    events.unshift(newEvent);
+    appState.pendingCreatedEventIndex = 0;
+
+    document.querySelectorAll('#home .event-card').forEach((card) => {
+      const prev = Number(card.getAttribute('onclick')?.match(/openEvent\((\d+)\)/)?.[1] || 0);
+      card.setAttribute('onclick', `openEvent(${prev + 1})`);
+    });
+
+    const container = document.getElementById('home');
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.dataset.sport = sport;
+    card.dataset.city = newEvent.city;
+    card.dataset.when = 'week';
+    card.dataset.level = level;
+    card.setAttribute('onclick', 'openEvent(0)');
+    card.innerHTML = `<div class="event-tag">🏟️ ${sport}</div><div class="event-name">${title}</div><div class="event-meta">${details} · ${location}</div><div class="event-footer"><span>Нужны участники</span><span>${newEvent.price}</span></div>`;
+    container.appendChild(card);
+
+    applyAllFilters();
     document.getElementById('createdSheet').classList.add('active');
   }
 
@@ -2745,7 +3028,16 @@
       renderGameLists();
     }
 
+    const newEventIndex = appState.pendingCreatedEventIndex;
     appState.pendingCreatedGameLabel = '';
+    appState.pendingCreatedEventIndex = -1;
+
+    if (newEventIndex >= 0) {
+      openEvent(newEventIndex);
+      alert('Событие создано. Открылся экран события — можно продолжить к оплате участия.');
+      return;
+    }
+
     openScreen('home');
     alert('Бот: Событие создано и опубликовано. Переходите в чат регистрации для деталей.');
   }
@@ -2803,6 +3095,7 @@
 
   setRegistrationRole('player');
   updateProfileView(appState.currentUser);
+  updateCreateAccessUI();
   renderCityOptions(appState.cityCatalog);
   setCity('Тольятти');
   initCreateMap();
