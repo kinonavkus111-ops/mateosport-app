@@ -371,7 +371,7 @@
       border-top: 1px solid rgba(37,99,235,.14);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding: 6px 8px 10px;
+      padding: 8px 8px 12px;
       z-index: 30;
       backdrop-filter: blur(10px);
     }
@@ -379,11 +379,36 @@
     .nav-item {
       text-align: center;
       font-size: 11px;
-      color: #9a9aa2;
+      color: #8f98ad;
       cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: color .16s ease;
     }
-    .nav-item .emoji { font-size: 18px; display: block; margin-bottom: 3px; color: #1d3f8f; }
-    .nav-item.active { color: #1d4ed8; font-weight: 700; }
+
+    .nav-icon {
+      width: 23px;
+      height: 23px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+      transition: transform .16s ease;
+    }
+
+    .nav-item.active {
+      color: #2563EB;
+      font-weight: 700;
+    }
+
+    .nav-item.active .nav-icon {
+      transform: translateY(-1px);
+    }
 
     .image-box {
       border-radius: 12px;
@@ -500,18 +525,18 @@
     }
 
     .profile-head {
-      align-items: flex-start;
-      gap: 4px;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 12px;
     }
 
     .profile-identity {
-      margin-top: 10px;
+      margin-top: 0;
       margin-left: 0;
       display: flex;
       flex-direction: column;
       gap: 2px;
-      justify-content: flex-start;
+      justify-content: center;
       min-height: 52px;
       width: 100%;
     }
@@ -576,6 +601,16 @@
     .trainer-line,
     .profile-line { font-size: 13px; color: #4f5055; margin-bottom: 5px; }
 
+    #trainers .trainer-card {
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    #trainers .trainer-card:hover {
+      border-color: rgba(37,99,235,.26);
+      box-shadow: 0 14px 30px rgba(37,99,235,.18);
+      transform: translateY(-1px);
+    }
+
     .trainer-price-big {
       margin-top: 10px;
       padding-top: 12px;
@@ -589,7 +624,7 @@
     .trainer-detail-box {
       border: 1px solid #dbe6ff;
       border-radius: 14px;
-      background: #f7faff;
+      background: linear-gradient(180deg, #f8fbff, #f2f7ff);
       padding: 12px;
       font-size: 13px;
       color: #445277;
@@ -599,14 +634,20 @@
     .trainer-quick-info {
       border: 1px solid #dbe6ff;
       border-radius: 14px;
-      background: #fff;
+      background: #ffffff;
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       font-size: 13px;
       color: #33415f;
       margin-top: 8px;
+    }
+
+    .trainer-quick-info div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .trainer-quick-info b { color: #0f1f45; }
@@ -615,7 +656,7 @@
     .trainer-open-btn {
       margin-top: 8px;
       border: 1px solid rgba(37,99,235,.28);
-      background: #eef3ff;
+      background: linear-gradient(160deg, #f5f9ff, #eaf2ff);
       color: #1d4ed8;
       border-radius: 12px;
       font-size: 13px;
@@ -626,16 +667,27 @@
       text-align: center;
     }
 
+    .trainer-open-btn:hover {
+      border-color: rgba(37,99,235,.45);
+      background: linear-gradient(160deg, #edf4ff, #ddeaff);
+    }
+
     .trainer-book-btn {
       border: 1px solid rgba(37,99,235,.30);
-      background: #eef3ff;
-      color: #1d4ed8;
+      background: linear-gradient(160deg, #2563EB, #1f57e7);
+      color: #fff;
       border-radius: 12px;
       padding: 10px 12px;
       font-size: 14px;
       font-weight: 700;
       width: 100%;
       cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37,99,235,.24);
+    }
+
+    #trainerProfile .trainer-card {
+      border-radius: 18px;
+      background: linear-gradient(165deg, #ffffff, #f4f8ff);
     }
 
 
@@ -775,16 +827,54 @@
     }
 
     .game-list {
-      margin: 6px 0 0;
-      padding-left: 18px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .game-list-item {
+      border: 1px solid #dbe7ff;
+      border-radius: 16px;
+      background: linear-gradient(165deg, #ffffff, #f3f8ff);
+      box-shadow: 0 6px 16px rgba(37,99,235,.10);
+      overflow: hidden;
+    }
+
+    .game-list-item.muted {
+      color: #65708f;
       font-size: 12px;
-      color: #52545c;
-      line-height: 1.45;
-      border: 1px solid #edf3ff;
-      border-radius: 10px;
-      background: #fff;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding: 12px 14px;
+      box-shadow: none;
+      background: #f7faff;
+    }
+
+    .game-list-content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 14px;
+      color: #183269;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .game-list-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0b84ff;
+      box-shadow: 0 0 0 3px rgba(11,132,255,.13);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .game-list-text {
+      flex: 1;
     }
 
     .profile-game-link {
@@ -1038,6 +1128,28 @@
       <div class="event-meta">Завтра, 18:00–20:00 · Корт Парк</div>
       <div class="event-footer"><span>Нужно 8 игроков</span><span>Бесплатно</span></div>
     </div>
+
+
+    <div class="event-card" data-sport="Баскетбол" data-city="Москва" data-when="week" data-level="Любитель" onclick="openEvent(2)">
+      <div class="event-tag">🏀 Баскетбол</div>
+      <div class="event-name">Открытая игра 3x3</div>
+      <div class="event-meta">Чт, 20:00–21:30 · Площадка на Таганке</div>
+      <div class="event-footer"><span>Нужно 6 игроков</span><span>500 ₽</span></div>
+    </div>
+
+    <div class="event-card" data-sport="Волейбол" data-city="Самара" data-when="weekend" data-level="Смешанный уровень" onclick="openEvent(3)">
+      <div class="event-tag">🏐 Волейбол</div>
+      <div class="event-name">Микс-турнир 6x6</div>
+      <div class="event-meta">Сб, 17:00–19:00 · Спорткомплекс "Волга"</div>
+      <div class="event-footer"><span>Нужно 12 игроков</span><span>400 ₽</span></div>
+    </div>
+
+    <div class="event-card" data-sport="Бег" data-city="Санкт-Петербург" data-when="tomorrow" data-level="Любитель" onclick="openEvent(4)">
+      <div class="event-tag">🏃 Бег</div>
+      <div class="event-name">Парк-ран 7 км</div>
+      <div class="event-meta">Завтра, 08:30 · Парк 300-летия</div>
+      <div class="event-footer"><span>Нужно 20 участников</span><span>Бесплатно</span></div>
+    </div>
   </div>
 
   <div class="screen" id="event">
@@ -1214,6 +1326,39 @@
       <div class="trainer-line"><b>Цена:</b> от 2500 ₽ / занятие</div>
       <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(2)">Подробнее и запись</button>
     </div>
+
+
+    <div class="trainer-card" data-city="Санкт-Петербург" data-sport="Плавание" data-level="Любитель" data-price="1800" data-rating="4.7" data-lat="59.9343" data-lon="30.3351">
+      <div class="trainer-head">
+        <div class="avatar-photo">Е</div>
+        <div>
+          <div class="event-name">Елена Смирнова</div>
+          <div class="subtitle">Плавание · Swim Coach · Санкт-Петербург</div>
+        </div>
+        <div class="rating">⭐ 4.7</div>
+      </div>
+      <div class="trainer-line">Стаж тренерской карьеры: 7 лет</div>
+      <div class="trainer-line">Уровень: новичок / любитель</div>
+      <div class="trainer-line">Обучение: НГУ им. Лесгафта, курсы методики плавания</div>
+      <div class="trainer-line"><b>Цена:</b> от 1800 ₽ / занятие</div>
+      <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(3)">Подробнее и запись</button>
+    </div>
+
+    <div class="trainer-card" data-city="Екатеринбург" data-sport="Бокс" data-level="Продвинутый" data-price="2200" data-rating="4.9" data-lat="56.8389" data-lon="60.6057">
+      <div class="trainer-head">
+        <div class="avatar-photo">Д</div>
+        <div>
+          <div class="event-name">Дмитрий Соколов</div>
+          <div class="subtitle">Бокс · AIBA · Екатеринбург</div>
+        </div>
+        <div class="rating">⭐ 4.9</div>
+      </div>
+      <div class="trainer-line">Стаж тренерской карьеры: 9 лет</div>
+      <div class="trainer-line">Уровень: любитель / продвинутый</div>
+      <div class="trainer-line">Обучение: УралГУФК, лицензия AIBA</div>
+      <div class="trainer-line"><b>Цена:</b> от 2200 ₽ / занятие</div>
+      <button class="trainer-open-btn" onclick="openTrainerProfileByIndex(4)">Подробнее и запись</button>
+    </div>
   </div>
 
   <div class="screen" id="trainerProfile">
@@ -1318,9 +1463,30 @@
   <button class="filter-btn" id="floatingBtn" onclick="openScreen('create')">+ Разместить</button>
 
   <div class="bottom-nav">
-    <div class="nav-item active" data-link="home" onclick="openScreen('home', this)"><span class="emoji">★</span>События</div>
-    <div class="nav-item" data-link="trainers" onclick="openScreen('trainers', this)"><span class="emoji">★</span>Тренеры</div>
-    <div class="nav-item" data-link="profile" onclick="openScreen('profile', this)"><span class="emoji">★</span>Профиль</div>
+    <div class="nav-item active" data-link="home" onclick="openScreen('home', this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 10.5 12 3l9 7.5"></path>
+        <path d="M5.5 9.8V20h13V9.8"></path>
+        <path d="M10 20v-5h4v5"></path>
+      </svg>
+      <span>События</span>
+    </div>
+    <div class="nav-item" data-link="trainers" onclick="openScreen('trainers', this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+        <path d="M16 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"></path>
+        <path d="M3.5 20c.6-3 2.6-4.5 5.6-4.5S14 17 14.5 20"></path>
+        <path d="M13 20c.4-2 1.7-3.2 3.8-3.2 2.1 0 3.2 1 3.7 3.2"></path>
+      </svg>
+      <span>Тренеры</span>
+    </div>
+    <div class="nav-item" data-link="profile" onclick="openScreen('profile', this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="7.5" r="3.5"></circle>
+        <path d="M4.5 20c1-3.7 3.7-5.5 7.5-5.5s6.5 1.8 7.5 5.5"></path>
+      </svg>
+      <span>Профиль</span>
+    </div>
   </div>
 </div>
 
@@ -1451,6 +1617,7 @@
     trainerMinRating: 0,
     advanced: { when: 'all', sports: [], levels: [] },
     createPoint: null,
+    pendingCreatedGameLabel: '',
     cityCatalog: ['Тольятти', 'Казань', 'Москва', 'Санкт-Петербург', 'Екатеринбург', 'Новосибирск', 'Самара', 'Нижний Новгород', 'Краснодар', 'Ростов-на-Дону', 'Уфа', 'Пермь', 'Челябинск', 'Омск', 'Красноярск', 'Воронеж', 'Волгоград', 'Тюмень', 'Иркутск', 'Хабаровск'],
     citySearchTimer: null,
     cityRequestId: 0,
@@ -1464,7 +1631,7 @@
 
   const events = [
     {
-      title: '5x5 Saturday Morning Basketball',
+      title: 'Воскресная игра 5x5',
       meta: 'Платно · футбол · Сегодня, 19:00–20:30',
       place: 'Манеж на Никольской',
       members: 11,
@@ -1476,7 +1643,7 @@
       description: 'Игровая тренировка 5x5. Нужны ответственные игроки, приходите за 15 минут до начала. После оплаты бот приглашает вас в группу события.'
     },
     {
-      title: 'Парный турнир по теннису',
+      title: 'Парный турнир',
       meta: 'Бесплатно · теннис · Завтра, 18:00–20:00',
       place: 'Корт Парк',
       members: 8,
@@ -1486,6 +1653,42 @@
       lon: 49.1064,
       kind: 'competition',
       description: 'Лёгкий турнир на вечер. Играем в формате пары на пары. Подходит для любого уровня.'
+    },
+    {
+      title: 'Открытая игра 3x3',
+      meta: 'Платно · баскетбол · Чт, 20:00–21:30',
+      place: 'Площадка на Таганке',
+      members: 6,
+      price: '500 ₽',
+      city: 'Москва',
+      lat: 55.7412,
+      lon: 37.6538,
+      kind: 'group',
+      description: 'Динамичная игра 3x3 на открытой площадке. Подходит для любителей и продвинутых игроков.'
+    },
+    {
+      title: 'Микс-турнир 6x6',
+      meta: 'Платно · волейбол · Сб, 17:00–19:00',
+      place: 'Спорткомплекс "Волга"',
+      members: 12,
+      price: '400 ₽',
+      city: 'Самара',
+      lat: 53.1959,
+      lon: 50.1008,
+      kind: 'competition',
+      description: 'Командный волейбольный турнир смешанного уровня. Играем сериями по 20 минут.'
+    },
+    {
+      title: 'Парк-ран 7 км',
+      meta: 'Бесплатно · бег · Завтра, 08:30',
+      place: 'Парк 300-летия',
+      members: 20,
+      price: 'Бесплатно',
+      city: 'Санкт-Петербург',
+      lat: 59.9841,
+      lon: 30.2049,
+      kind: 'group',
+      description: 'Утренняя пробежка в комфортном темпе. Есть группы 5 км и 7 км, старт и заминка вместе.'
     }
   ];
 
@@ -1525,6 +1728,30 @@
       about: 'Тренерский взгляд: системная подготовка через технику, тактику и физику, чтобы прогресс был измерим каждую неделю.',
       conditions: 'Условия тренировки: 75 минут, формат 1:1 или 1:2, отмена/перенос не позже чем за 12 часов.',
       price: '2500 ₽/час'
+    },
+    {
+      name: 'Елена Смирнова',
+      avatar: 'Е',
+      sport: 'Плавание',
+      meta: 'Плавание · Любитель · 2.0 км',
+      experience: 'Опыт: 7 лет',
+      rating: '4.7',
+      education: 'Обучение: НГУ им. Лесгафта, курсы методики плавания.',
+      about: 'Тренерский взгляд: техника дыхания и скольжения как база, затем работа над выносливостью и темпом.',
+      conditions: 'Условия тренировки: 60 минут в бассейне, занятия 1:1 или мини-группа до 3 человек.',
+      price: '1800 ₽/час'
+    },
+    {
+      name: 'Дмитрий Соколов',
+      avatar: 'Д',
+      sport: 'Бокс',
+      meta: 'Бокс · Продвинутый · 2.8 км',
+      experience: 'Опыт: 9 лет',
+      rating: '4.9',
+      education: 'Обучение: УралГУФК, лицензия AIBA.',
+      about: 'Тренерский взгляд: безопасная техника и грамотная стойка прежде всего, затем скорость и комбинации.',
+      conditions: 'Условия тренировки: 60 минут, лапы + ОФП, перенос не позже чем за 8 часов.',
+      price: '2200 ₽/час'
     }
   ];
 
@@ -1846,12 +2073,19 @@
   }
 
   function getVisibleGeoItems() {
+    const parseIndexFromOnclick = (value, fnName) => {
+      const match = String(value || '').match(new RegExp(`${fnName}\((\d+)\)`));
+      return match ? Number(match[1]) : -1;
+    };
+
     const visibleEvents = [...document.querySelectorAll('#home .event-card')]
       .filter((card) => card.style.display !== 'none')
-      .map((card, index) => {
-        const ev = events[index];
+      .map((card) => {
+        const eventIndex = parseIndexFromOnclick(card.getAttribute('onclick'), 'openEvent');
+        const ev = events[eventIndex];
         return ev?.lat && ev?.lon ? {
           type: 'event',
+          eventIndex,
           title: ev.title,
           city: ev.city,
           lat: ev.lat,
@@ -1864,15 +2098,33 @@
       .filter((card) => card.style.display !== 'none')
       .map((card) => ({
         type: 'trainer',
+        trainerIndex: parseIndexFromOnclick(card.querySelector('.trainer-open-btn')?.getAttribute('onclick'), 'openTrainerProfileByIndex'),
         title: card.querySelector('.event-name')?.textContent || 'Тренер',
         city: card.dataset.city,
         lat: Number(card.dataset.lat),
         lon: Number(card.dataset.lon),
         kind: 'trainer'
       }))
-      .filter((item) => item.lat && item.lon);
+      .filter((item) => item.lat && item.lon && item.trainerIndex >= 0);
 
     return [...visibleEvents, ...visibleTrainers];
+  }
+
+  function openGeoItemFromMap(type, index) {
+    if (type === 'event') {
+      openEvent(index);
+      return;
+    }
+    if (type === 'trainer') {
+      openTrainerProfileByIndex(index);
+    }
+  }
+
+
+  function joinGeoEventFromMap(eventIndex) {
+    openEvent(eventIndex);
+    joinEvent();
+    alert('Вы записаны на событие с карты. Событие добавлено в профиль.');
   }
 
   function renderNearbyList() {
@@ -1957,9 +2209,21 @@
 
       getVisibleGeoItems().forEach((item) => {
         const preset = item.type === 'trainer' ? 'islands#darkBlueStretchyIcon' : eventPresetByKind(item.kind);
+        const actionIndex = item.type === 'event' ? item.eventIndex : item.trainerIndex;
+        const actionLabel = item.type === 'event' ? 'Открыть событие' : 'Открыть тренера';
+        const actionButton = `<button style="margin-top:6px; margin-right:6px; border:none; border-radius:8px; padding:6px 10px; background:#2563EB; color:#fff; font-size:12px; cursor:pointer;" onclick="openGeoItemFromMap('${item.type}', ${actionIndex})">${actionLabel}</button>`;
+        const joinButton = item.type === 'event'
+          ? `<button style="margin-top:6px; border:none; border-radius:8px; padding:6px 10px; background:#0f172a; color:#fff; font-size:12px; cursor:pointer;" onclick="joinGeoEventFromMap(${actionIndex})">Участвовать</button>`
+          : '';
+
         const pm = new ymaps.Placemark([item.lat, item.lon], {
-          balloonContent: `${item.type === 'event' ? 'Событие' : 'Тренер'}: ${item.title} (${item.city})`
+          balloonContent: `${item.type === 'event' ? 'Событие' : 'Тренер'}: ${item.title} (${item.city})<br>${actionButton}${joinButton}`
         }, { preset });
+
+        pm.events.add('click', () => {
+          pm.balloon.open();
+        });
+
         map.geoObjects.add(pm);
       });
 
@@ -2150,19 +2414,21 @@
         if (eventIndex >= 0) handler = `onclick="openEvent(${eventIndex})"`;
       }
 
+      const content = `<span class="game-list-dot"></span><span class="game-list-text">${safe}</span>`;
+
       if (handler) {
-        return `<li><button class="profile-game-link" ${handler}>${safe}</button></li>`;
+        return `<li class="game-list-item"><button class="profile-game-link" ${handler}><span class="game-list-content">${content}</span></button></li>`;
       }
-      return `<li>${safe}</li>`;
+      return `<li class="game-list-item"><div class="game-list-content">${content}</div></li>`;
     };
 
     upcoming.innerHTML = upcomingItems.length
       ? upcomingItems.map(buildInteractiveItem).join('')
-      : '<li>Пока нет</li>';
+      : '<li class="game-list-item muted">Пока нет</li>';
 
     played.innerHTML = playedItems.length
-      ? playedItems.map((item) => `<li>${item}</li>`).join('')
-      : '<li>Пока нет</li>';
+      ? playedItems.map(buildInteractiveItem).join('')
+      : '<li class="game-list-item muted">Пока нет</li>';
   }
 
   function registerUser() {
@@ -2409,6 +2675,8 @@
     const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
     const level = document.getElementById('createLevel').value.trim();
     const location = document.getElementById('createLocation').value.trim();
+    const date = document.getElementById('createDate').value.trim();
+    const time = document.getElementById('createTime').value.trim();
 
     if (!title || !sport || !format || !level || !location) {
       alert('Заполни название, спорт, формат, уровень и местоположение.');
@@ -2416,9 +2684,12 @@
     }
 
     if (!appState.createPoint) {
-      alert('Поставь точку на карте, чтобы сохранить точное местоположение.');
-      return;
+      appState.createPoint = [53.5078, 49.4204];
     }
+
+    const schedule = [date, time].filter(Boolean).join(' ');
+    const details = schedule || 'Скоро';
+    appState.pendingCreatedGameLabel = `${title} · ${details}`;
 
     document.getElementById('createdSheet').classList.add('active');
   }
@@ -2467,6 +2738,14 @@
 
   function finishCreateFlow() {
     document.getElementById('createdSheet').classList.remove('active');
+
+    if (appState.pendingCreatedGameLabel && !appState.upcomingGames.includes(appState.pendingCreatedGameLabel)) {
+      appState.upcomingGames.unshift(appState.pendingCreatedGameLabel);
+      appState.activeProfileTab = 'upcoming';
+      renderGameLists();
+    }
+
+    appState.pendingCreatedGameLabel = '';
     openScreen('home');
     alert('Бот: Событие создано и опубликовано. Переходите в чат регистрации для деталей.');
   }
@@ -2527,7 +2806,8 @@
   renderCityOptions(appState.cityCatalog);
   setCity('Тольятти');
   initCreateMap();
-  openScreen('registration');
+  openScreen('home');
+  applyAllFilters();
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
