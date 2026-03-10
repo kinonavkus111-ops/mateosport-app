@@ -775,6 +775,179 @@
       color: #1d4ed8;
     }
 
+
+    .subscription-status-card {
+      border: 1px solid #dbe6ff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f8fbff, #eef4ff);
+      padding: 12px;
+      margin: 10px 0 4px;
+    }
+
+    .feature-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: #33415f;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .plan-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #ecf2ff;
+      color: #1d4ed8;
+      border: 1px solid #cfe0ff;
+    }
+
+
+    .event-result-box {
+      margin-top: 10px;
+      border: 1px solid #dbe6ff;
+      border-radius: 12px;
+      background: #f7faff;
+      padding: 8px;
+    }
+
+    .event-result-note {
+      font-size: 11px;
+      color: #5c6788;
+      margin: 0 0 6px;
+    }
+
+    .event-result-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 0;
+    }
+
+    .event-result-btn {
+      border: 1px solid #d4def6;
+      background: #fff;
+      border-radius: 10px;
+      padding: 6px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #25345f;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-result-btn.win { border-color: #bfe4c8; color: #157347; background: #f3fbf5; }
+    .event-result-btn.draw { border-color: #cfd6e8; color: #4b5b85; background: #f8f9fc; }
+    .event-result-btn.loss { border-color: #f0c7c7; color: #a23c3c; background: #fff6f6; }
+
+
+    .team-roster-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .team-roster-col {
+      border: 1px solid #dbe6ff;
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 8px;
+    }
+
+    .team-roster-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #1f3f8f;
+      margin-bottom: 6px;
+    }
+
+    .team-roster-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .team-roster-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #33415f;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .team-roster-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #dde8ff;
+      color: #1d4ed8;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex: 0 0 18px;
+    }
+
+
+    .join-team-btn {
+      background: #eef3ff;
+      border-color: #cfe0ff;
+      color: #1f3f8f;
+    }
+
+    .join-team-btn.active {
+      background: linear-gradient(160deg, #2563EB, #1f57e7);
+      border-color: rgba(37,99,235,.45);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(37,99,235,.24);
+    }
+
+
+    .event-result-status {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #4f5c7f;
+    }
+
+    .toast-stack {
+      position: fixed;
+      right: 12px;
+      left: 12px;
+      bottom: 90px;
+      z-index: 70;
+      display: grid;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(17, 24, 39, 0.95);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.3;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: .2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     #trainerProfile .trainer-card {
       border-radius: 18px;
       background: linear-gradient(165deg, #ffffff, #f4f8ff);
@@ -810,6 +983,41 @@
       gap: 8px;
       margin: 10px 0;
     }
+
+
+    .player-form-mini {
+      margin-top: 8px;
+      border: 1px solid #dbe6ff;
+      border-radius: 12px;
+      background: #f8fbff;
+      padding: 10px;
+    }
+
+    .player-form-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1f3f8f;
+      margin-bottom: 6px;
+    }
+
+    .player-form-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .player-form-chip {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid #d3ddf4;
+      background: #fff;
+      color: #3f4b72;
+    }
+
+    .player-form-chip.win { border-color: #bfe4c8; background: #f3fbf5; color: #157347; }
+    .player-form-chip.loss { border-color: #f0c7c7; background: #fff6f6; color: #a23c3c; }
+    .player-form-chip.draw { border-color: #cfd6e8; background: #f8f9fc; color: #4b5b85; }
 
     .stat {
       border: 1px solid #dbe6ff;
@@ -1269,6 +1477,18 @@
       <button class="btn danger-soft" onclick="toggleCancel(true)">Отменить участие</button>
       <button class="btn gray" onclick="toggleShare(true)">🔗</button>
     </div>
+
+    <div id="eventTeamBadge" class="subtitle" style="margin-top:6px; color:#38508f;">Ваша команда: не выбрана</div>
+
+    <div id="eventResultActions" class="event-result-box" style="display:none;">
+      <p class="event-result-note">Результат фиксирует организатор/тренер после завершения матча (какая команда победила).</p>
+      <div class="event-result-actions">
+        <button class="event-result-btn win" onclick="submitEventResult('teamA')">Команда A</button>
+        <button class="event-result-btn draw" onclick="submitEventResult('draw')">Ничья</button>
+        <button class="event-result-btn loss" onclick="submitEventResult('teamB')">Команда B</button>
+      </div>
+      <div id="eventResultStatus" class="event-result-status">Результат пока не отправлен.</div>
+    </div>
   </div>
 
   <div class="screen" id="filters">
@@ -1367,7 +1587,7 @@
     <div class="home-tools" style="margin-bottom:2px;">
       <div class="title" style="font-size:28px; margin:0;">Тренеры</div>
       <button id="trainerCreateBtn" class="tools-btn hidden" onclick="openCreateFlow()">Создать событие</button>
-      <button id="trainerSubscriptionBtn" class="tools-btn hidden" onclick="openScreen('subscriptions')">Подписки PRO</button>
+      <button id="trainerSubscriptionBtn" class="tools-btn" onclick="openSubscriptionsFromUI()">Подписка</button>
       <button class="tools-btn" onclick="toggleTrainerFilterSheet(true)">Фильтры</button>
     </div>
 
@@ -1514,6 +1734,13 @@
     <div class="title" style="font-size:28px; margin:0 0 2px;">Подписки для тренера</div>
     <div class="subtitle">Монетизация профиля и продвижение в поиске.</div>
 
+    <div class="subscription-status-card">
+      <div class="plan-chip" id="activePlanChip">Текущий тариф: FREE</div>
+      <div class="subtitle" id="subscriptionStatusText" style="margin-top:8px;">Тариф Free: создание событий ограничено.</div>
+      <ul class="feature-list" id="subscriptionFeatureList"></ul>
+      <div class="subtitle" id="subscriptionAnalyticsText" style="margin-top:8px;">Аналитика: откройте Pro/Max для расширенной статистики.</div>
+    </div>
+
     <div class="plan-grid">
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Free</div><div class="plan-price">0 ₽/мес</div></div>
@@ -1522,12 +1749,12 @@
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Pro <span class="plan-badge">рекомендуем</span></div><div class="plan-price">990 ₽/мес</div></div>
         <div class="subtitle">Приоритет в выдаче, бейдж «Проверен», базовая аналитика заявок.</div>
-        <button class="trainer-open-btn" onclick="startSubscriptionPayment('pro', 990)">Подключить Pro</button>
+        <button id="proPlanBtn" class="trainer-open-btn" onclick="startSubscriptionPayment('pro', 990)">Подключить Pro</button>
       </div>
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Max</div><div class="plan-price">2490 ₽/мес</div></div>
         <div class="subtitle">Все из Pro + CRM мини, пакетные тренировки, авто-напоминания клиентам.</div>
-        <button class="trainer-open-btn" onclick="startSubscriptionPayment('max', 2490)">Подключить Max</button>
+        <button id="maxPlanBtn" class="trainer-open-btn" onclick="startSubscriptionPayment('max', 2490)">Подключить Max</button>
       </div>
     </div>
   </div>
@@ -1551,10 +1778,12 @@
         </div>
       </div>
 
-      <div class="stats-grid">
+      <div class="stats-grid" id="profileStatsGrid">
         <div class="stat"><b>4.8</b><span class="subtitle">Рейтинг игрока</span></div>
         <div class="stat"><b>127</b><span class="subtitle">Сыграно игр</span></div>
       </div>
+
+      <div id="playerFormMini" class="player-form-mini" style="display:none;"></div>
 
       <div id="profileDetails"></div>
       <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example</a>
@@ -1567,7 +1796,38 @@
       <ul class="game-list" id="upcomingGamesList"></ul>
       <ul class="game-list hidden" id="playedGamesList"></ul>
 
+      <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openPlayerSubscriptionsFromUI()">Подписка игрока</button>
       <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openProfileFeedbackScreen()">Оценки и комментарии</button>
+    </div>
+  </div>
+
+  <div class="screen" id="playerSubscriptions">
+    <button class="back" onclick="openScreen('profile')">← Назад</button>
+    <div class="title" style="font-size:28px; margin:0 0 2px;">Подписка игрока</div>
+    <div class="subtitle">Больше аналитики и геймификация для регулярных игроков.</div>
+
+    <div class="subscription-status-card">
+      <div class="plan-chip" id="playerActivePlanChip">Текущий тариф: FREE</div>
+      <div class="subtitle" id="playerSubscriptionStatusText" style="margin-top:8px;">Тариф Free: базовые функции игрока.</div>
+      <ul class="feature-list" id="playerSubscriptionFeatureList"></ul>
+      <div class="subtitle" id="playerSubscriptionAnalyticsText" style="margin-top:8px;">Расширенная аналитика доступна в Plus/Max.</div>
+    </div>
+
+    <div class="plan-grid">
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Free</div><div class="plan-price">0 ₽/мес</div></div>
+        <div class="subtitle">Базовый профиль, участие в событиях и комментарии.</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Plus <span class="plan-badge">для игроков</span></div><div class="plan-price">390 ₽/мес</div></div>
+        <div class="subtitle">Винстрик, продвинутая статистика, бейдж «Надежный игрок».</div>
+        <button id="playerPlusPlanBtn" class="trainer-open-btn" onclick="startPlayerSubscriptionPayment('plus', 390)">Подключить Plus</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-title-row"><div class="event-name">Max</div><div class="plan-price">790 ₽/мес</div></div>
+        <div class="subtitle">Все из Plus + детальная форма/динамика и 2 буста профиля в месяц.</div>
+        <button id="playerMaxPlanBtn" class="trainer-open-btn" onclick="startPlayerSubscriptionPayment('max', 790)">Подключить Max</button>
+      </div>
     </div>
   </div>
 
@@ -1637,6 +1897,31 @@
   </div>
 </div>
 
+</div>
+
+<div class="sheet-bg" id="joinTeamSheet">
+  <div class="sheet">
+    <div class="sheet-title">Выберите команду</div>
+    <div class="sheet-sub">Это нужно, чтобы корректно посчитать победу/поражение после матча.</div>
+    <div class="actions" style="margin-top:8px;">
+      <button id="joinTeamABtn" class="btn join-team-btn" onclick="selectJoinTeam('A')">Команда A</button>
+      <button id="joinTeamBBtn" class="btn join-team-btn" onclick="selectJoinTeam('B')">Команда B</button>
+    </div>
+    <div class="team-roster-grid">
+      <div class="team-roster-col">
+        <div class="team-roster-title">Состав команды A</div>
+        <div class="team-roster-list" id="joinTeamAList"></div>
+      </div>
+      <div class="team-roster-col">
+        <div class="team-roster-title">Состав команды B</div>
+        <div class="team-roster-list" id="joinTeamBList"></div>
+      </div>
+    </div>
+    <button class="btn primary" style="margin-top:8px;" onclick="confirmJoinWithTeam()">Подтвердить участие</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="toggleJoinTeamSheet(false)">Отмена</button>
+  </div>
+</div>
+
 <div class="sheet-bg" id="shareSheet">
   <div class="sheet">
     <div class="sheet-title" style="text-align:left;">Поделиться</div>
@@ -1646,6 +1931,18 @@
     </div>
   </div>
 </div>
+
+<div class="sheet-bg" id="resultConfirmSheet">
+  <div class="sheet">
+    <div class="sheet-title">Подтвердить результат?</div>
+    <div class="sheet-sub" id="resultConfirmText">Организатор отправил результат матча.</div>
+    <button class="btn primary" onclick="confirmEventResult(true)">Подтвердить</button>
+    <button class="btn danger-soft" style="margin-top:8px;" onclick="confirmEventResult(false)">Оспорить</button>
+    <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="toggleResultConfirmSheet(false)">Позже</button>
+  </div>
+</div>
+
+<div id="toastStack" class="toast-stack"></div>
 
 <div class="sheet-bg" id="trainerFilterSheet">
   <div class="sheet">
@@ -1769,7 +2066,35 @@
     homeMapOpen: false,
     paymentDraft: null,
     paymentMethod: 'card',
-    subscriptionPlan: 'free'
+    subscriptionPlan: 'free',
+    playerSubscriptionPlan: 'free',
+    subscriptionAnalytics: {
+      trainerViews: 37,
+      trainerLeads: 9,
+      eventOpens: 22
+    },
+    playerStats: {
+      wins: 3,
+      losses: 1,
+      draws: 1,
+      noShows: 0,
+      completedGames: 5,
+      currentStreak: 2,
+      bestStreak: 3,
+      profileBoosts: 0
+    },
+    gameResultsByEvent: {},
+    eventResultConfirmations: {},
+    eventResultApplied: {},
+    eventTeamByEvent: {},
+    pendingJoinTeam: '',
+    eventTeamRosters: {
+      0: { A: ['Иван П.', 'Максим С.', 'Глеб Н.'], B: ['Роман К.', 'Денис Л.', 'Олег Ф.'] },
+      1: { A: ['Антон В.', 'Михаил Т.'], B: ['Сергей Р.', 'Павел Д.'] },
+      2: { A: ['Егор Ш.', 'Виктор И.'], B: ['Кирилл Ж.', 'Илья М.'] },
+      3: { A: ['Артём Ч.', 'Никита Б.', 'Игорь Ц.'], B: ['Руслан Ю.', 'Тимур З.', 'Пётр Э.'] },
+      4: { A: ['Алексей Я.', 'Фёдор У.'], B: ['Даниил П.', 'Семён А.'] }
+    }
   };
 
   const events = [
@@ -1909,13 +2234,387 @@
 
   function updateCreateAccessUI() {
     const trainerCreateBtn = document.getElementById('trainerCreateBtn');
-    const trainerSubscriptionBtn = document.getElementById('trainerSubscriptionBtn');
     if (trainerCreateBtn) trainerCreateBtn.classList.toggle('hidden', !isTrainerRole());
-    if (trainerSubscriptionBtn) trainerSubscriptionBtn.classList.toggle('hidden', !isTrainerRole());
   }
 
   function hasActiveTrainerSubscription() {
     return ['pro', 'max'].includes(appState.subscriptionPlan);
+  }
+
+  function getSubscriptionFeatures(plan) {
+    if (plan === 'max') {
+      return [
+        'Приоритет в выдаче тренеров и событий',
+        'Бейдж «Проверен» в профиле тренера',
+        'Расширенная аналитика заявок и открытий',
+        'Авто-напоминания и пакетные предложения'
+      ];
+    }
+    if (plan === 'pro') {
+      return [
+        'Приоритет в выдаче тренеров и событий',
+        'Бейдж «Проверен» в профиле тренера',
+        'Базовая аналитика заявок и открытий'
+      ];
+    }
+    return [
+      'Базовая карточка тренера',
+      'Без приоритета в выдаче',
+      'Без доступа к аналитике'
+    ];
+  }
+
+  function openSubscriptionsFromUI() {
+    if (!isTrainerRole()) {
+      alert('Подписка оформляется для роли тренера. Переключите роль при регистрации/в профиле.');
+    }
+    openScreen('subscriptions');
+    updateSubscriptionUI();
+  }
+
+  function updateSubscriptionUI() {
+    const plan = appState.subscriptionPlan || 'free';
+    const planUpper = plan.toUpperCase();
+    const chip = document.getElementById('activePlanChip');
+    const statusText = document.getElementById('subscriptionStatusText');
+    const featureList = document.getElementById('subscriptionFeatureList');
+    const analyticsText = document.getElementById('subscriptionAnalyticsText');
+    const proBtn = document.getElementById('proPlanBtn');
+    const maxBtn = document.getElementById('maxPlanBtn');
+
+    if (chip) chip.textContent = `Текущий тариф: ${planUpper}`;
+    if (statusText) {
+      statusText.textContent = hasActiveTrainerSubscription()
+        ? 'Подписка активна: создание событий доступно и функции тарифа включены.'
+        : 'Тариф Free: создание событий ограничено.';
+    }
+
+    if (featureList) {
+      const rows = getSubscriptionFeatures(plan).map((item) => `<li>${item}</li>`).join('');
+      featureList.innerHTML = rows;
+    }
+
+    const views = Number(appState.subscriptionAnalytics?.trainerViews || 0);
+    const leads = Number(appState.subscriptionAnalytics?.trainerLeads || 0);
+    const opens = Number(appState.subscriptionAnalytics?.eventOpens || 0);
+    const conversion = views ? ((leads / views) * 100).toFixed(1) : '0.0';
+    if (analyticsText) {
+      analyticsText.textContent = hasActiveTrainerSubscription()
+        ? `Аналитика: просмотры ${views}, заявки ${leads}, открытия событий ${opens}, конверсия ${conversion}%.`
+        : 'Аналитика: откройте Pro/Max для расширенной статистики.';
+    }
+
+    if (proBtn) {
+      proBtn.disabled = plan === 'pro';
+      proBtn.textContent = plan === 'pro' ? 'Текущий тариф' : 'Подключить Pro';
+      proBtn.style.opacity = plan === 'pro' ? '0.6' : '1';
+    }
+
+    if (maxBtn) {
+      maxBtn.disabled = plan === 'max';
+      maxBtn.textContent = plan === 'max' ? 'Текущий тариф' : 'Подключить Max';
+      maxBtn.style.opacity = plan === 'max' ? '0.6' : '1';
+    }
+  }
+
+  function hasActivePlayerSubscription() {
+    return ['plus', 'max'].includes(appState.playerSubscriptionPlan);
+  }
+
+  function getPlayerSubscriptionFeatures(plan) {
+    if (plan === 'max') {
+      return [
+        'Винстрик и лучший стрик в профиле',
+        'Расширенная статистика побед/поражений/ничьих',
+        'Бейдж «Надежный игрок»',
+        '2 буста профиля в месяц'
+      ];
+    }
+    if (plan === 'plus') {
+      return [
+        'Винстрик и лучший стрик в профиле',
+        'Статистика формы игрока',
+        'Бейдж «Надежный игрок»'
+      ];
+    }
+    return [
+      'Базовый профиль игрока',
+      'Участие в событиях без расширенной аналитики'
+    ];
+  }
+
+  function openPlayerSubscriptionsFromUI() {
+    openScreen('playerSubscriptions');
+    updatePlayerSubscriptionUI();
+  }
+
+  function updatePlayerSubscriptionUI() {
+    const plan = appState.playerSubscriptionPlan || 'free';
+    const chip = document.getElementById('playerActivePlanChip');
+    const statusText = document.getElementById('playerSubscriptionStatusText');
+    const featureList = document.getElementById('playerSubscriptionFeatureList');
+    const analyticsText = document.getElementById('playerSubscriptionAnalyticsText');
+    const plusBtn = document.getElementById('playerPlusPlanBtn');
+    const maxBtn = document.getElementById('playerMaxPlanBtn');
+
+    if (chip) chip.textContent = `Текущий тариф: ${String(plan).toUpperCase()}`;
+    if (statusText) {
+      statusText.textContent = hasActivePlayerSubscription()
+        ? 'Подписка игрока активна: включены расширенные функции профиля.'
+        : 'Тариф Free: базовые функции игрока.';
+    }
+    if (featureList) {
+      featureList.innerHTML = getPlayerSubscriptionFeatures(plan).map((item) => `<li>${item}</li>`).join('');
+    }
+
+    const st = appState.playerStats;
+    const total = st.wins + st.losses + st.draws;
+    const winRate = total ? ((st.wins / total) * 100).toFixed(1) : '0.0';
+    if (analyticsText) {
+      analyticsText.textContent = hasActivePlayerSubscription()
+        ? `Матчи: ${total}, победы: ${st.wins}, поражения: ${st.losses}, ничьи: ${st.draws}, winrate: ${winRate}%, стрик: ${st.currentStreak}.`
+        : 'Расширенная аналитика доступна в Plus/Max.';
+    }
+
+    if (plusBtn) {
+      plusBtn.disabled = plan === 'plus';
+      plusBtn.textContent = plan === 'plus' ? 'Текущий тариф' : 'Подключить Plus';
+      plusBtn.style.opacity = plan === 'plus' ? '0.6' : '1';
+    }
+    if (maxBtn) {
+      maxBtn.disabled = plan === 'max';
+      maxBtn.textContent = plan === 'max' ? 'Текущий тариф' : 'Подключить Max';
+      maxBtn.style.opacity = plan === 'max' ? '0.6' : '1';
+    }
+  }
+
+  function startPlayerSubscriptionPayment(plan, amount) {
+    appState.paymentDraft = {
+      source: 'player_subscription',
+      type: 'player_subscription',
+      plan,
+      title: `Подписка игрока ${plan.toUpperCase()}`,
+      subtitle: 'Ежемесячный тариф для игрока',
+      amount,
+      fee: 0,
+      total: amount
+    };
+    openPaymentScreen();
+  }
+
+  function recalcPlayerStreak() {
+    const history = (appState.playerStats.history || []).slice().reverse();
+    let streak = 0;
+    history.some((item) => {
+      if (item === 'win') {
+        streak += 1;
+        return false;
+      }
+      return true;
+    });
+    appState.playerStats.currentStreak = streak;
+    appState.playerStats.bestStreak = Math.max(appState.playerStats.bestStreak, streak);
+  }
+
+  function toggleJoinTeamSheet(state) {
+    document.getElementById('joinTeamSheet').classList.toggle('active', state);
+  }
+
+  function selectJoinTeam(team) {
+    appState.pendingJoinTeam = team;
+    document.getElementById('joinTeamABtn')?.classList.toggle('active', team === 'A');
+    document.getElementById('joinTeamBBtn')?.classList.toggle('active', team === 'B');
+  }
+
+  function openTeamChoiceSheet() {
+    appState.pendingJoinTeam = '';
+    selectJoinTeam('A');
+    renderJoinTeamSheet(currentEvent);
+    toggleJoinTeamSheet(true);
+  }
+
+
+  function getRosterForEvent(eventIndex) {
+    const fallback = { A: ['Игрок A1', 'Игрок A2'], B: ['Игрок B1', 'Игрок B2'] };
+    return appState.eventTeamRosters[eventIndex] || fallback;
+  }
+
+  function renderJoinTeamSheet(eventIndex = currentEvent) {
+    const roster = getRosterForEvent(eventIndex);
+    const makeList = (items) => items.map((name) => {
+      const initial = (String(name || '?').trim()[0] || '?').toUpperCase();
+      return `<div class="team-roster-item"><span class="team-roster-avatar">${initial}</span><span>${name}</span></div>`;
+    }).join('');
+    const listA = document.getElementById('joinTeamAList');
+    const listB = document.getElementById('joinTeamBList');
+    if (listA) listA.innerHTML = makeList(roster.A || []);
+    if (listB) listB.innerHTML = makeList(roster.B || []);
+  }
+
+  function confirmJoinWithTeam() {
+    const team = appState.pendingJoinTeam || 'A';
+    joinEvent(team);
+    toggleJoinTeamSheet(false);
+    showToast(`Вы в событии. Команда ${team} закреплена.`);
+    saveMatchState();
+  }
+
+  function renderEventTeamBadge(eventIndex = currentEvent) {
+    const badge = document.getElementById('eventTeamBadge');
+    if (!badge) return;
+    const team = appState.eventTeamByEvent[eventIndex];
+    badge.textContent = team ? `Ваша команда: ${team}` : 'Ваша команда: не выбрана';
+  }
+
+  function showToast(message) {
+    const stack = document.getElementById('toastStack');
+    if (!stack) {
+      alert(message);
+      return;
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    stack.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 200);
+    }, 2200);
+  }
+
+  function toggleResultConfirmSheet(state) {
+    document.getElementById('resultConfirmSheet').classList.toggle('active', state);
+  }
+
+  function getResultLabel(result) {
+    return ({ teamA: 'Победа команды A', teamB: 'Победа команды B', draw: 'Ничья' })[result] || '—';
+  }
+
+  function applyConfirmedResult(eventIndex, result) {
+    if (appState.eventResultApplied[eventIndex]) return;
+    const event = events[eventIndex];
+    if (!event) return;
+
+    const playerTeam = appState.eventTeamByEvent[eventIndex] || 'A';
+    const playerOutcome = result === 'draw'
+      ? 'draw'
+      : ((result === 'teamA' && playerTeam === 'A') || (result === 'teamB' && playerTeam === 'B') ? 'win' : 'loss');
+
+    const playedLabel = `${event.title} · ${getResultLabel(result)} (${playerTeam})`;
+    appState.upcomingGames = appState.upcomingGames.filter((item) => !item.startsWith(event.title));
+    if (!appState.playedGames.includes(playedLabel)) {
+      appState.playedGames.unshift(playedLabel);
+    }
+
+    const stats = appState.playerStats;
+    if (!stats.resultByEvent) stats.resultByEvent = {};
+
+    const adjust = (kind, delta) => {
+      if (kind === 'win') stats.wins = Math.max(0, stats.wins + delta);
+      if (kind === 'loss') stats.losses = Math.max(0, stats.losses + delta);
+      if (kind === 'draw') stats.draws = Math.max(0, stats.draws + delta);
+    };
+
+    const prev = stats.resultByEvent[eventIndex];
+    if (prev) adjust(prev, -1);
+    adjust(playerOutcome, 1);
+    stats.resultByEvent[eventIndex] = playerOutcome;
+    stats.completedGames = Math.max(0, stats.wins + stats.losses + stats.draws);
+    if (!stats.history) stats.history = [];
+    stats.history.push(playerOutcome);
+    recalcPlayerStreak();
+
+    appState.eventResultApplied[eventIndex] = true;
+    saveMatchState();
+    renderGameLists();
+    updateProfileView(appState.currentUser);
+    updatePlayerSubscriptionUI();
+  }
+
+  function renderEventResultState(eventIndex = currentEvent) {
+    const statusNode = document.getElementById('eventResultStatus');
+    if (!statusNode) return;
+    const entry = appState.gameResultsByEvent[eventIndex];
+    if (!entry) {
+      statusNode.textContent = 'Результат пока не отправлен.';
+      return;
+    }
+    if (entry.status === 'pending') {
+      statusNode.textContent = `Отправлено на подтверждение: ${getResultLabel(entry.result)}.`;
+      return;
+    }
+    if (entry.status === 'confirmed') {
+      statusNode.textContent = `Подтверждено: ${getResultLabel(entry.result)}.`;
+      return;
+    }
+    if (entry.status === 'disputed') {
+      statusNode.textContent = `Результат оспорен: ${getResultLabel(entry.result)}. Нужна проверка.`;
+      return;
+    }
+    statusNode.textContent = 'Результат пока не отправлен.';
+  }
+
+  function maybeOpenResultConfirmSheet() {
+    const entry = appState.gameResultsByEvent[currentEvent];
+    if (!entry || entry.status !== 'pending' || isTrainerRole()) return;
+    if (!appState.joinedEventIndices.includes(currentEvent)) return;
+    const confirmed = appState.eventResultConfirmations[currentEvent];
+    if (confirmed === true || confirmed === false) return;
+    const text = document.getElementById('resultConfirmText');
+    if (text) text.textContent = `Организатор отправил результат: ${getResultLabel(entry.result)}. Подтвердите или оспорьте.`;
+    toggleResultConfirmSheet(true);
+  }
+
+  function confirmEventResult(agree) {
+    const entry = appState.gameResultsByEvent[currentEvent];
+    if (!entry || entry.status !== 'pending') {
+      toggleResultConfirmSheet(false);
+      return;
+    }
+
+    appState.eventResultConfirmations[currentEvent] = agree;
+    if (agree) {
+      entry.status = 'confirmed';
+      applyConfirmedResult(currentEvent, entry.result);
+      showToast('Результат подтвержден. Статистика обновлена.');
+    } else {
+      entry.status = 'disputed';
+      showToast('Результат оспорен. Нужна проверка организатором.');
+      saveMatchState();
+    }
+    renderEventResultState(currentEvent);
+    toggleResultConfirmSheet(false);
+  }
+
+  function submitEventResult(result) {
+    if (!appState.joinedEventIndices.includes(currentEvent)) {
+      showToast('Сначала вступите в событие.');
+      return;
+    }
+
+    if (!isTrainerRole()) {
+      showToast('Результат может подтвердить только организатор/тренер.');
+      return;
+    }
+
+    if (!['teamA', 'teamB', 'draw'].includes(result)) {
+      showToast('Выберите корректный исход матча.');
+      return;
+    }
+
+    appState.gameResultsByEvent[currentEvent] = {
+      result,
+      status: 'pending',
+      submittedAt: Date.now(),
+      submittedByRole: 'trainer'
+    };
+    appState.eventResultConfirmations[currentEvent] = null;
+    appState.eventResultApplied[currentEvent] = false;
+
+    renderEventResultState(currentEvent);
+    showToast(`Результат отправлен на подтверждение: ${getResultLabel(result)}.`);
+    saveMatchState();
   }
 
   function openCreateFlow() {
@@ -1935,9 +2634,9 @@
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'trainers', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'playerSubscriptions', 'trainers', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
     floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
-    bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments', 'payment', 'subscriptions'].includes(id) ? 'none' : 'grid';
+    bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments', 'playerSubscriptions', 'payment', 'subscriptions'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
     if (navEl) {
@@ -1954,6 +2653,13 @@
 
     if (id === 'home' && appState.homeMapOpen) {
       renderDiscoveryMap();
+    }
+
+    if (id === 'subscriptions') {
+      updateSubscriptionUI();
+    }
+    if (id === 'playerSubscriptions') {
+      updatePlayerSubscriptionUI();
     }
   }
 
@@ -2193,7 +2899,8 @@
       card.style.display = cityOk && chipOk && searchOk && whenOk && sportAdvancedOk && levelOk ? 'block' : 'none';
     });
 
-    document.querySelectorAll('#trainers .trainer-card').forEach((card) => {
+    const trainerCards = [...document.querySelectorAll('#trainers .trainer-card')];
+    trainerCards.forEach((card) => {
       const cityFilter = appState.trainerCity || appState.selectedCity;
       const cityOk = cityFilter === 'all' || !cityFilter || card.dataset.city === cityFilter;
       const sportOk = !appState.trainerSport || card.dataset.sport === appState.trainerSport;
@@ -2207,6 +2914,14 @@
       const ratingOk = !appState.trainerMinRating || rating >= appState.trainerMinRating;
       card.style.display = cityOk && sportOk && levelOk && priceOk && ratingOk ? 'block' : 'none';
     });
+
+    if (hasActiveTrainerSubscription()) {
+      const container = document.getElementById('trainers');
+      const visible = trainerCards.filter((card) => card.style.display !== 'none');
+      visible
+        .sort((a, b) => Number(b.dataset.rating || 0) - Number(a.dataset.rating || 0))
+        .forEach((card) => container.appendChild(card));
+    }
   }
 
 
@@ -2294,8 +3009,7 @@
 
   function joinGeoEventFromMap(eventIndex) {
     openEvent(eventIndex);
-    joinEvent();
-    alert('Вы записаны на событие с карты. Событие добавлено в профиль.');
+    openTeamChoiceSheet();
   }
 
   function renderNearbyList() {
@@ -2448,6 +3162,36 @@
     document.getElementById('regPhotoInput').click();
   }
 
+  function saveMatchState() {
+    const payload = {
+      gameResultsByEvent: appState.gameResultsByEvent,
+      eventResultConfirmations: appState.eventResultConfirmations,
+      eventResultApplied: appState.eventResultApplied,
+      eventTeamByEvent: appState.eventTeamByEvent,
+      playerStats: appState.playerStats,
+      upcomingGames: appState.upcomingGames,
+      playedGames: appState.playedGames
+    };
+    localStorage.setItem('mateosport_match_state', JSON.stringify(payload));
+  }
+
+  function loadMatchState() {
+    try {
+      const raw = JSON.parse(localStorage.getItem('mateosport_match_state') || '{}');
+      if (raw && typeof raw === 'object') {
+        appState.gameResultsByEvent = raw.gameResultsByEvent || appState.gameResultsByEvent;
+        appState.eventResultConfirmations = raw.eventResultConfirmations || appState.eventResultConfirmations;
+        appState.eventResultApplied = raw.eventResultApplied || appState.eventResultApplied;
+        appState.eventTeamByEvent = raw.eventTeamByEvent || appState.eventTeamByEvent;
+        appState.playerStats = { ...appState.playerStats, ...(raw.playerStats || {}) };
+        appState.upcomingGames = raw.upcomingGames || appState.upcomingGames;
+        appState.playedGames = raw.playedGames || appState.playedGames;
+      }
+    } catch (error) {
+      // keep defaults
+    }
+  }
+
   function updateProfileView(user) {
     appState.currentUser = user;
     document.getElementById('profileName').innerText = user.name;
@@ -2460,14 +3204,16 @@
       ? [
         `Вид спорта: ${user.sport}`,
         `Возраст: ${user.age} лет`,
-        `Уровень игрока: ${user.level}`
+        `Уровень игрока: ${user.level}`,
+        `Подписка игрока: ${String(appState.playerSubscriptionPlan || 'free').toUpperCase()}${hasActivePlayerSubscription() ? ' · Бейдж Надежный игрок' : ''}`
       ]
       : [
         `Вид спорта: ${user.sport}`,
         `Опыт работы тренером: ${user.coachExperience}`,
         `Достижения: ${user.achievements}`,
         `Образование: ${user.education}`,
-        `Философия: ${user.vision}`
+        `Философия: ${user.vision}`,
+        `Подписка: ${String(appState.subscriptionPlan || 'free').toUpperCase()}${hasActiveTrainerSubscription() ? ' · Бейдж Проверен' : ''}`
       ];
 
     detailRows.forEach((text) => {
@@ -2486,6 +3232,33 @@
       document.getElementById('profileAvatarImage').src = appState.photoUrl;
       document.getElementById('profileAvatarImage').classList.add('active');
       document.getElementById('profileAvatarFallback').style.display = 'none';
+    }
+
+
+
+    const statsGrid = document.getElementById('profileStatsGrid');
+    const formMini = document.getElementById('playerFormMini');
+    if (statsGrid && user.role === 'player') {
+      const totalGames = appState.playerStats.wins + appState.playerStats.losses + appState.playerStats.draws;
+      const winRate = totalGames ? ((appState.playerStats.wins / totalGames) * 100).toFixed(1) : '0.0';
+      const premiumStats = hasActivePlayerSubscription()
+        ? `<div class="stat"><b>${appState.playerStats.currentStreak}</b><span class="subtitle">Текущий winstreak</span></div>
+           <div class="stat"><b>${winRate}%</b><span class="subtitle">Winrate</span></div>`
+        : '';
+      statsGrid.innerHTML = `<div class="stat"><b>${Number(user.rating || 0).toFixed(1)}</b><span class="subtitle">Рейтинг игрока</span></div>
+        <div class="stat"><b>${totalGames}</b><span class="subtitle">Сыграно игр</span></div>${premiumStats}`;
+
+      if (formMini) {
+        const recent = (appState.playerStats.history || []).slice(-5).reverse();
+        const chips = recent.length
+          ? recent.map((r) => `<span class="player-form-chip ${r}">${r === 'win' ? 'W' : r === 'loss' ? 'L' : 'D'}</span>`).join('')
+          : '<span class="subtitle">Пока нет завершенных матчей</span>';
+        formMini.style.display = hasActivePlayerSubscription() ? 'block' : 'none';
+        formMini.innerHTML = `<div class="player-form-title">Форма (последние 5)</div><div class="player-form-row">${chips}</div>`;
+      }
+    } else if (formMini) {
+      formMini.style.display = 'none';
+      formMini.innerHTML = '';
     }
 
     const ratingBadge = document.getElementById('profileRatingBadge');
@@ -2724,6 +3497,7 @@
       appState.upcomingGames.unshift(trainingLabel);
       renderGameLists();
     }
+    saveMatchState();
     if (showAlert) {
       alert(`Заявка отправлена тренеру ${trainer.name}. Тренировка добавлена в ваш профиль.`);
     }
@@ -2786,6 +3560,10 @@
   }
 
   function closePaymentScreen() {
+    if (appState.paymentDraft?.type === 'player_subscription') {
+      openScreen('playerSubscriptions');
+      return;
+    }
     openScreen('subscriptions');
   }
 
@@ -2805,11 +3583,35 @@
 
   function processPayment() {
     const draft = appState.paymentDraft;
-    if (!draft || draft.type !== 'subscription') return;
+    if (!draft) return;
 
-    appState.subscriptionPlan = draft.plan;
-    openScreen('subscriptions');
-    alert(`Тариф ${draft.plan.toUpperCase()} активирован. Теперь вы можете создавать события как тренер.`);
+    if (draft.type === 'subscription') {
+      appState.subscriptionPlan = draft.plan;
+      if (appState.subscriptionPlan === 'pro') {
+        appState.subscriptionAnalytics.trainerViews += 12;
+        appState.subscriptionAnalytics.trainerLeads += 3;
+        appState.subscriptionAnalytics.eventOpens += 7;
+      }
+      if (appState.subscriptionPlan === 'max') {
+        appState.subscriptionAnalytics.trainerViews += 22;
+        appState.subscriptionAnalytics.trainerLeads += 6;
+        appState.subscriptionAnalytics.eventOpens += 14;
+      }
+      openScreen('subscriptions');
+      updateSubscriptionUI();
+      alert(`Тариф ${draft.plan.toUpperCase()} активирован. Теперь доступны приоритет, бейдж и аналитика.`);
+      return;
+    }
+
+    if (draft.type === 'player_subscription') {
+      appState.playerSubscriptionPlan = draft.plan;
+      if (draft.plan === 'plus') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 1);
+      if (draft.plan === 'max') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 2);
+      openScreen('playerSubscriptions');
+      updatePlayerSubscriptionUI();
+      updateProfileView(appState.currentUser);
+      alert(`Игроковский тариф ${draft.plan.toUpperCase()} активирован.`);
+    }
   }
 
   function openEvent(index) {
@@ -2825,21 +3627,31 @@
     const isJoined = appState.joinedEventIndices.includes(index);
     document.getElementById('joinActions').style.display = isJoined ? 'none' : 'flex';
     document.getElementById('leaveActions').style.display = isJoined ? 'flex' : 'none';
+    const resultActions = document.getElementById('eventResultActions');
+    if (resultActions) resultActions.style.display = isJoined ? 'block' : 'none';
+    renderEventTeamBadge(index);
+    renderEventResultState(index);
 
     openScreen('event');
     renderEventMapByAddress(event);
+    maybeOpenResultConfirmSheet();
   }
 
   function participateInEvent() {
-    joinEvent();
-    alert('Вы в событии! Деньги игрокам не переводятся через приложение. Детали участия — в чате события.');
+    openTeamChoiceSheet();
   }
 
-  function joinEvent() {
+  function joinEvent(teamChoice = '') {
     document.getElementById('joinActions').style.display = 'none';
     document.getElementById('leaveActions').style.display = 'flex';
+    const resultActions = document.getElementById('eventResultActions');
+    if (resultActions) resultActions.style.display = 'block';
+    renderEventResultState(currentEvent);
 
     const event = events[currentEvent];
+    const team = teamChoice || appState.eventTeamByEvent[currentEvent] || 'A';
+    appState.eventTeamByEvent[currentEvent] = team;
+    renderEventTeamBadge(currentEvent);
     const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
     if (!appState.joinedEventIndices.includes(currentEvent)) {
       appState.joinedEventIndices.push(currentEvent);
@@ -2848,11 +3660,18 @@
       appState.upcomingGames.unshift(gameLabel);
       renderGameLists();
     }
+    saveMatchState();
   }
 
   function leaveEvent() {
     document.getElementById('joinActions').style.display = 'flex';
     document.getElementById('leaveActions').style.display = 'none';
+    const resultActions = document.getElementById('eventResultActions');
+    if (resultActions) resultActions.style.display = 'none';
+    toggleResultConfirmSheet(false);
+    toggleJoinTeamSheet(false);
+    delete appState.eventTeamByEvent[currentEvent];
+    renderEventTeamBadge(currentEvent);
 
     appState.joinedEventIndices = appState.joinedEventIndices.filter((idx) => idx !== currentEvent);
 
@@ -2862,6 +3681,7 @@
       appState.upcomingGames = appState.upcomingGames.filter((item) => item !== gameLabel);
       renderGameLists();
     }
+    saveMatchState();
 
     toggleCancel(false);
   }
@@ -3027,6 +3847,7 @@
       appState.activeProfileTab = 'upcoming';
       renderGameLists();
     }
+    saveMatchState();
 
     const newEventIndex = appState.pendingCreatedEventIndex;
     appState.pendingCreatedGameLabel = '';
@@ -3093,6 +3914,8 @@
     appState.favoritePlaces = [];
   }
 
+  loadMatchState();
+
   setRegistrationRole('player');
   updateProfileView(appState.currentUser);
   updateCreateAccessUI();
@@ -3101,6 +3924,7 @@
   initCreateMap();
   openScreen('home');
   applyAllFilters();
+  updatePlayerSubscriptionUI();
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
