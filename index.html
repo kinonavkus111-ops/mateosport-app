@@ -738,6 +738,13 @@
       box-shadow: 0 0 0 2px rgba(37,99,235,.12);
     }
 
+    .payment-status-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #4b5b85;
+      line-height: 1.4;
+    }
+
     .plan-grid {
       display: grid;
       gap: 10px;
@@ -1455,7 +1462,7 @@
     <div class="image-box">🖼️ Фото события</div>
     <div class="subtitle" id="eventMeta"></div>
     <div class="event-name" id="eventTitle" style="font-size: 32px; line-height: 1.05; margin-top:4px;"></div>
-    <div class="event-meta" style="color:#15161a;font-weight:600;">👤👤 Участников: <span id="memberCount">9</span></div>
+    <div class="event-meta" style="color:#15161a;font-weight:600;">👤👤 Участников: <span id="memberCount">9/12</span></div>
 
     <div class="avatars">
       <div class="avatar"></div><div class="avatar"></div><div class="avatar"></div><div class="avatar"></div>
@@ -1469,7 +1476,7 @@
     <div class="desc-box" id="eventDescription"></div>
 
     <div class="actions" id="joinActions">
-      <button class="btn primary" onclick="participateInEvent()">Участвую</button>
+      <button id="eventJoinBtn" class="btn primary" onclick="participateInEvent()">Участвую</button>
       <button class="btn gray" onclick="toggleShare(true)">🔗</button>
     </div>
 
@@ -1722,10 +1729,12 @@
     <div class="payment-methods" id="paymentMethods">
       <button class="payment-method-btn active" data-method="card" onclick="selectPaymentMethod(this)">💳 Банковская карта</button>
       <button class="payment-method-btn" data-method="sbp" onclick="selectPaymentMethod(this)">📲 СБП</button>
-      <button class="payment-method-btn" data-method="wallet" onclick="selectPaymentMethod(this)">👛 Баланс приложения</button>
     </div>
 
-    <button class="btn primary" style="margin-top:14px;" onclick="processPayment()">Оплатить</button>
+    <div id="paymentStatusNote" class="payment-status-note"></div>
+
+    <button id="paymentSubmitBtn" class="btn primary" style="margin-top:14px;" onclick="processPayment()">Оплатить</button>
+    <button id="paymentConfirmBtn" class="btn" style="margin-top:8px; display:none; background:#eef4ff; color:#1d3f9d;" onclick="confirmPaymentStatus()">Проверить оплату</button>
     <button class="btn" style="margin-top:8px; background:#f1f2f4;" onclick="closePaymentScreen()">Отмена</button>
   </div>
 
@@ -2066,6 +2075,8 @@
     homeMapOpen: false,
     paymentDraft: null,
     paymentMethod: 'card',
+    paymentStartedAt: 0,
+    paymentPendingDraftType: null,
     subscriptionPlan: 'free',
     playerSubscriptionPlan: 'free',
     subscriptionAnalytics: {
@@ -2103,6 +2114,7 @@
       meta: 'Платно · футбол · Сегодня, 19:00–20:30',
       place: 'Манеж на Никольской',
       members: 11,
+      maxMembers: 12,
       price: '300 ₽',
       city: 'Тольятти',
       lat: 53.5087,
@@ -2115,6 +2127,7 @@
       meta: 'Бесплатно · теннис · Завтра, 18:00–20:00',
       place: 'Корт Парк',
       members: 8,
+      maxMembers: 8,
       price: 'Бесплатно',
       city: 'Казань',
       lat: 55.7961,
@@ -2127,6 +2140,7 @@
       meta: 'Платно · баскетбол · Чт, 20:00–21:30',
       place: 'Площадка на Таганке',
       members: 6,
+      maxMembers: 6,
       price: '500 ₽',
       city: 'Москва',
       lat: 55.7412,
@@ -2139,6 +2153,7 @@
       meta: 'Платно · волейбол · Сб, 17:00–19:00',
       place: 'Спорткомплекс "Волга"',
       members: 12,
+      maxMembers: 12,
       price: '400 ₽',
       city: 'Самара',
       lat: 53.1959,
@@ -2151,6 +2166,7 @@
       meta: 'Бесплатно · бег · Завтра, 08:30',
       place: 'Парк 300-летия',
       members: 20,
+      maxMembers: 20,
       price: 'Бесплатно',
       city: 'Санкт-Петербург',
       lat: 59.9841,
@@ -2618,15 +2634,6 @@
   }
 
   function openCreateFlow() {
-    if (!isTrainerRole()) {
-      alert('Создавать события может только тренер. Переключите роль и заполните профиль тренера.');
-      return;
-    }
-    if (!hasActiveTrainerSubscription()) {
-      alert('Для публикации событий нужна подписка Pro или Max. Подключите тариф во вкладке «Подписки PRO».');
-      openScreen('subscriptions');
-      return;
-    }
     openScreen('create');
   }
 
@@ -3542,6 +3549,9 @@
     });
 
     const draft = appState.paymentDraft;
+    const statusNote = document.getElementById('paymentStatusNote');
+    const submitBtn = document.getElementById('paymentSubmitBtn');
+    const confirmBtn = document.getElementById('paymentConfirmBtn');
     if (draft) {
       document.getElementById('paymentTitle').textContent = draft.title;
       document.getElementById('paymentSubtitle').textContent = draft.subtitle;
@@ -3549,6 +3559,14 @@
       document.getElementById('paymentFee').textContent = `${Number(draft.fee || 0).toLocaleString('ru-RU')} ₽`;
       document.getElementById('paymentTotal').textContent = `${Number(draft.total || 0).toLocaleString('ru-RU')} ₽`;
     }
+
+    if (statusNote) {
+      statusNote.textContent = 'После нажатия «Оплатить» подписка активируется только после подтверждения банком.';
+    }
+    if (submitBtn) submitBtn.style.display = 'block';
+    if (confirmBtn) confirmBtn.style.display = 'none';
+    appState.paymentStartedAt = 0;
+    appState.paymentPendingDraftType = null;
 
     openScreen('payment');
   }
@@ -3585,7 +3603,29 @@
     const draft = appState.paymentDraft;
     if (!draft) return;
 
-    if (draft.type === 'subscription') {
+    appState.paymentStartedAt = Date.now();
+    appState.paymentPendingDraftType = draft.type;
+    const statusNote = document.getElementById('paymentStatusNote');
+    const submitBtn = document.getElementById('paymentSubmitBtn');
+    const confirmBtn = document.getElementById('paymentConfirmBtn');
+    if (statusNote) {
+      const methodLabel = appState.paymentMethod === 'sbp' ? 'СБП' : 'банковской карты';
+      statusNote.textContent = `Платёж отправлен через ${methodLabel}. Ждём подтверждение от банка.`;
+    }
+    if (submitBtn) submitBtn.style.display = 'none';
+    if (confirmBtn) confirmBtn.style.display = 'block';
+  }
+
+  function confirmPaymentStatus() {
+    const draft = appState.paymentDraft;
+    if (!draft || !appState.paymentStartedAt) return;
+
+    if (Date.now() - appState.paymentStartedAt < 3500) {
+      alert('Платёж ещё не подтверждён банком. Попробуйте снова через пару секунд.');
+      return;
+    }
+
+    if (appState.paymentPendingDraftType === 'subscription') {
       appState.subscriptionPlan = draft.plan;
       if (appState.subscriptionPlan === 'pro') {
         appState.subscriptionAnalytics.trainerViews += 12;
@@ -3599,17 +3639,21 @@
       }
       openScreen('subscriptions');
       updateSubscriptionUI();
+      appState.paymentStartedAt = 0;
+      appState.paymentPendingDraftType = null;
       alert(`Тариф ${draft.plan.toUpperCase()} активирован. Теперь доступны приоритет, бейдж и аналитика.`);
       return;
     }
 
-    if (draft.type === 'player_subscription') {
+    if (appState.paymentPendingDraftType === 'player_subscription') {
       appState.playerSubscriptionPlan = draft.plan;
       if (draft.plan === 'plus') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 1);
       if (draft.plan === 'max') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 2);
       openScreen('playerSubscriptions');
       updatePlayerSubscriptionUI();
       updateProfileView(appState.currentUser);
+      appState.paymentStartedAt = 0;
+      appState.paymentPendingDraftType = null;
       alert(`Игроковский тариф ${draft.plan.toUpperCase()} активирован.`);
     }
   }
@@ -3621,12 +3665,20 @@
     document.getElementById('eventTitle').innerText = event.title;
     document.getElementById('eventMeta').innerText = event.meta;
     document.getElementById('eventPlace').innerText = event.place;
-    document.getElementById('memberCount').innerText = event.members;
+    const maxMembers = Number(event.maxMembers || event.members || 0);
+    document.getElementById('memberCount').innerText = `${event.members}/${maxMembers}`;
     document.getElementById('eventDescription').innerText = event.description;
 
     const isJoined = appState.joinedEventIndices.includes(index);
-    document.getElementById('joinActions').style.display = isJoined ? 'none' : 'flex';
+    const isFull = Number(event.members || 0) >= maxMembers;
+    document.getElementById('joinActions').style.display = isJoined || isFull ? 'none' : 'flex';
     document.getElementById('leaveActions').style.display = isJoined ? 'flex' : 'none';
+    const joinBtn = document.getElementById('eventJoinBtn');
+    if (joinBtn) {
+      joinBtn.disabled = isFull;
+      joinBtn.textContent = isFull ? 'Набор завершен' : 'Участвую';
+      joinBtn.style.opacity = isFull ? '0.6' : '1';
+    }
     const resultActions = document.getElementById('eventResultActions');
     if (resultActions) resultActions.style.display = isJoined ? 'block' : 'none';
     renderEventTeamBadge(index);
@@ -3638,6 +3690,11 @@
   }
 
   function participateInEvent() {
+    const event = events[currentEvent];
+    if (event && Number(event.members || 0) >= Number(event.maxMembers || event.members || 0)) {
+      showToast('Набор в событие уже закрыт. Свободных мест нет.');
+      return;
+    }
     openTeamChoiceSheet();
   }
 
@@ -3649,12 +3706,20 @@
     renderEventResultState(currentEvent);
 
     const event = events[currentEvent];
+    if (!event) return;
+    const maxMembers = Number(event.maxMembers || event.members || 0);
+    if (!appState.joinedEventIndices.includes(currentEvent) && Number(event.members || 0) >= maxMembers) {
+      showToast('Набор в событие уже завершен.');
+      return;
+    }
     const team = teamChoice || appState.eventTeamByEvent[currentEvent] || 'A';
     appState.eventTeamByEvent[currentEvent] = team;
     renderEventTeamBadge(currentEvent);
     const gameLabel = `${event.title} · ${event.meta.split('·').slice(-1)[0].trim()}`;
     if (!appState.joinedEventIndices.includes(currentEvent)) {
       appState.joinedEventIndices.push(currentEvent);
+      event.members = Number(event.members || 0) + 1;
+      document.getElementById('memberCount').innerText = `${event.members}/${maxMembers}`;
     }
     if (!appState.upcomingGames.includes(gameLabel)) {
       appState.upcomingGames.unshift(gameLabel);
@@ -3674,6 +3739,23 @@
     renderEventTeamBadge(currentEvent);
 
     appState.joinedEventIndices = appState.joinedEventIndices.filter((idx) => idx !== currentEvent);
+
+    const current = events[currentEvent];
+    if (current) {
+      current.members = Math.max(0, Number(current.members || 0) - 1);
+      const maxMembers = Number(current.maxMembers || current.members || 0);
+      document.getElementById('memberCount').innerText = `${current.members}/${maxMembers}`;
+      const joinBtn = document.getElementById('eventJoinBtn');
+      const isFull = Number(current.members || 0) >= maxMembers;
+      if (joinBtn) {
+        joinBtn.disabled = isFull;
+        joinBtn.textContent = isFull ? 'Набор завершен' : 'Участвую';
+        joinBtn.style.opacity = isFull ? '0.6' : '1';
+      }
+      if (isFull) {
+        document.getElementById('joinActions').style.display = 'none';
+      }
+    }
 
     const event = events[currentEvent];
     if (event) {
@@ -3729,27 +3811,16 @@
 
 
   function createEvent() {
-    if (!isTrainerRole()) {
-      alert('Создавать события может только тренер.');
-      return;
-    }
-
-    if (!hasActiveTrainerSubscription()) {
-      alert('Сначала подключите подписку Pro или Max, чтобы публиковать события.');
-      openScreen('subscriptions');
-      return;
-    }
-
     const title = document.getElementById('createTitle').value.trim();
-    const sport = document.getElementById('createSport').value.trim();
-    const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim();
-    const level = document.getElementById('createLevel').value.trim();
+    const sport = document.getElementById('createSport').value.trim() || appState.selectedSport || 'Футбол';
+    const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim() || '5x5';
+    const level = document.getElementById('createLevel').value.trim() || 'Любой';
     const location = document.getElementById('createLocation').value.trim();
     const date = document.getElementById('createDate').value.trim();
     const time = document.getElementById('createTime').value.trim();
 
-    if (!title || !sport || !format || !level || !location) {
-      alert('Заполни название, спорт, формат, уровень и местоположение.');
+    if (!title || !location) {
+      showToast('Укажи название события и местоположение.');
       return;
     }
 
@@ -3767,6 +3838,7 @@
       meta: eventMeta,
       place: location,
       members: 1,
+      maxMembers: 12,
       price: 'Оплата при подтверждении',
       city: appState.selectedCity === 'all' ? 'Тольятти' : appState.selectedCity,
       lat: appState.createPoint[0],
