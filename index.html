@@ -3863,9 +3863,26 @@
     card.dataset.level = level;
     card.setAttribute('onclick', 'openEvent(0)');
     card.innerHTML = `<div class="event-tag">🏟️ ${sport}</div><div class="event-name">${title}</div><div class="event-meta">${details} · ${location}</div><div class="event-footer"><span>Нужны участники</span><span>${newEvent.price}</span></div>`;
-    container.appendChild(card);
+
+    const firstEventCard = container.querySelector('.event-card');
+    if (firstEventCard) {
+      container.insertBefore(card, firstEventCard);
+    } else {
+      container.appendChild(card);
+    }
+
+    appState.selectedSport = '';
+    appState.sportSearch = '';
+    appState.advanced = { when: 'all', sports: [], levels: [] };
+    const sportSearchInput = document.getElementById('sportSearchInput');
+    if (sportSearchInput) sportSearchInput.value = '';
+    document.querySelectorAll('#sportChips .chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.sport === '');
+    });
 
     applyAllFilters();
+    openScreen('home');
+    showToast('Событие создано и добавлено в начало списка.');
     document.getElementById('createdSheet').classList.add('active');
   }
 
@@ -3994,7 +4011,7 @@
   renderCityOptions(appState.cityCatalog);
   setCity('Тольятти');
   initCreateMap();
-  openScreen('home');
+  openScreen('registration');
   applyAllFilters();
   updatePlayerSubscriptionUI();
 
