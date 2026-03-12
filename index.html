@@ -1102,6 +1102,53 @@
       margin-bottom: 8px;
     }
 
+    .profile-review-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid #e7ebf5;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .profile-review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex: 0 0 36px;
+      border: 1px solid #d7dceb;
+      background: #f1f3fa;
+    }
+
+    .profile-review-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .profile-review-name {
+      font-weight: 700;
+      color: #1c2436;
+    }
+
+    .profile-review-meta {
+      color: #6b7280;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .profile-review-text {
+      margin-top: 4px;
+      font-size: 13px;
+      color: #1f2937;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
     .profile-rating-input {
       display: flex;
       align-items: center;
@@ -1593,8 +1640,6 @@
   <div class="screen" id="trainers">
     <div class="home-tools" style="margin-bottom:2px;">
       <div class="title" style="font-size:28px; margin:0;">Тренеры</div>
-      <button id="trainerCreateBtn" class="tools-btn hidden" onclick="openCreateFlow()">Создать событие</button>
-      <button id="trainerSubscriptionBtn" class="tools-btn" onclick="openSubscriptionsFromUI()">Подписка</button>
       <button class="tools-btn" onclick="toggleTrainerFilterSheet(true)">Фильтры</button>
     </div>
 
@@ -1805,7 +1850,7 @@
       <ul class="game-list" id="upcomingGamesList"></ul>
       <ul class="game-list hidden" id="playedGamesList"></ul>
 
-      <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openPlayerSubscriptionsFromUI()">Подписка игрока</button>
+      <button id="profileSubscriptionBtn" class="tools-btn" style="margin-top:10px; width:100%;" onclick="openPlayerSubscriptionsFromUI()">Подписка игрока</button>
       <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openProfileFeedbackScreen()">Оценки и комментарии</button>
     </div>
   </div>
@@ -2048,8 +2093,24 @@
       rating: 4.8
     },
     activeProfileTab: 'upcoming',
-    profileComments: ['Отличный партнёр по игре!', 'Пунктуальный и ответственный.'],
-    profileRatings: [5, 4, 5, 5],
+    profileReviews: [
+      {
+        name: 'Анна К.',
+        role: 'player',
+        rating: 5,
+        text: 'Очень комфортно играть в одной команде, отличный уровень!',
+        createdAt: Date.now() - 1000 * 60 * 60 * 28,
+        avatarUrl: ''
+      },
+      {
+        name: 'Игорь Т.',
+        role: 'trainer',
+        rating: 4,
+        text: 'Хорошая дисциплина, приходит вовремя на тренировки.',
+        createdAt: Date.now() - 1000 * 60 * 60 * 12,
+        avatarUrl: ''
+      }
+    ],
     profileDraftRating: 0,
     selectedCity: 'Тольятти',
     selectedSport: '',
@@ -2249,8 +2310,15 @@
   }
 
   function updateCreateAccessUI() {
-    const trainerCreateBtn = document.getElementById('trainerCreateBtn');
-    if (trainerCreateBtn) trainerCreateBtn.classList.toggle('hidden', !isTrainerRole());
+    const floating = document.getElementById('floatingBtn');
+    if (!floating) return;
+
+    const activeScreen = document.querySelector('.screen.active')?.id || 'registration';
+    const canShowOnHome = activeScreen === 'home';
+    const canShowOnTrainers = activeScreen === 'trainers' && isTrainerRole();
+
+    floating.style.display = (canShowOnHome || canShowOnTrainers) ? 'block' : 'none';
+    floating.textContent = canShowOnTrainers ? '+ Создать событие' : '+ Разместить';
   }
 
   function hasActiveTrainerSubscription() {
@@ -2641,8 +2709,11 @@
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'playerSubscriptions', 'trainers', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
-    floatingBtn.style.display = hideFloating.includes(id) ? 'none' : 'block';
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'playerSubscriptions', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
+    const canShowOnHome = id === 'home';
+    const canShowOnTrainers = id === 'trainers' && isTrainerRole();
+    floatingBtn.style.display = hideFloating.includes(id) && !canShowOnTrainers ? 'none' : (canShowOnHome || canShowOnTrainers ? 'block' : 'none');
+    floatingBtn.textContent = canShowOnTrainers ? '+ Создать событие' : '+ Разместить';
     bottomNav.style.display = ['registration', 'filters', 'create', 'profileComments', 'playerSubscriptions', 'payment', 'subscriptions'].includes(id) ? 'none' : 'grid';
 
     document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
@@ -3177,7 +3248,8 @@
       eventTeamByEvent: appState.eventTeamByEvent,
       playerStats: appState.playerStats,
       upcomingGames: appState.upcomingGames,
-      playedGames: appState.playedGames
+      playedGames: appState.playedGames,
+      profileReviews: appState.profileReviews
     };
     localStorage.setItem('mateosport_match_state', JSON.stringify(payload));
   }
@@ -3193,6 +3265,7 @@
         appState.playerStats = { ...appState.playerStats, ...(raw.playerStats || {}) };
         appState.upcomingGames = raw.upcomingGames || appState.upcomingGames;
         appState.playedGames = raw.playedGames || appState.playedGames;
+        appState.profileReviews = raw.profileReviews || appState.profileReviews;
       }
     } catch (error) {
       // keep defaults
@@ -3234,6 +3307,13 @@
     const tgLink = document.getElementById('profileTgLink');
     tgLink.href = `https://t.me/${user.tgNick}`;
     tgLink.textContent = `@${user.tgNick}`;
+
+    const profileSubscriptionBtn = document.getElementById('profileSubscriptionBtn');
+    if (profileSubscriptionBtn) {
+      const isTrainer = user.role === 'trainer';
+      profileSubscriptionBtn.textContent = isTrainer ? 'Подписка тренера' : 'Подписка игрока';
+      profileSubscriptionBtn.onclick = isTrainer ? openSubscriptionsFromUI : openPlayerSubscriptionsFromUI;
+    }
 
     if (appState.photoUrl) {
       document.getElementById('profileAvatarImage').src = appState.photoUrl;
@@ -3302,9 +3382,9 @@
   }
 
   function getAverageRating() {
-    if (!appState.profileRatings.length) return 0;
-    const sum = appState.profileRatings.reduce((acc, value) => acc + Number(value || 0), 0);
-    return sum / appState.profileRatings.length;
+    if (!appState.profileReviews.length) return 0;
+    const sum = appState.profileReviews.reduce((acc, review) => acc + Number(review.rating || 0), 0);
+    return sum / appState.profileReviews.length;
   }
 
   function submitProfileFeedback() {
@@ -3317,21 +3397,56 @@
       return;
     }
 
-    appState.profileRatings.unshift(rating);
-    appState.currentUser.rating = getAverageRating();
+    const review = {
+      name: appState.currentUser?.name || 'Пользователь',
+      role: appState.currentUser?.role || 'player',
+      rating,
+      text: value || 'Без комментария',
+      createdAt: Date.now(),
+      avatarUrl: appState.photoUrl || ''
+    };
 
-    if (value) {
-      appState.profileComments.unshift(`${renderStars(rating)} ${value}`);
-      input.value = '';
-    }
+    appState.profileReviews.unshift(review);
+    appState.currentUser.rating = getAverageRating();
+    input.value = '';
 
     setProfileRating(0);
+    saveMatchState();
     updateProfileView(appState.currentUser);
+    showToast('Отзыв опубликован. Он виден всем пользователям в этом приложении.');
   }
 
   function renderProfileComments() {
     const list = document.getElementById('profileCommentList');
-    list.innerHTML = appState.profileComments.map((item) => `<li>${item}</li>`).join('') || '<li>Пока нет комментариев</li>';
+    if (!appState.profileReviews.length) {
+      list.innerHTML = '<li>Пока нет комментариев</li>';
+      return;
+    }
+
+    list.innerHTML = appState.profileReviews.map((review) => {
+      const name = String(review.name || 'Пользователь');
+      const role = review.role === 'trainer' ? 'Тренер' : 'Игрок';
+      const text = String(review.text || 'Без комментария');
+      const rating = Number(review.rating || 0);
+      const stars = renderStars(rating);
+      const created = review.createdAt ? new Date(review.createdAt).toLocaleString('ru-RU') : 'только что';
+      const initial = (name.trim()[0] || '?').toUpperCase();
+      const avatar = review.avatarUrl
+        ? `<img class="profile-review-avatar" src="${review.avatarUrl}" alt="${name}" />`
+        : `<div class="avatar-photo" style="width:36px;height:36px;font-size:14px;">${initial}</div>`;
+
+      return `<li class="profile-review-item">
+        ${avatar}
+        <div style="flex:1;">
+          <div class="profile-review-head">
+            <span class="profile-review-name">${name}</span>
+            <span>${stars} ${rating.toFixed(1)}</span>
+          </div>
+          <div class="profile-review-meta">${role} · ${created}</div>
+          <div class="profile-review-text">${text}</div>
+        </div>
+      </li>`;
+    }).join('');
   }
 
   function renderGameLists() {
