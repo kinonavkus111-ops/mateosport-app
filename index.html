@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://api-maps.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://telegram.org https://api-maps.yandex.ru https://*.yandex.ru https://*.yandex.net; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>MateoSport</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,6 +238,71 @@
       background: linear-gradient(160deg, #2563EB, #1f57e7);
       color: #fff;
       border-color: rgba(37,99,235,.55);
+    }
+
+    .theme-toggle-btn {
+      position: fixed;
+      right: max(14px, calc((100vw - 430px) / 2 + 14px));
+      top: 12px;
+      z-index: 40;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(37,99,235,.35);
+      background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(232,240,254,.96));
+      box-shadow: 0 10px 20px rgba(37,99,235,.16);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    body.theme-dark {
+      --bg: #0f172a;
+      --surface: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --line: #334155;
+      --premium-soft: #1e293b;
+      --chip: rgba(30,41,59,.8);
+    }
+
+    body.theme-dark {
+      background: radial-gradient(circle at top, #0b1220 0%, #0f172a 50%, #0b1020 100%);
+    }
+
+    body.theme-dark .app {
+      background: rgba(15,23,42,.94);
+      box-shadow: 0 20px 55px rgba(0,0,0,.45);
+    }
+
+    body.theme-dark .topbar,
+    body.theme-dark .screen,
+    body.theme-dark .bottom-nav,
+    body.theme-dark .event-card,
+    body.theme-dark .profile-card,
+    body.theme-dark .trainer-card,
+    body.theme-dark .profile-comments,
+    body.theme-dark .sheet {
+      background-color: #111827;
+      color: #e5e7eb;
+      border-color: #334155;
+    }
+
+    body.theme-dark .input-field,
+    body.theme-dark .sport-search,
+    body.theme-dark textarea,
+    body.theme-dark select {
+      background: #0f172a;
+      color: #e5e7eb;
+      border-color: #334155;
+    }
+
+    body.theme-dark .tools-btn,
+    body.theme-dark .map-icon-btn,
+    body.theme-dark .chip,
+    body.theme-dark .btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border-color: #475569;
     }
 
     .trainer-level-filter {
@@ -1438,6 +1506,8 @@
       </button>
     </div>
 
+    <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Переключить тему" aria-label="Переключить тему">☀️</button>
+
     <div class="chips" id="sportChips">
       <button class="chip active" data-sport="">☰ Все</button>
       <button class="chip" data-sport="Футбол">⚽ Футбол</button>
@@ -1458,6 +1528,7 @@
       <div class="nearby-block">
         <div class="nearby-head">
           <div class="section-label">Рядом со мной</div>
+          <div id="geoStatus" class="subtitle" style="margin:0;">Город не определен.</div>
           <div class="nearby-actions">
             <button class="tools-btn" onclick="requestUserLocation()">📍 Обновить</button>
             <button class="tools-btn" onclick="saveFavoritePlace()">⭐</button>
@@ -2064,8 +2135,8 @@
 
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
+  const tg = window.Telegram?.WebApp || null;
+  if (tg && typeof tg.ready === 'function') tg.ready();
 
   const screens = [...document.querySelectorAll('.screen')];
   const floatingBtn = document.getElementById('floatingBtn');
@@ -2130,7 +2201,9 @@
     cityRequestId: 0,
     eventCoords: null,
     userCoords: null,
+    userCity: '',
     discoveryMapReady: false,
+    geoPermissionAsked: false,
     favoritePlaces: [],
     discoveryMarkers: [],
     homeMapOpen: false,
@@ -2166,7 +2239,12 @@
       2: { A: ['Егор Ш.', 'Виктор И.'], B: ['Кирилл Ж.', 'Илья М.'] },
       3: { A: ['Артём Ч.', 'Никита Б.', 'Игорь Ц.'], B: ['Руслан Ю.', 'Тимур З.', 'Пётр Э.'] },
       4: { A: ['Алексей Я.', 'Фёдор У.'], B: ['Даниил П.', 'Семён А.'] }
-    }
+    },
+    security: {
+      actionWindows: {},
+      blockedUntil: {}
+    },
+    themeMode: 'light'
   };
 
   const events = [
@@ -2824,6 +2902,9 @@
 
     applyCityFilters();
     if (appState.homeMapOpen) {
+      if (!appState.userCoords) {
+        requestUserLocation({ silent: true });
+      }
       renderDiscoveryMap();
       renderNearbyList();
     }
@@ -3003,6 +3084,33 @@
   }
 
 
+  function updateUserCityFromCoords(coords) {
+    if (!coords || !window.ymaps) return;
+    ymaps.geocode(coords, { results: 1 }).then((res) => {
+      const first = res.geoObjects.get(0);
+      if (!first) return;
+      const city = first.getLocalities?.()[0] || first.getAdministrativeAreas?.()[0] || '';
+      if (city) {
+        appState.userCity = city;
+        setGeoStatus(`Ваш город: ${city}. На карте показаны события рядом.`);
+      }
+    }).catch(() => {
+      // ignore reverse geocode errors
+    });
+  }
+
+  function applyTheme(mode = 'light') {
+    appState.themeMode = mode === 'dark' ? 'dark' : 'light';
+    document.body.classList.toggle('theme-dark', appState.themeMode === 'dark');
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = appState.themeMode === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('mateosport_theme', appState.themeMode);
+  }
+
+  function toggleTheme() {
+    applyTheme(appState.themeMode === 'dark' ? 'light' : 'dark');
+  }
+
   function toggleHomeMap() {
     appState.homeMapOpen = !appState.homeMapOpen;
     const panel = document.getElementById('homeMapPanel');
@@ -3010,6 +3118,9 @@
     if (panel) panel.classList.toggle('hidden', !appState.homeMapOpen);
     if (iconBtn) iconBtn.classList.toggle('active', appState.homeMapOpen);
     if (appState.homeMapOpen) {
+      if (!appState.userCoords) {
+        requestUserLocation({ silent: true });
+      }
       renderDiscoveryMap();
       renderNearbyList();
     }
@@ -3117,7 +3228,9 @@
     if (status) status.textContent = text;
   }
 
-  function requestUserLocation() {
+  function requestUserLocation(options = {}) {
+    const { autoOpenMap = false, silent = false } = options;
+
     if (!navigator.geolocation) {
       setGeoStatus('Геолокация не поддерживается на этом устройстве.');
       return;
@@ -3127,12 +3240,24 @@
     navigator.geolocation.getCurrentPosition((position) => {
       appState.userCoords = [position.coords.latitude, position.coords.longitude];
       setGeoStatus(`Геолокация определена: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`);
+      updateUserCityFromCoords(appState.userCoords);
+
+      if (autoOpenMap) {
+        appState.homeMapOpen = true;
+        const panel = document.getElementById('homeMapPanel');
+        const iconBtn = document.getElementById('homeMapIconBtn');
+        if (panel) panel.classList.remove('hidden');
+        if (iconBtn) iconBtn.classList.add('active');
+      }
+
       renderDiscoveryMap();
       renderNearbyList();
 
-      const nearest = getVisibleGeoItems().map((item) => haversineKm(appState.userCoords[0], appState.userCoords[1], item.lat, item.lon)).sort((a,b)=>a-b)[0];
-      if (nearest !== undefined && nearest <= 10) {
-        alert(`Рядом с вами есть события/тренеры в радиусе ${nearest.toFixed(1)} км.`);
+      if (!silent) {
+        const nearest = getVisibleGeoItems().map((item) => haversineKm(appState.userCoords[0], appState.userCoords[1], item.lat, item.lon)).sort((a,b)=>a-b)[0];
+        if (nearest !== undefined && nearest <= 10) {
+          alert(`Рядом с вами есть события/тренеры в радиусе ${nearest.toFixed(1)} км.`);
+        }
       }
     }, () => {
       setGeoStatus('Не удалось получить геолокацию. Разрешите доступ к местоположению.');
@@ -3364,6 +3489,52 @@
     return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`;
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function normalizeSafeText(value, maxLen = 280) {
+    return String(value || '')
+      .replace(/\s+/g, ' ')
+      .replace(/[\x00-\x1f\x7f]/g, '')
+      .trim()
+      .slice(0, maxLen);
+  }
+
+  function isSuspiciousText(value) {
+    const text = String(value || '').toLowerCase();
+    return /(https?:\/\/|t\.me\/|telegram\.me|@everyone|script|<|>|onerror=|onload=)/i.test(text);
+  }
+
+  function enforceRateLimit(actionKey, limit, windowMs) {
+    const now = Date.now();
+    const bucket = appState.security.actionWindows[actionKey] || [];
+    const fresh = bucket.filter((ts) => now - ts < windowMs);
+
+    if (fresh.length >= limit) {
+      const retryInMs = Math.max(0, windowMs - (now - fresh[0]));
+      return { ok: false, retryInMs };
+    }
+
+    fresh.push(now);
+    appState.security.actionWindows[actionKey] = fresh;
+    return { ok: true, retryInMs: 0 };
+  }
+
+  function getReviewerKey() {
+    const tg = normalizeSafeText(appState.currentUser?.tgNick || '', 80).toLowerCase();
+    if (tg) return `tg:${tg}`;
+
+    const role = normalizeSafeText(appState.currentUser?.role || 'player', 20).toLowerCase();
+    const name = normalizeSafeText(appState.currentUser?.name || 'user', 120).toLowerCase();
+    return `name:${role}:${name}`;
+  }
+
   function openProfileFeedbackScreen() {
     openScreen('profileComments');
   }
@@ -3389,7 +3560,7 @@
 
   function submitProfileFeedback() {
     const input = document.getElementById('profileCommentInput');
-    const value = input.value.trim();
+    const rawValue = input.value;
     const rating = Number(appState.profileDraftRating || 0);
 
     if (!rating) {
@@ -3397,14 +3568,41 @@
       return;
     }
 
+    const rateState = enforceRateLimit(`review:${getReviewerKey()}`, 3, 5 * 60 * 1000);
+    if (!rateState.ok) {
+      showToast(`Слишком часто. Попробуйте через ${Math.ceil(rateState.retryInMs / 1000)} сек.`);
+      return;
+    }
+
+    const value = normalizeSafeText(rawValue, 500);
+    if (rating <= 2 && value.length < 15) {
+      showToast('Для низкой оценки добавьте комментарий от 15 символов.');
+      return;
+    }
+
+    if (isSuspiciousText(value)) {
+      showToast('Отзыв отклонен: обнаружен подозрительный текст/ссылка.');
+      return;
+    }
+
+    const reviewerKey = getReviewerKey();
     const review = {
-      name: appState.currentUser?.name || 'Пользователь',
-      role: appState.currentUser?.role || 'player',
+      reviewerKey,
+      name: normalizeSafeText(appState.currentUser?.name || 'Пользователь', 120),
+      role: normalizeSafeText(appState.currentUser?.role || 'player', 20),
       rating,
       text: value || 'Без комментария',
       createdAt: Date.now(),
       avatarUrl: appState.photoUrl || ''
     };
+
+    const existingIndex = appState.profileReviews.findIndex((item) => item.reviewerKey === reviewerKey);
+    if (existingIndex >= 0) {
+      appState.profileReviews.splice(existingIndex, 1);
+      showToast('Ваш отзыв обновлен.');
+    } else {
+      showToast('Отзыв опубликован. Он виден всем пользователям в этом приложении.');
+    }
 
     appState.profileReviews.unshift(review);
     appState.currentUser.rating = getAverageRating();
@@ -3413,7 +3611,6 @@
     setProfileRating(0);
     saveMatchState();
     updateProfileView(appState.currentUser);
-    showToast('Отзыв опубликован. Он виден всем пользователям в этом приложении.');
   }
 
   function renderProfileComments() {
@@ -3424,9 +3621,9 @@
     }
 
     list.innerHTML = appState.profileReviews.map((review) => {
-      const name = String(review.name || 'Пользователь');
+      const name = escapeHtml(normalizeSafeText(review.name || 'Пользователь', 120));
       const role = review.role === 'trainer' ? 'Тренер' : 'Игрок';
-      const text = String(review.text || 'Без комментария');
+      const text = escapeHtml(normalizeSafeText(review.text || 'Без комментария', 500));
       const rating = Number(review.rating || 0);
       const stars = renderStars(rating);
       const created = review.createdAt ? new Date(review.createdAt).toLocaleString('ru-RU') : 'только что';
@@ -3499,6 +3696,22 @@
       : '<li class="game-list-item muted">Пока нет</li>';
   }
 
+  function promptLocationAtOnboarding() {
+    if (appState.role !== 'player') return;
+    if (appState.geoPermissionAsked) return;
+
+    appState.geoPermissionAsked = true;
+    localStorage.setItem('mateosport_geo_prompted', '1');
+
+    const allow = confirm('Разрешить доступ к местоположению? Тогда карта на главной сразу покажет где вы находитесь.');
+    if (!allow) {
+      setGeoStatus('Доступ к геолокации не предоставлен. Можно включить позже кнопкой «📍 Обновить».');
+      return;
+    }
+
+    requestUserLocation({ autoOpenMap: false, silent: true });
+  }
+
   function registerUser() {
     const name = document.getElementById('regName').value.trim();
     const age = document.getElementById('regAge').value.trim();
@@ -3543,6 +3756,7 @@
     appState.registered = true;
     updateProfileView(user);
     openScreen('home');
+    promptLocationAtOnboarding();
     alert('Регистрация завершена! Теперь у вас активный профиль.');
   }
 
@@ -3926,16 +4140,27 @@
 
 
   function createEvent() {
-    const title = document.getElementById('createTitle').value.trim();
-    const sport = document.getElementById('createSport').value.trim() || appState.selectedSport || 'Футбол';
-    const format = document.getElementById('createFormat').value.trim() || document.getElementById('createCustomFormat').value.trim() || '5x5';
-    const level = document.getElementById('createLevel').value.trim() || 'Любой';
-    const location = document.getElementById('createLocation').value.trim();
-    const date = document.getElementById('createDate').value.trim();
-    const time = document.getElementById('createTime').value.trim();
+    const title = normalizeSafeText(document.getElementById('createTitle').value, 140);
+    const sport = normalizeSafeText(document.getElementById('createSport').value, 50) || appState.selectedSport || 'Футбол';
+    const format = normalizeSafeText(document.getElementById('createFormat').value, 50) || normalizeSafeText(document.getElementById('createCustomFormat').value, 50) || '5x5';
+    const level = normalizeSafeText(document.getElementById('createLevel').value, 40) || 'Любой';
+    const location = normalizeSafeText(document.getElementById('createLocation').value, 180);
+    const date = normalizeSafeText(document.getElementById('createDate').value, 30);
+    const time = normalizeSafeText(document.getElementById('createTime').value, 30);
 
     if (!title || !location) {
       showToast('Укажи название события и местоположение.');
+      return;
+    }
+
+    if (isSuspiciousText(`${title} ${location}`)) {
+      showToast('Событие отклонено: обнаружен подозрительный текст/ссылка.');
+      return;
+    }
+
+    const eventRateState = enforceRateLimit(`event:${getReviewerKey()}`, 5, 60 * 60 * 1000);
+    if (!eventRateState.ok) {
+      showToast(`Лимит создания событий. Повторите через ${Math.ceil(eventRateState.retryInMs / 60 / 1000)} мин.`);
       return;
     }
 
@@ -3977,7 +4202,7 @@
     card.dataset.when = 'week';
     card.dataset.level = level;
     card.setAttribute('onclick', 'openEvent(0)');
-    card.innerHTML = `<div class="event-tag">🏟️ ${sport}</div><div class="event-name">${title}</div><div class="event-meta">${details} · ${location}</div><div class="event-footer"><span>Нужны участники</span><span>${newEvent.price}</span></div>`;
+    card.innerHTML = `<div class="event-tag">🏟️ ${escapeHtml(sport)}</div><div class="event-name">${escapeHtml(title)}</div><div class="event-meta">${escapeHtml(details)} · ${escapeHtml(location)}</div><div class="event-footer"><span>Нужны участники</span><span>${escapeHtml(newEvent.price)}</span></div>`;
 
     const firstEventCard = container.querySelector('.event-card');
     if (firstEventCard) {
@@ -4118,7 +4343,11 @@
     appState.favoritePlaces = [];
   }
 
+  appState.geoPermissionAsked = localStorage.getItem('mateosport_geo_prompted') === '1';
+  const savedTheme = localStorage.getItem('mateosport_theme') || 'light';
+
   loadMatchState();
+  applyTheme(savedTheme);
 
   setRegistrationRole('player');
   updateProfileView(appState.currentUser);
