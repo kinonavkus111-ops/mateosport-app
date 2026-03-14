@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org https://api-maps.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://telegram.org https://api-maps.yandex.ru https://*.yandex.ru https://*.yandex.net; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; base-uri 'self'; form-action 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://telegram.org https://api-maps.yandex.ru https://yastatic.net https://*.yandex.ru https://*.yandex.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://yastatic.net; img-src 'self' data: blob: https://*.yandex.ru https://*.yandex.net https://yastatic.net https:; font-src 'self' https://fonts.gstatic.com https://yastatic.net; connect-src 'self' https://telegram.org https://api-maps.yandex.ru https://*.yandex.ru https://*.yandex.net https://nominatim.openstreetmap.org; frame-ancestors 'self' https://web.telegram.org https://*.telegram.org; worker-src 'self' blob:; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>MateoSport</title>
@@ -241,18 +241,17 @@
     }
 
     .theme-toggle-btn {
-      position: fixed;
-      right: max(14px, calc((100vw - 430px) / 2 + 14px));
-      top: 12px;
-      z-index: 40;
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      margin-top: 10px;
+      width: 100%;
       border: 1px solid rgba(37,99,235,.35);
       background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(232,240,254,.96));
-      box-shadow: 0 10px 20px rgba(37,99,235,.16);
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 12px;
       cursor: pointer;
-      font-size: 18px;
+      box-shadow: 0 8px 18px rgba(37,99,235,.12);
+      text-align: left;
     }
 
     body.theme-dark {
@@ -850,6 +849,57 @@
       color: #1d4ed8;
     }
 
+    .subscription-duration-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(8, 15, 33, 0.45);
+      padding: 16px;
+    }
+
+    .subscription-duration-modal.show {
+      display: flex;
+    }
+
+    .subscription-duration-sheet {
+      width: min(520px, 100%);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      border: 1px solid #d9e4ff;
+      box-shadow: 0 -12px 35px rgba(15, 29, 60, 0.2);
+    }
+
+    .subscription-duration-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .subscription-duration-btn {
+      border: 1px solid #d3defb;
+      border-radius: 12px;
+      background: #f8faff;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1d3f9d;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .subscription-duration-btn b {
+      color: #0f1f45;
+    }
+
+    .subscription-duration-close {
+      margin-top: 10px;
+      width: 100%;
+    }
+
 
     .subscription-status-card {
       border: 1px solid #dbe6ff;
@@ -1436,7 +1486,7 @@
     <div>MateoSport</div>
 
     <div id="cityMenu" class="city-menu">
-      <input id="citySearchInput" class="city-search" placeholder="Поиск города" oninput="filterCityOptions(this.value)" />
+      <input id="citySearchInput" class="city-search" placeholder="Поиск города" oninput="filterCityOptions(this.value)" onkeydown="handleCitySearchKeyDown(event)" />
       <div id="cityOptions" class="city-options"></div>
     </div>
   </div>
@@ -1506,7 +1556,6 @@
       </button>
     </div>
 
-    <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Переключить тему" aria-label="Переключить тему">☀️</button>
 
     <div class="chips" id="sportChips">
       <button class="chip active" data-sport="">☰ Все</button>
@@ -1874,12 +1923,12 @@
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Pro <span class="plan-badge">рекомендуем</span></div><div class="plan-price">990 ₽/мес</div></div>
         <div class="subtitle">Приоритет в выдаче, бейдж «Проверен», базовая аналитика заявок.</div>
-        <button id="proPlanBtn" class="trainer-open-btn" onclick="startSubscriptionPayment('pro', 990)">Подключить Pro</button>
+        <button id="proPlanBtn" class="trainer-open-btn" onclick="openSubscriptionDurationModal('subscription', 'pro', 990)">Подключить Pro</button>
       </div>
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Max</div><div class="plan-price">2490 ₽/мес</div></div>
         <div class="subtitle">Все из Pro + CRM мини, пакетные тренировки, авто-напоминания клиентам.</div>
-        <button id="maxPlanBtn" class="trainer-open-btn" onclick="startSubscriptionPayment('max', 2490)">Подключить Max</button>
+        <button id="maxPlanBtn" class="trainer-open-btn" onclick="openSubscriptionDurationModal('subscription', 'max', 2490)">Подключить Max</button>
       </div>
     </div>
   </div>
@@ -1922,6 +1971,7 @@
       <ul class="game-list hidden" id="playedGamesList"></ul>
 
       <button id="profileSubscriptionBtn" class="tools-btn" style="margin-top:10px; width:100%;" onclick="openPlayerSubscriptionsFromUI()">Подписка игрока</button>
+      <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Переключить тему" aria-label="Переключить тему">☀️ Светлая тема</button>
       <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openProfileFeedbackScreen()">Оценки и комментарии</button>
     </div>
   </div>
@@ -1946,13 +1996,22 @@
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Plus <span class="plan-badge">для игроков</span></div><div class="plan-price">390 ₽/мес</div></div>
         <div class="subtitle">Винстрик, продвинутая статистика, бейдж «Надежный игрок».</div>
-        <button id="playerPlusPlanBtn" class="trainer-open-btn" onclick="startPlayerSubscriptionPayment('plus', 390)">Подключить Plus</button>
+        <button id="playerPlusPlanBtn" class="trainer-open-btn" onclick="openSubscriptionDurationModal('player_subscription', 'plus', 390)">Подключить Plus</button>
       </div>
       <div class="plan-card">
         <div class="plan-title-row"><div class="event-name">Max</div><div class="plan-price">790 ₽/мес</div></div>
         <div class="subtitle">Все из Plus + детальная форма/динамика и 2 буста профиля в месяц.</div>
-        <button id="playerMaxPlanBtn" class="trainer-open-btn" onclick="startPlayerSubscriptionPayment('max', 790)">Подключить Max</button>
+        <button id="playerMaxPlanBtn" class="trainer-open-btn" onclick="openSubscriptionDurationModal('player_subscription', 'max', 790)">Подключить Max</button>
       </div>
+    </div>
+  </div>
+
+  <div id="subscriptionDurationModal" class="subscription-duration-modal" onclick="closeSubscriptionDurationModal(event)">
+    <div class="subscription-duration-sheet" onclick="event.stopPropagation()">
+      <div class="event-name" id="subscriptionDurationTitle" style="font-size:18px;">Выберите срок подписки</div>
+      <div class="subtitle" id="subscriptionDurationSubtitle" style="margin-top:4px;">Оплата откроется после выбора срока.</div>
+      <div class="subscription-duration-grid" id="subscriptionDurationOptions"></div>
+      <button class="btn subscription-duration-close" onclick="closeSubscriptionDurationModal()">Отмена</button>
     </div>
   </div>
 
@@ -2213,6 +2272,9 @@
     paymentPendingDraftType: null,
     subscriptionPlan: 'free',
     playerSubscriptionPlan: 'free',
+    subscriptionExpiresAt: 0,
+    playerSubscriptionExpiresAt: 0,
+    pendingSubscriptionChoice: null,
     subscriptionAnalytics: {
       trainerViews: 37,
       trainerLeads: 9,
@@ -2265,7 +2327,7 @@
       title: 'Парный турнир',
       meta: 'Бесплатно · теннис · Завтра, 18:00–20:00',
       place: 'Корт Парк',
-      members: 8,
+      members: 4,
       maxMembers: 8,
       price: 'Бесплатно',
       city: 'Казань',
@@ -2278,7 +2340,7 @@
       title: 'Открытая игра 3x3',
       meta: 'Платно · баскетбол · Чт, 20:00–21:30',
       place: 'Площадка на Таганке',
-      members: 6,
+      members: 3,
       maxMembers: 6,
       price: '500 ₽',
       city: 'Москва',
@@ -2291,7 +2353,7 @@
       title: 'Микс-турнир 6x6',
       meta: 'Платно · волейбол · Сб, 17:00–19:00',
       place: 'Спорткомплекс "Волга"',
-      members: 12,
+      members: 7,
       maxMembers: 12,
       price: '400 ₽',
       city: 'Самара',
@@ -2399,8 +2461,21 @@
     floating.textContent = canShowOnTrainers ? '+ Создать событие' : '+ Разместить';
   }
 
+  function normalizeSubscriptionState() {
+    const now = Date.now();
+    if (appState.subscriptionExpiresAt && appState.subscriptionExpiresAt <= now) {
+      appState.subscriptionPlan = 'free';
+      appState.subscriptionExpiresAt = 0;
+    }
+    if (appState.playerSubscriptionExpiresAt && appState.playerSubscriptionExpiresAt <= now) {
+      appState.playerSubscriptionPlan = 'free';
+      appState.playerSubscriptionExpiresAt = 0;
+    }
+  }
+
   function hasActiveTrainerSubscription() {
-    return ['pro', 'max'].includes(appState.subscriptionPlan);
+    normalizeSubscriptionState();
+    return ['pro', 'max'].includes(appState.subscriptionPlan) && Number(appState.subscriptionExpiresAt || 0) > Date.now();
   }
 
   function getSubscriptionFeatures(plan) {
@@ -2447,7 +2522,7 @@
     if (chip) chip.textContent = `Текущий тариф: ${planUpper}`;
     if (statusText) {
       statusText.textContent = hasActiveTrainerSubscription()
-        ? 'Подписка активна: создание событий доступно и функции тарифа включены.'
+        ? `Подписка активна до ${formatSubscriptionExpiry(appState.subscriptionExpiresAt)}: создание событий доступно и функции тарифа включены.`
         : 'Тариф Free: создание событий ограничено.';
     }
 
@@ -2480,7 +2555,8 @@
   }
 
   function hasActivePlayerSubscription() {
-    return ['plus', 'max'].includes(appState.playerSubscriptionPlan);
+    normalizeSubscriptionState();
+    return ['plus', 'max'].includes(appState.playerSubscriptionPlan) && Number(appState.playerSubscriptionExpiresAt || 0) > Date.now();
   }
 
   function getPlayerSubscriptionFeatures(plan) {
@@ -2522,7 +2598,7 @@
     if (chip) chip.textContent = `Текущий тариф: ${String(plan).toUpperCase()}`;
     if (statusText) {
       statusText.textContent = hasActivePlayerSubscription()
-        ? 'Подписка игрока активна: включены расширенные функции профиля.'
+        ? `Подписка игрока активна до ${formatSubscriptionExpiry(appState.playerSubscriptionExpiresAt)}: включены расширенные функции профиля.`
         : 'Тариф Free: базовые функции игрока.';
     }
     if (featureList) {
@@ -2550,16 +2626,80 @@
     }
   }
 
-  function startPlayerSubscriptionPayment(plan, amount) {
+  function formatSubscriptionExpiry(timestamp) {
+    if (!timestamp) return 'не активна';
+    return new Date(timestamp).toLocaleDateString('ru-RU');
+  }
+
+  function getDurationOptions(baseAmount) {
+    return [
+      { key: '1m', label: '1 месяц', months: 1, discount: 0 },
+      { key: '6m', label: '6 месяцев', months: 6, discount: 0.1 },
+      { key: '12m', label: '12 месяцев', months: 12, discount: 0.2 }
+    ].map((item) => {
+      const raw = baseAmount * item.months;
+      const total = Math.round(raw * (1 - item.discount));
+      return {
+        ...item,
+        total,
+        perMonth: Math.round(total / item.months)
+      };
+    });
+  }
+
+  function openSubscriptionDurationModal(type, plan, baseAmount) {
+    const modal = document.getElementById('subscriptionDurationModal');
+    const title = document.getElementById('subscriptionDurationTitle');
+    const subtitle = document.getElementById('subscriptionDurationSubtitle');
+    const options = document.getElementById('subscriptionDurationOptions');
+    if (!modal || !options) return;
+
+    const kindLabel = type === 'player_subscription' ? 'игрока' : 'тренера';
+    if (title) title.textContent = `Выберите срок подписки (${kindLabel})`;
+    if (subtitle) subtitle.textContent = `Тариф ${String(plan).toUpperCase()}: после выбора откроется оплата.`;
+
+    appState.pendingSubscriptionChoice = { type, plan, baseAmount };
+    const rows = getDurationOptions(baseAmount).map((option) => (
+      `<button class="subscription-duration-btn" onclick="confirmSubscriptionDuration('${option.key}')">` +
+      `${option.label} · <b>${option.total} ₽</b> · ${option.perMonth} ₽/мес` +
+      `${option.discount ? ' · скидка ' + Math.round(option.discount * 100) + '%' : ''}` +
+      `</button>`
+    ));
+    options.innerHTML = rows.join('');
+    modal.classList.add('show');
+  }
+
+  function closeSubscriptionDurationModal(event) {
+    if (event && event.target && event.target.id !== 'subscriptionDurationModal') return;
+    const modal = document.getElementById('subscriptionDurationModal');
+    if (modal) modal.classList.remove('show');
+  }
+
+  function confirmSubscriptionDuration(durationKey) {
+    const choice = appState.pendingSubscriptionChoice;
+    if (!choice) return;
+    const selected = getDurationOptions(choice.baseAmount).find((item) => item.key === durationKey);
+    if (!selected) return;
+
+    if (choice.type === 'player_subscription') {
+      startPlayerSubscriptionPayment(choice.plan, selected.total, selected.months, selected.label);
+    } else {
+      startSubscriptionPayment(choice.plan, selected.total, selected.months, selected.label);
+    }
+    closeSubscriptionDurationModal();
+  }
+
+  function startPlayerSubscriptionPayment(plan, amount, months = 1, durationLabel = '1 месяц') {
     appState.paymentDraft = {
       source: 'player_subscription',
       type: 'player_subscription',
       plan,
       title: `Подписка игрока ${plan.toUpperCase()}`,
-      subtitle: 'Ежемесячный тариф для игрока',
+      subtitle: `Тариф для игрока · ${durationLabel}`,
       amount,
       fee: 0,
-      total: amount
+      total: amount,
+      months
     };
     openPaymentScreen();
   }
@@ -2838,6 +2978,8 @@
   function renderCityOptions(cities) {
     const container = document.getElementById('cityOptions');
     const items = uniqueCities(cities.map(normalizeCityName)).filter(Boolean);
+    const rawQuery = document.getElementById('citySearchInput')?.value || '';
+    const query = normalizeCityName(rawQuery);
 
     container.innerHTML = '';
 
@@ -2847,11 +2989,19 @@
     allBtn.onclick = () => setCity('all');
     container.appendChild(allBtn);
 
+    if (query) {
+      const customBtn = document.createElement('button');
+      customBtn.className = 'city-option';
+      customBtn.textContent = `Выбрать: ${query}`;
+      customBtn.onclick = () => setCity(query);
+      container.appendChild(customBtn);
+    }
+
     if (items.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'subtitle';
       empty.style.padding = '8px 10px';
-      empty.textContent = 'Город не найден. Попробуйте другой запрос.';
+      empty.textContent = 'Город не найден. Можно выбрать введённый вручную.';
       container.appendChild(empty);
       return;
     }
@@ -2912,6 +3062,13 @@
 
   function applyCityFilters() {
     applyAllFilters();
+  }
+
+  function handleCitySearchKeyDown(event) {
+    if (event.key !== 'Enter') return;
+    const query = normalizeCityName(event.target.value || '');
+    if (!query) return;
+    setCity(query);
   }
 
   function filterCityOptions(query) {
@@ -3103,7 +3260,7 @@
     appState.themeMode = mode === 'dark' ? 'dark' : 'light';
     document.body.classList.toggle('theme-dark', appState.themeMode === 'dark');
     const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.textContent = appState.themeMode === 'dark' ? '🌙' : '☀️';
+    if (btn) btn.textContent = appState.themeMode === 'dark' ? '🌙 Тёмная тема' : '☀️ Светлая тема';
     localStorage.setItem('mateosport_theme', appState.themeMode);
   }
 
@@ -3914,16 +4071,17 @@
     openScreen('subscriptions');
   }
 
-  function startSubscriptionPayment(plan, amount) {
+  function startSubscriptionPayment(plan, amount, months = 1, durationLabel = '1 месяц') {
     appState.paymentDraft = {
       source: 'subscription',
       type: 'subscription',
       plan,
       title: `Подписка ${plan.toUpperCase()}`,
-      subtitle: 'Ежемесячный тариф для тренера',
+      subtitle: `Тариф для тренера · ${durationLabel}`,
       amount,
       fee: 0,
-      total: amount
+      total: amount,
+      months
     };
     openPaymentScreen();
   }
@@ -3956,6 +4114,7 @@
 
     if (appState.paymentPendingDraftType === 'subscription') {
       appState.subscriptionPlan = draft.plan;
+      appState.subscriptionExpiresAt = Date.now() + Number(draft.months || 1) * 30 * 24 * 60 * 60 * 1000;
       if (appState.subscriptionPlan === 'pro') {
         appState.subscriptionAnalytics.trainerViews += 12;
         appState.subscriptionAnalytics.trainerLeads += 3;
@@ -3970,12 +4129,13 @@
       updateSubscriptionUI();
       appState.paymentStartedAt = 0;
       appState.paymentPendingDraftType = null;
-      alert(`Тариф ${draft.plan.toUpperCase()} активирован. Теперь доступны приоритет, бейдж и аналитика.`);
+      alert(`Тариф ${draft.plan.toUpperCase()} активирован на ${draft.months || 1} мес. до ${formatSubscriptionExpiry(appState.subscriptionExpiresAt)}.`);
       return;
     }
 
     if (appState.paymentPendingDraftType === 'player_subscription') {
       appState.playerSubscriptionPlan = draft.plan;
+      appState.playerSubscriptionExpiresAt = Date.now() + Number(draft.months || 1) * 30 * 24 * 60 * 60 * 1000;
       if (draft.plan === 'plus') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 1);
       if (draft.plan === 'max') appState.playerStats.profileBoosts = Math.max(appState.playerStats.profileBoosts, 2);
       openScreen('playerSubscriptions');
@@ -3983,7 +4143,7 @@
       updateProfileView(appState.currentUser);
       appState.paymentStartedAt = 0;
       appState.paymentPendingDraftType = null;
-      alert(`Игроковский тариф ${draft.plan.toUpperCase()} активирован.`);
+      alert(`Игроковский тариф ${draft.plan.toUpperCase()} активирован на ${draft.months || 1} мес. до ${formatSubscriptionExpiry(appState.playerSubscriptionExpiresAt)}.`);
     }
   }
 
@@ -4342,6 +4502,7 @@
   } catch (error) {
     appState.favoritePlaces = [];
   }
+  normalizeSubscriptionState();
 
   appState.geoPermissionAsked = localStorage.getItem('mateosport_geo_prompted') === '1';
   const savedTheme = localStorage.getItem('mateosport_theme') || 'light';
