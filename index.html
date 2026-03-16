@@ -1218,6 +1218,16 @@
       background: #fff;
     }
 
+    .rating-city-input {
+      flex: 1;
+      border: 1px solid #d7e3ff;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 13px;
+      background: #fff;
+      min-width: 0;
+    }
+
     .rating-hint {
       margin-top: 8px;
       font-size: 12px;
@@ -2094,11 +2104,17 @@
     <div class="rating-hint" id="ratingScopeText" style="margin-top:6px;">Режим: Все города.</div>
 
     <div class="rating-toolbar">
-      <select id="ratingCitySelect" class="rating-city-select" onchange="renderRatingBoard()"></select>
+      <input id="ratingCityInput" class="rating-city-input" type="text" placeholder="Введите город (например, Казань)">
+      <button class="tools-btn" style="width:auto;" onclick="applyRatingCityInput()">Выбрать</button>
+      <button class="tools-btn" style="width:auto;" onclick="detectRatingCityByGeo()">По гео</button>
+    </div>
+
+    <div class="rating-toolbar">
+      <select id="ratingCitySelect" class="rating-city-select" onchange="onRatingCitySelectChange()"></select>
       <button class="tools-btn" style="width:auto;" onclick="renderRatingBoard()">Обновить</button>
     </div>
 
-    <div class="rating-hint" id="ratingHint">Рейтинг доступен только с активной подпиской.</div>
+    <div class="rating-hint" id="ratingHint">Рейтинг доступен игрокам с уровня Pro (Plus/Max).</div>
     <div class="rating-my-place" id="ratingMyPlace"></div>
     <div class="rating-list" id="ratingList"></div>
   </div>
@@ -2356,6 +2372,8 @@
     eventCoords: null,
     userCoords: null,
     userCity: '',
+    ratingSelectedCity: 'Все города',
+    ratingGeoAttempted: false,
     discoveryMapReady: false,
     geoPermissionAsked: false,
     favoritePlaces: [],
@@ -3069,29 +3087,126 @@
     appState.ratingPlayers = base;
   }
 
+  function hasPlayerProForRating() {
+    normalizeSubscriptionState();
+    const plan = String(appState.playerSubscriptionPlan || 'free');
+    return ['plus', 'max'].includes(plan) && Number(appState.playerSubscriptionExpiresAt || 0) > Date.now();
+  }
+
   function hasRatingAccess() {
-    return hasActivePlayerSubscription() || hasActiveTrainerSubscription();
+    return hasPlayerProForRating() || hasActiveTrainerSubscription();
   }
 
   function getRatingCities() {
     const cities = ['Все города'];
+    const custom = [
+      String(appState.ratingSelectedCity || '').trim(),
+      String(appState.userCity || '').trim()
+    ].filter(Boolean);
     const fromData = [...new Set((appState.ratingPlayers || []).map((p) => String(p.city || '').trim()).filter(Boolean))];
-    return cities.concat(fromData);
+    return cities.concat([...new Set(custom.concat(fromData))]);
   }
 
   function ensureRatingCityOptions() {
     const select = document.getElementById('ratingCitySelect');
+    const input = document.getElementById('ratingCityInput');
     if (!select) return;
     const current = select.value;
     const items = getRatingCities();
     select.innerHTML = items.map((city) => `<option value="${escapeHtml(city)}">${escapeHtml(city)}</option>`).join('');
-    if (current && items.includes(current)) {
+    const preferred = normalizeCityName(String(appState.ratingSelectedCity || '').trim());
+    if (preferred && items.includes(preferred)) {
+      select.value = preferred;
+    } else if (current && items.includes(current)) {
       select.value = current;
     } else if (appState.selectedCity && appState.selectedCity !== 'all' && items.includes(appState.selectedCity)) {
       select.value = appState.selectedCity;
     } else {
       select.value = 'Все города';
     }
+    appState.ratingSelectedCity = select.value;
+    if (input) {
+      input.value = select.value === 'Все города' ? '' : select.value;
+    }
+  }
+
+
+  function setRatingCity(cityName, options = {}) {
+    const normalized = normalizeCityName(String(cityName || '').trim());
+    if (!normalized) {
+      appState.ratingSelectedCity = 'Все города';
+      ensureRatingCityOptions();
+      renderRatingBoard();
+      return;
+    }
+    appState.ratingSelectedCity = normalized;
+    if (options.fromGeo) {
+      appState.userCity = normalized;
+    }
+    ensureRatingCityOptions();
+    renderRatingBoard();
+  }
+
+  function onRatingCitySelectChange() {
+    const select = document.getElementById('ratingCitySelect');
+    if (!select) return;
+    appState.ratingSelectedCity = select.value || 'Все города';
+    const input = document.getElementById('ratingCityInput');
+    if (input) {
+      input.value = appState.ratingSelectedCity === 'Все города' ? '' : appState.ratingSelectedCity;
+    }
+    renderRatingBoard();
+  }
+
+  function applyRatingCityInput() {
+    const input = document.getElementById('ratingCityInput');
+    if (!input) return;
+    setRatingCity(input.value);
+  }
+
+  function detectRatingCityByGeo(silent = false) {
+    if (appState.userCity) {
+      setRatingCity(appState.userCity, { fromGeo: true });
+      if (!silent) showToast(`Город для рейтинга: ${appState.userCity}`);
+      return;
+    }
+    if (!navigator.geolocation) {
+      if (!silent) showToast('Геолокация не поддерживается на этом устройстве.');
+      return;
+    }
+    appState.ratingGeoAttempted = true;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const coords = [position.coords.latitude, position.coords.longitude];
+      appState.userCoords = coords;
+      if (!window.ymaps) {
+        if (!silent) showToast('Город определим после загрузки карты.');
+        return;
+      }
+      ymaps.geocode(coords, { results: 1 }).then((res) => {
+        const first = res.geoObjects.get(0);
+        const city = first?.getLocalities?.()[0] || first?.getAdministrativeAreas?.()[0] || '';
+        if (!city) {
+          if (!silent) showToast('Не удалось определить город для рейтинга.');
+          return;
+        }
+        setRatingCity(city, { fromGeo: true });
+        if (!silent) showToast(`Рейтинг переключен на город: ${city}`);
+      }).catch(() => {
+        if (!silent) showToast('Не удалось определить город по геолокации.');
+      });
+    }, () => {
+      if (!silent) showToast('Разрешите доступ к геолокации, чтобы выбрать город автоматически.');
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+  }
+
+  function tryAutoSelectRatingCity() {
+    if (String(appState.ratingSelectedCity || '') !== 'Все города') return;
+    if (appState.userCity) {
+      setRatingCity(appState.userCity, { fromGeo: true });
+      return;
+    }
+    if (appState.ratingGeoAttempted) return;
+    detectRatingCityByGeo(true);
   }
 
   function openRatingProfileByIndex(index) {
@@ -3137,18 +3252,20 @@
     ensureRatingDatasetSize();
     ensureRatingCityOptions();
 
+    tryAutoSelectRatingCity();
+
     if (!hasRatingAccess()) {
-      hint.innerHTML = '🔒 Рейтинг доступен только с активной подпиской. <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Открыть подписки</a>';
-      if (scopeText) scopeText.textContent = 'Режим: доступ закрыт без подписки.';
+      hint.innerHTML = '🔒 Рейтинг доступен игрокам только с уровня Pro (Plus/Max). <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Оформить Pro</a>';
+      if (scopeText) scopeText.textContent = 'Режим: доступ открыт после подписки Pro.';
       if (myPlace) {
         myPlace.style.display = 'none';
         myPlace.innerHTML = '';
       }
-      list.innerHTML = '';
+      list.innerHTML = '<div class="subtitle">Откройте Pro/Max, чтобы видеть рейтинг игроков.</div>';
       return;
     }
 
-    hint.textContent = 'Нажми на игрока, чтобы открыть профиль. Показываем топ-100 по текущей серии побед.';
+    hint.innerHTML = '✅ Рейтинг открыт: у вас уровень Pro (или выше). <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Управление подпиской</a>';
     const city = select?.value || 'Все города';
     if (scopeText) {
       scopeText.textContent = city === 'Все города'
@@ -3537,6 +3654,9 @@
       if (city) {
         appState.userCity = city;
         setGeoStatus(`Ваш город: ${city}. На карте показаны события рядом.`);
+        if (String(appState.ratingSelectedCity || '') === 'Все города') {
+          setRatingCity(city, { fromGeo: true });
+        }
       }
     }).catch(() => {
       // ignore reverse geocode errors
