@@ -240,70 +240,6 @@
       border-color: rgba(37,99,235,.55);
     }
 
-    .theme-toggle-btn {
-      margin-top: 10px;
-      width: 100%;
-      border: 1px solid rgba(37,99,235,.35);
-      background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(232,240,254,.96));
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 10px 12px;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(37,99,235,.12);
-      text-align: left;
-    }
-
-    body.theme-dark {
-      --bg: #0f172a;
-      --surface: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --line: #334155;
-      --premium-soft: #1e293b;
-      --chip: rgba(30,41,59,.8);
-    }
-
-    body.theme-dark {
-      background: radial-gradient(circle at top, #0b1220 0%, #0f172a 50%, #0b1020 100%);
-    }
-
-    body.theme-dark .app {
-      background: rgba(15,23,42,.94);
-      box-shadow: 0 20px 55px rgba(0,0,0,.45);
-    }
-
-    body.theme-dark .topbar,
-    body.theme-dark .screen,
-    body.theme-dark .bottom-nav,
-    body.theme-dark .event-card,
-    body.theme-dark .profile-card,
-    body.theme-dark .trainer-card,
-    body.theme-dark .profile-comments,
-    body.theme-dark .sheet {
-      background-color: #111827;
-      color: #e5e7eb;
-      border-color: #334155;
-    }
-
-    body.theme-dark .input-field,
-    body.theme-dark .sport-search,
-    body.theme-dark textarea,
-    body.theme-dark select {
-      background: #0f172a;
-      color: #e5e7eb;
-      border-color: #334155;
-    }
-
-    body.theme-dark .tools-btn,
-    body.theme-dark .map-icon-btn,
-    body.theme-dark .chip,
-    body.theme-dark .btn {
-      background: #1f2937;
-      color: #e5e7eb;
-      border-color: #475569;
-    }
-
     .trainer-level-filter {
       width: 100%;
       margin: 0;
@@ -437,7 +373,7 @@
       background: rgba(255,255,255,.94);
       border-top: 1px solid rgba(37,99,235,.14);
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       padding: 8px 8px 12px;
       z-index: 30;
       backdrop-filter: blur(10px);
@@ -593,7 +529,7 @@
 
     .profile-head {
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       margin-bottom: 12px;
     }
 
@@ -653,6 +589,39 @@
       place-items: center;
       font-size: 19px;
       font-weight: 700;
+    }
+
+    .profile-avatar-shell {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar-shell .avatar-photo,
+    .profile-avatar-shell .profile-avatar {
+      width: 72px;
+      height: 72px;
+    }
+
+    .profile-photo-plus {
+      position: absolute;
+      right: -2px;
+      bottom: -2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      background: linear-gradient(150deg, #2f6fff, #1f57e7);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37,99,235,.35);
+      padding: 0;
     }
 
     .rating {
@@ -1118,6 +1087,28 @@
       padding: 10px;
     }
 
+    .max-perks-card {
+      margin-top: 8px;
+      border: 1px solid #f2d89a;
+      border-radius: 12px;
+      background: linear-gradient(150deg, #fff9ec, #fff3d9);
+      padding: 10px;
+    }
+
+    .max-perks-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #8a5a00;
+      margin-bottom: 6px;
+    }
+
+    .max-perks-line {
+      font-size: 12px;
+      color: #5c4a1f;
+      line-height: 1.35;
+      margin: 2px 0;
+    }
+
     .player-form-title {
       font-size: 12px;
       font-weight: 700;
@@ -1208,6 +1199,86 @@
       font-size: 12px;
       color: #52545c;
       line-height: 1.45;
+    }
+
+
+    .rating-toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .rating-city-select {
+      flex: 1;
+      border: 1px solid #d7e3ff;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .rating-hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #5e6f95;
+      background: #f4f7ff;
+      border: 1px solid #dce6ff;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .rating-my-place {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #254070;
+      background: #eef4ff;
+      border: 1px solid #cfe0ff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: none;
+    }
+
+    .rating-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .rating-card {
+      border: 1px solid #dce7ff;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .rating-card.top {
+      background: linear-gradient(150deg, #fff8e9, #fff2cf);
+      border-color: #f2d89a;
+    }
+
+    .rating-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #11224a;
+    }
+
+    .rating-meta {
+      font-size: 12px;
+      color: #60709a;
+      margin-top: 2px;
+    }
+
+    .rating-streak {
+      font-size: 14px;
+      font-weight: 800;
+      color: #c97300;
+      white-space: nowrap;
     }
 
     .profile-comment-input {
@@ -1426,12 +1497,15 @@
     }
 
     .profile-link {
-      display: inline-block;
-      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
       font-size: 12px;
-      color: #2d5b9a;
+      color: #1d5fd0;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
+      width: fit-content;
     }
 
     .hidden { display: none; }
@@ -1937,18 +2011,19 @@
     <div class="title" style="font-size:28px;">Профиль</div>
     <div class="profile-card">
       <div class="profile-head">
-        <div>
+        <div class="profile-avatar-shell">
           <div class="avatar-photo" id="profileAvatarFallback">И</div>
           <img id="profileAvatarImage" class="profile-avatar" alt="Фото профиля" />
+          <button class="profile-photo-plus" onclick="openPhotoPicker()" aria-label="Изменить фото" title="Изменить фото">+</button>
           <input id="profilePhotoInput" type="file" accept="image/*" style="display:none;" />
-          <button class="profile-change-btn" onclick="openPhotoPicker()">Изменить фото</button>
         </div>
         <div class="profile-identity">
           <div class="profile-name-row">
             <div class="event-name" id="profileName">Иван Петров</div>
             <button id="profileRatingBadge" class="profile-rating-badge" onclick="openProfileFeedbackScreen()">★★★★★ 5.0</button>
           </div>
-          <div class="subtitle" id="profileAge">24 года</div>
+          <div class="subtitle" id="profileAge">24 года · Игрок</div>
+          <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example ↗</a>
         </div>
       </div>
 
@@ -1958,10 +2033,9 @@
       </div>
 
       <div id="playerFormMini" class="player-form-mini" style="display:none;"></div>
+      <div id="maxPerksMini" class="max-perks-card" style="display:none;"></div>
 
       <div id="profileDetails"></div>
-      <a id="profileTgLink" class="profile-link" href="https://t.me/example" target="_blank" rel="noopener">@example</a>
-
 
       <div class="profile-tabs">
         <button id="upcomingListTitle" class="profile-tab-btn active" onclick="setProfileTab('upcoming')">Предстоящие игры</button>
@@ -1971,7 +2045,6 @@
       <ul class="game-list hidden" id="playedGamesList"></ul>
 
       <button id="profileSubscriptionBtn" class="tools-btn" style="margin-top:10px; width:100%;" onclick="openPlayerSubscriptionsFromUI()">Подписка игрока</button>
-      <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Переключить тему" aria-label="Переключить тему">☀️ Светлая тема</button>
       <button class="tools-btn" style="margin-top:10px; width:100%;" onclick="openProfileFeedbackScreen()">Оценки и комментарии</button>
     </div>
   </div>
@@ -2013,6 +2086,21 @@
       <div class="subscription-duration-grid" id="subscriptionDurationOptions"></div>
       <button class="btn subscription-duration-close" onclick="closeSubscriptionDurationModal()">Отмена</button>
     </div>
+  </div>
+
+  <div class="screen" id="rating">
+    <div class="title" style="font-size:28px; margin:0 0 2px;">🏆 Рейтинг игроков</div>
+    <div class="subtitle">Серии побед по городам (топ-100).</div>
+    <div class="rating-hint" id="ratingScopeText" style="margin-top:6px;">Режим: Все города.</div>
+
+    <div class="rating-toolbar">
+      <select id="ratingCitySelect" class="rating-city-select" onchange="renderRatingBoard()"></select>
+      <button class="tools-btn" style="width:auto;" onclick="renderRatingBoard()">Обновить</button>
+    </div>
+
+    <div class="rating-hint" id="ratingHint">Рейтинг доступен только с активной подпиской.</div>
+    <div class="rating-my-place" id="ratingMyPlace"></div>
+    <div class="rating-list" id="ratingList"></div>
   </div>
 
   <div class="screen" id="profileComments">
@@ -2068,6 +2156,13 @@
         <path d="M4.5 20c1-3.7 3.7-5.5 7.5-5.5s6.5 1.8 7.5 5.5"></path>
       </svg>
       <span>Профиль</span>
+    </div>
+    <div class="nav-item" data-link="rating" onclick="openScreen('rating', this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 4h10v2a5 5 0 0 1-5 5 5 5 0 0 1-5-5z"></path>
+        <path d="M9 11v3.2a2.8 2.8 0 0 1-2 2.7L5.5 17.4V20h13v-2.6l-1.5-.5a2.8 2.8 0 0 1-2-2.7V11"></path>
+      </svg>
+      <span>Рейтинг</span>
     </div>
   </div>
 </div>
@@ -2288,7 +2383,8 @@
       completedGames: 5,
       currentStreak: 2,
       bestStreak: 3,
-      profileBoosts: 0
+      profileBoosts: 0,
+      maxShieldUsedAt: 0
     },
     gameResultsByEvent: {},
     eventResultConfirmations: {},
@@ -2306,7 +2402,19 @@
       actionWindows: {},
       blockedUntil: {}
     },
-    themeMode: 'light'
+    ratingRendered: [],
+    ratingPlayers: [
+      { name: 'Иван Петров', city: 'Тольятти', currentStreak: 7, bestStreak: 11, totalGames: 24, winRate: 78, role: 'player', age: '24', sport: 'Футбол', level: 'Любитель', tgNick: 'example' },
+      { name: 'Максим Орлов', city: 'Тольятти', currentStreak: 5, bestStreak: 9, totalGames: 19, winRate: 74, role: 'player', age: '26', sport: 'Баскетбол', level: 'Продвинутый', tgNick: 'maxorlov' },
+      { name: 'Денис Ким', city: 'Казань', currentStreak: 4, bestStreak: 8, totalGames: 17, winRate: 70, role: 'player', age: '23', sport: 'Теннис', level: 'Любитель', tgNick: 'deniskim' },
+      { name: 'Алексей Романов', city: 'Москва', currentStreak: 3, bestStreak: 6, totalGames: 31, winRate: 62, role: 'player', age: '29', sport: 'Футбол', level: 'Любитель', tgNick: 'alexromanov' },
+      { name: 'Руслан Ибрагимов', city: 'Самара', currentStreak: 3, bestStreak: 5, totalGames: 22, winRate: 61, role: 'player', age: '25', sport: 'Волейбол', level: 'Любитель', tgNick: 'rus_ibr' },
+      { name: 'Павел Козлов', city: 'Тольятти', currentStreak: 2, bestStreak: 4, totalGames: 14, winRate: 58, role: 'player', age: '22', sport: 'Футбол', level: 'Новичок', tgNick: 'pavelkoz' },
+      { name: 'Илья Сафонов', city: 'Казань', currentStreak: 2, bestStreak: 4, totalGames: 16, winRate: 56, role: 'player', age: '27', sport: 'Баскетбол', level: 'Любитель', tgNick: 'ilya_saf' },
+      { name: 'Глеб Никитин', city: 'Москва', currentStreak: 2, bestStreak: 3, totalGames: 12, winRate: 55, role: 'player', age: '21', sport: 'Теннис', level: 'Новичок', tgNick: 'glebnik' },
+      { name: 'Никита Белов', city: 'Самара', currentStreak: 1, bestStreak: 3, totalGames: 11, winRate: 52, role: 'player', age: '24', sport: 'Футбол', level: 'Любитель', tgNick: 'nikbelov' },
+      { name: 'Тимур Закиров', city: 'Казань', currentStreak: 1, bestStreak: 2, totalGames: 9, winRate: 50, role: 'player', age: '20', sport: 'Волейбол', level: 'Новичок', tgNick: 'timurzak' }
+    ]
   };
 
   const events = [
@@ -2565,7 +2673,8 @@
         'Винстрик и лучший стрик в профиле',
         'Расширенная статистика побед/поражений/ничьих',
         'Бейдж «Надежный игрок»',
-        '2 буста профиля в месяц'
+        '2 буста профиля в месяц',
+        'MAX-щит: 1 раз в месяц поражение не сбрасывает винстрик'
       ];
     }
     if (plan === 'plus') {
@@ -2610,7 +2719,7 @@
     const winRate = total ? ((st.wins / total) * 100).toFixed(1) : '0.0';
     if (analyticsText) {
       analyticsText.textContent = hasActivePlayerSubscription()
-        ? `Матчи: ${total}, победы: ${st.wins}, поражения: ${st.losses}, ничьи: ${st.draws}, winrate: ${winRate}%, стрик: ${st.currentStreak}.`
+        ? `Матчи: ${total}, победы: ${st.wins}, поражения: ${st.losses}, ничьи: ${st.draws}, winrate: ${winRate}%, стрик: ${st.currentStreak}${plan === 'max' ? ', активен MAX-щит винстрика.' : ''}.`
         : 'Расширенная аналитика доступна в Plus/Max.';
     }
 
@@ -2716,6 +2825,13 @@
     });
     appState.playerStats.currentStreak = streak;
     appState.playerStats.bestStreak = Math.max(appState.playerStats.bestStreak, streak);
+  }
+
+  function getMaxTierByBestStreak(bestStreak) {
+    if (bestStreak >= 15) return { tier: 'Легенда', next: null, need: 0 };
+    if (bestStreak >= 10) return { tier: 'Элита', next: 'Легенда', need: 15 - bestStreak };
+    if (bestStreak >= 5) return { tier: 'Про', next: 'Элита', need: 10 - bestStreak };
+    return { tier: 'Новичок', next: 'Про', need: 5 - bestStreak };
   }
 
   function toggleJoinTeamSheet(state) {
@@ -2923,11 +3039,177 @@
     openScreen('create');
   }
 
+  function ensureRatingDatasetSize() {
+    const base = appState.ratingPlayers || [];
+    if (base.length >= 140) return;
+    const cities = ['Тольятти', 'Казань', 'Москва', 'Самара', 'Санкт-Петербург', 'Екатеринбург'];
+    const sports = ['Футбол', 'Баскетбол', 'Теннис', 'Волейбол'];
+    const levels = ['Новичок', 'Любитель', 'Продвинутый'];
+    const start = base.length + 1;
+    for (let i = start; i <= 160; i += 1) {
+      const city = cities[i % cities.length];
+      const currentStreak = Math.max(0, 14 - Math.floor(i / 12));
+      const best = currentStreak + (i % 4);
+      const total = 8 + (i % 40);
+      const winRate = Math.max(35, 84 - Math.floor(i / 3));
+      base.push({
+        name: `Игрок ${i}`,
+        city,
+        currentStreak,
+        bestStreak: best,
+        totalGames: total,
+        winRate,
+        role: 'player',
+        age: String(18 + (i % 15)),
+        sport: sports[i % sports.length],
+        level: levels[i % levels.length],
+        tgNick: `player${i}`
+      });
+    }
+    appState.ratingPlayers = base;
+  }
+
+  function hasRatingAccess() {
+    return hasActivePlayerSubscription() || hasActiveTrainerSubscription();
+  }
+
+  function getRatingCities() {
+    const cities = ['Все города'];
+    const fromData = [...new Set((appState.ratingPlayers || []).map((p) => String(p.city || '').trim()).filter(Boolean))];
+    return cities.concat(fromData);
+  }
+
+  function ensureRatingCityOptions() {
+    const select = document.getElementById('ratingCitySelect');
+    if (!select) return;
+    const current = select.value;
+    const items = getRatingCities();
+    select.innerHTML = items.map((city) => `<option value="${escapeHtml(city)}">${escapeHtml(city)}</option>`).join('');
+    if (current && items.includes(current)) {
+      select.value = current;
+    } else if (appState.selectedCity && appState.selectedCity !== 'all' && items.includes(appState.selectedCity)) {
+      select.value = appState.selectedCity;
+    } else {
+      select.value = 'Все города';
+    }
+  }
+
+  function openRatingProfileByIndex(index) {
+    let target = null;
+    if (index === -1) {
+      const meNick = String(appState.currentUser?.tgNick || '').toLowerCase();
+      const meName = String(appState.currentUser?.name || '').toLowerCase();
+      target = (appState.ratingPlayers || []).find((p) => {
+        const nick = String(p.tgNick || '').toLowerCase();
+        const name = String(p.name || '').toLowerCase();
+        if (meNick && nick) return meNick === nick;
+        return meName && meName === name;
+      });
+    } else {
+      target = (appState.ratingRendered || [])[index];
+    }
+    if (!target) return;
+    const profile = {
+      role: 'player',
+      name: target.name,
+      age: target.age || '',
+      sport: target.sport || 'Футбол',
+      level: target.level || 'Любитель',
+      tgNick: target.tgNick || '',
+      coachExperience: '',
+      achievements: '',
+      education: '',
+      vision: '',
+      rating: Number(target.winRate || 50) / 20
+    };
+    updateProfileView(profile);
+    openScreen('profile');
+  }
+
+  function renderRatingBoard() {
+    const list = document.getElementById('ratingList');
+    const hint = document.getElementById('ratingHint');
+    const myPlace = document.getElementById('ratingMyPlace');
+    const scopeText = document.getElementById('ratingScopeText');
+    const select = document.getElementById('ratingCitySelect');
+    if (!list || !hint) return;
+
+    ensureRatingDatasetSize();
+    ensureRatingCityOptions();
+
+    if (!hasRatingAccess()) {
+      hint.innerHTML = '🔒 Рейтинг доступен только с активной подпиской. <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Открыть подписки</a>';
+      if (scopeText) scopeText.textContent = 'Режим: доступ закрыт без подписки.';
+      if (myPlace) {
+        myPlace.style.display = 'none';
+        myPlace.innerHTML = '';
+      }
+      list.innerHTML = '';
+      return;
+    }
+
+    hint.textContent = 'Нажми на игрока, чтобы открыть профиль. Показываем топ-100 по текущей серии побед.';
+    const city = select?.value || 'Все города';
+    if (scopeText) {
+      scopeText.textContent = city === 'Все города'
+        ? 'Режим: Все города — общий рейтинг лучших игроков.'
+        : `Режим: ${city} — рейтинг игроков этого города.`;
+    }
+
+    const fullRanked = (appState.ratingPlayers || [])
+      .filter((p) => city === 'Все города' ? true : p.city === city)
+      .sort((a, b) => Number(b.currentStreak || 0) - Number(a.currentStreak || 0) || Number(b.winRate || 0) - Number(a.winRate || 0));
+
+    const ranked = fullRanked.slice(0, 100);
+    appState.ratingRendered = ranked;
+
+    const meNick = String(appState.currentUser?.tgNick || '').toLowerCase();
+    const meName = String(appState.currentUser?.name || '').toLowerCase();
+    const myIndex = fullRanked.findIndex((p) => {
+      const nick = String(p.tgNick || '').toLowerCase();
+      const name = String(p.name || '').toLowerCase();
+      if (meNick && nick) return meNick === nick;
+      return meName && meName === name;
+    });
+
+    if (myPlace) {
+      if (myIndex >= 0) {
+        const me = fullRanked[myIndex];
+        const inTop = myIndex < 100;
+        myPlace.style.display = 'block';
+        myPlace.innerHTML = inTop
+          ? `Ваше место: <b>#${myIndex + 1}</b> · вы в топ-100.`
+          : `Ваше место: <b>#${myIndex + 1}</b> · вне топ-100. <a href="#" onclick="openRatingProfileByIndex(-1);return false;">Открыть мой профиль</a>`;
+      } else {
+        myPlace.style.display = 'block';
+        myPlace.textContent = 'Ваш профиль пока не попал в рейтинг этого режима.';
+      }
+    }
+
+    if (!ranked.length) {
+      list.innerHTML = '<div class="subtitle">В этом городе пока нет рейтинга.</div>';
+      return;
+    }
+
+    list.innerHTML = ranked.map((p, idx) => {
+      const top = idx < 3 ? ' top' : '';
+      return `
+        <div class="rating-card${top}" onclick="openRatingProfileByIndex(${idx})">
+          <div>
+            <div class="rating-name">${idx + 1}. ${escapeHtml(p.name)}</div>
+            <div class="rating-meta">${escapeHtml(p.city)} · ${Number(p.totalGames || 0)} игр · Winrate ${Number(p.winRate || 0)}%</div>
+          </div>
+          <div class="rating-streak">🔥 x${Number(p.currentStreak || 0)}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
   function openScreen(id, navEl) {
     screens.forEach((s) => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 
-    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'playerSubscriptions', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions'];
+    const hideFloating = ['event', 'filters', 'profile', 'profileComments', 'playerSubscriptions', 'trainerProfile', 'create', 'registration', 'payment', 'subscriptions', 'rating'];
     const canShowOnHome = id === 'home';
     const canShowOnTrainers = id === 'trainers' && isTrainerRole();
     floatingBtn.style.display = hideFloating.includes(id) && !canShowOnTrainers ? 'none' : (canShowOnHome || canShowOnTrainers ? 'block' : 'none');
@@ -2945,6 +3227,8 @@
       document.querySelector('[data-link="trainers"]').classList.add('active');
     } else if (id === 'profile' || id === 'profileComments') {
       document.querySelector('[data-link="profile"]').classList.add('active');
+    } else if (id === 'rating') {
+      document.querySelector('[data-link="rating"]').classList.add('active');
     }
 
     if (id === 'home' && appState.homeMapOpen) {
@@ -2956,6 +3240,9 @@
     }
     if (id === 'playerSubscriptions') {
       updatePlayerSubscriptionUI();
+    }
+    if (id === 'rating') {
+      renderRatingBoard();
     }
   }
 
@@ -3256,18 +3543,6 @@
     });
   }
 
-  function applyTheme(mode = 'light') {
-    appState.themeMode = mode === 'dark' ? 'dark' : 'light';
-    document.body.classList.toggle('theme-dark', appState.themeMode === 'dark');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.textContent = appState.themeMode === 'dark' ? '🌙 Тёмная тема' : '☀️ Светлая тема';
-    localStorage.setItem('mateosport_theme', appState.themeMode);
-  }
-
-  function toggleTheme() {
-    applyTheme(appState.themeMode === 'dark' ? 'light' : 'dark');
-  }
-
   function toggleHomeMap() {
     appState.homeMapOpen = !appState.homeMapOpen;
     const panel = document.getElementById('homeMapPanel');
@@ -3557,7 +3832,7 @@
   function updateProfileView(user) {
     appState.currentUser = user;
     document.getElementById('profileName').innerText = user.name;
-    document.getElementById('profileAge').innerText = user.role === 'player' ? 'Игрок' : 'Тренер';
+    document.getElementById('profileAge').innerText = `${user.age ? `${user.age} года · ` : ''}${user.role === 'player' ? 'Игрок' : 'Тренер'}`;
 
     const details = document.getElementById('profileDetails');
     details.innerHTML = '';
@@ -3587,8 +3862,15 @@
     });
 
     const tgLink = document.getElementById('profileTgLink');
-    tgLink.href = `https://t.me/${user.tgNick}`;
-    tgLink.textContent = `@${user.tgNick}`;
+    if (user.tgNick) {
+      tgLink.href = `https://t.me/${user.tgNick}`;
+      tgLink.textContent = `@${user.tgNick} ↗`;
+      tgLink.style.display = 'inline-flex';
+    } else {
+      tgLink.removeAttribute('href');
+      tgLink.textContent = '';
+      tgLink.style.display = 'none';
+    }
 
     const profileSubscriptionBtn = document.getElementById('profileSubscriptionBtn');
     if (profileSubscriptionBtn) {
@@ -3607,6 +3889,7 @@
 
     const statsGrid = document.getElementById('profileStatsGrid');
     const formMini = document.getElementById('playerFormMini');
+    const maxPerksMini = document.getElementById('maxPerksMini');
     if (statsGrid && user.role === 'player') {
       const totalGames = appState.playerStats.wins + appState.playerStats.losses + appState.playerStats.draws;
       const winRate = totalGames ? ((appState.playerStats.wins / totalGames) * 100).toFixed(1) : '0.0';
@@ -3625,9 +3908,34 @@
         formMini.style.display = hasActivePlayerSubscription() ? 'block' : 'none';
         formMini.innerHTML = `<div class="player-form-title">Форма (последние 5)</div><div class="player-form-row">${chips}</div>`;
       }
-    } else if (formMini) {
-      formMini.style.display = 'none';
-      formMini.innerHTML = '';
+
+      if (maxPerksMini) {
+        if (appState.playerSubscriptionPlan === 'max' && hasActivePlayerSubscription()) {
+          const best = Number(appState.playerStats.bestStreak || 0);
+          const current = Number(appState.playerStats.currentStreak || 0);
+          const tier = getMaxTierByBestStreak(best);
+          const shieldReady = !(appState.playerStats.maxShieldUsedAt) || (Date.now() - Number(appState.playerStats.maxShieldUsedAt) > 30 * 24 * 60 * 60 * 1000);
+          maxPerksMini.style.display = 'block';
+          maxPerksMini.innerHTML = `
+            <div class="max-perks-title">⭐ MAX-режим игрока</div>
+            <div class="max-perks-line">🔥 Текущий/лучший стрик: <b>${current}</b> / <b>${best}</b></div>
+            <div class="max-perks-line">🏆 Ранг серии: <b>${tier.tier}</b>${tier.next ? ` · до ${tier.next} осталось ${tier.need}` : ''}</div>
+            <div class="max-perks-line">🛡 Щит винстрика: <b>${shieldReady ? 'готов' : 'на перезарядке'}</b></div>
+          `;
+        } else {
+          maxPerksMini.style.display = 'none';
+          maxPerksMini.innerHTML = '';
+        }
+      }
+    } else {
+      if (formMini) {
+        formMini.style.display = 'none';
+        formMini.innerHTML = '';
+      }
+      if (maxPerksMini) {
+        maxPerksMini.style.display = 'none';
+        maxPerksMini.innerHTML = '';
+      }
     }
 
     const ratingBadge = document.getElementById('profileRatingBadge');
@@ -4505,10 +4813,8 @@
   normalizeSubscriptionState();
 
   appState.geoPermissionAsked = localStorage.getItem('mateosport_geo_prompted') === '1';
-  const savedTheme = localStorage.getItem('mateosport_theme') || 'light';
 
   loadMatchState();
-  applyTheme(savedTheme);
 
   setRegistrationRole('player');
   updateProfileView(appState.currentUser);
@@ -4519,6 +4825,7 @@
   openScreen('registration');
   applyAllFilters();
   updatePlayerSubscriptionUI();
+  ensureRatingCityOptions();
 
   document.getElementById('sportChips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
