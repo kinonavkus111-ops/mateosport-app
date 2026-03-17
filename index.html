@@ -2105,7 +2105,12 @@
 
     <div class="rating-hint" id="ratingCityInfo">Город рейтинга определяется автоматически по геопозиции.</div>
 
-    <div class="rating-hint" id="ratingHint">Рейтинг доступен игрокам с уровня Pro (Plus/Max).</div>
+    <div class="rating-toolbar">
+      <input id="ratingCityInput" class="rating-city-input" type="text" placeholder="Если гео не определилось — введите город" />
+      <button class="tools-btn" style="width:auto;" onclick="applyRatingCityInput()">Найти</button>
+    </div>
+
+    <div class="rating-hint" id="ratingHint">Рейтинг доступен для просмотра всем. Чтобы попасть в рейтинг, нужна подписка Pro (Plus/Max).</div>
     <div class="rating-my-place" id="ratingMyPlace"></div>
     <div class="rating-list" id="ratingList"></div>
   </div>
@@ -3095,7 +3100,21 @@
     if (options.fromGeo) {
       appState.userCity = normalized;
     }
+    const input = document.getElementById('ratingCityInput');
+    if (input) input.value = normalized;
     renderRatingBoard();
+  }
+
+  function applyRatingCityInput() {
+    const input = document.getElementById('ratingCityInput');
+    if (!input) return;
+    const city = normalizeCityName(String(input.value || '').trim());
+    if (!city) {
+      showToast('Введите город для рейтинга.');
+      return;
+    }
+    setRatingCity(city);
+    showToast(`Рейтинг переключен на город: ${city}`);
   }
 
   function detectRatingCityByGeo(silent = false) {
@@ -3186,24 +3205,23 @@
     ensureRatingDatasetSize();
     tryAutoSelectRatingCity();
 
-    if (!hasRatingAccess()) {
-      hint.innerHTML = '🔒 Рейтинг доступен игрокам только с уровня Pro (Plus/Max). <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Оформить Pro</a>';
-      if (scopeText) scopeText.textContent = 'Режим: доступ открыт после подписки Pro.';
-      if (myPlace) {
-        myPlace.style.display = 'none';
-        myPlace.innerHTML = '';
-      }
-      list.innerHTML = '<div class="subtitle">Откройте Pro/Max, чтобы видеть рейтинг игроков.</div>';
-      return;
+    if (hasRatingAccess()) {
+      hint.innerHTML = '✅ Рейтинг открыт. Вы с подпиской Pro (Plus/Max), поэтому ваш профиль может попадать в рейтинг. <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Управление подпиской</a>';
+    } else {
+      hint.innerHTML = '👀 Рейтинг можно смотреть без подписки. Чтобы ваш профиль попадал в рейтинг, нужен Pro (Plus/Max). <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Оформить Pro</a>';
     }
-
-    hint.innerHTML = '✅ Рейтинг открыт: у вас уровень Pro (или выше). <a href="#" onclick="openPlayerSubscriptionsFromUI();return false;">Управление подпиской</a>';
     const city = normalizeCityName(String(appState.ratingSelectedCity || appState.userCity || appState.selectedCity || 'Тольятти'));
     if (scopeText) {
       scopeText.textContent = `Режим: ${city} — рейтинг игроков этого города.`;
     }
     if (cityInfo) {
-      cityInfo.textContent = `Город рейтинга: ${city} (определяется по геопозиции при старте).`;
+      cityInfo.textContent = appState.userCity
+        ? `Город рейтинга: ${city} (определен автоматически по геопозиции).`
+        : `Город рейтинга: ${city}. Если геолокация не определилась — используйте поле поиска ниже.`;
+    }
+    const cityInput = document.getElementById('ratingCityInput');
+    if (cityInput && !cityInput.value.trim()) {
+      cityInput.value = city;
     }
 
     const fullRanked = (appState.ratingPlayers || [])
@@ -3223,15 +3241,15 @@
     });
 
     if (myPlace) {
-      if (myIndex >= 0) {
-        const me = fullRanked[myIndex];
+      myPlace.style.display = 'block';
+      if (!hasRatingAccess()) {
+        myPlace.innerHTML = 'Чтобы ваш профиль отображался в рейтинге, подключите Pro (Plus/Max).';
+      } else if (myIndex >= 0) {
         const inTop = myIndex < 100;
-        myPlace.style.display = 'block';
         myPlace.innerHTML = inTop
           ? `Ваше место: <b>#${myIndex + 1}</b> · вы в топ-100.`
           : `Ваше место: <b>#${myIndex + 1}</b> · вне топ-100. <a href="#" onclick="openRatingProfileByIndex(-1);return false;">Открыть мой профиль</a>`;
       } else {
-        myPlace.style.display = 'block';
         myPlace.textContent = 'Ваш профиль пока не попал в рейтинг этого режима.';
       }
     }
@@ -3578,21 +3596,43 @@
   }
 
 
-  function updateUserCityFromCoords(coords) {
-    if (!coords || !window.ymaps) return;
-    ymaps.geocode(coords, { results: 1 }).then((res) => {
-      const first = res.geoObjects.get(0);
-      if (!first) return;
-      const city = first.getLocalities?.()[0] || first.getAdministrativeAreas?.()[0] || '';
-      if (city) {
-        appState.userCity = city;
-        setGeoStatus(`Ваш город: ${city}. На карте показаны события рядом.`);
-        setCity(city);
-        setRatingCity(city, { fromGeo: true });
+
+  async function resolveCityFromCoords(coords) {
+    if (!coords || coords.length < 2) return '';
+    const lat = Number(coords[0]);
+    const lon = Number(coords[1]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return '';
+
+    if (window.ymaps) {
+      try {
+        const res = await ymaps.geocode([lat, lon], { results: 1 });
+        const first = res.geoObjects.get(0);
+        const city = first?.getLocalities?.()[0] || first?.getAdministrativeAreas?.()[0] || '';
+        if (city) return normalizeCityName(String(city));
+      } catch (error) {
+        // fallback to nominatim below
       }
-    }).catch(() => {
-      // ignore reverse geocode errors
-    });
+    }
+
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&accept-language=ru`;
+      const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!response.ok) return '';
+      const data = await response.json();
+      const city = data?.address?.city || data?.address?.town || data?.address?.municipality || data?.address?.state || data?.display_name?.split(',')?.[0] || '';
+      return city ? normalizeCityName(String(city)) : '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  async function updateUserCityFromCoords(coords) {
+    const city = await resolveCityFromCoords(coords);
+    if (!city) return;
+    appState.userCity = city;
+    setGeoStatus(`Ваш город: ${city}. На карте показаны события рядом.`);
+    setCity(city);
+    setRatingCity(city, { fromGeo: true });
   }
 
   function toggleHomeMap() {
